@@ -9,6 +9,15 @@
 
     <!-- PWA: manifest e tema -->
     <link rel="manifest" href="manifest.json">
+    <script>
+        // Captura antecipada do prompt de instalação do PWA.
+        window.__ffDeferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', function (event) {
+            event.preventDefault();
+            window.__ffDeferredInstallPrompt = event;
+            window.dispatchEvent(new Event('ff-pwa-install-ready'));
+        });
+    </script>
     <meta name="theme-color" content="#FF7A00">
 
     <!-- PWA: configuração iOS (iPhone/iPad) -->
@@ -148,6 +157,18 @@ header { background: var(--white); padding: 0.5rem 1.5rem; display: flex; justif
 .dash-balance-divider { height: 1px; background: rgba(255,255,255,0.25); margin: 1.1rem 0; position: relative; z-index: 1; }
 .dash-balance-card .bal-eye { position: absolute; right: 1.5rem; bottom: 1.5rem; width: 52px; height: 52px; background: rgba(0,0,0,0.18); border: none; border-radius: 14px; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
 .dash-balance-card .bal-eye:hover { background: rgba(0,0,0,0.28); }
+.dash-balance-card .bal-label-row { display:flex; align-items:center; gap:7px; position:relative; z-index:2; width:max-content; }
+.dash-balance-card .bal-label-row .bal-label { margin-bottom:0; }
+.dash-balance-card .bal-edit { width:28px; height:28px; border:0; border-radius:9px; background:rgba(255,255,255,0.17); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.15s; }
+.dash-balance-card .bal-edit:hover { background:rgba(255,255,255,0.28); }
+.dash-balance-card .bal-edit i { width:14px; height:14px; }
+.balance-adjust-current { background:var(--surface-soft); border:1px solid var(--gray-border); border-radius:14px; padding:12px 14px; margin-bottom:14px; }
+.balance-adjust-current small { display:block; color:var(--text-muted); font-size:0.72rem; margin-bottom:3px; }
+.balance-adjust-current strong { font-family:var(--font-number); font-size:1.2rem; color:var(--black); }
+.balance-adjust-preview { border-radius:14px; padding:12px 14px; background:var(--orange-soft); border:1px solid rgba(255,122,0,0.22); margin:4px 0 14px; font-size:0.8rem; line-height:1.45; }
+.balance-adjust-preview .adjust-arrow { color:var(--orange); font-weight:900; padding:0 5px; }
+.adjustment-tag { display:inline-flex; align-items:center; gap:4px; margin-left:6px; padding:2px 7px; border-radius:999px; background:rgba(255,122,0,0.14); color:var(--orange); font-size:0.6rem; font-weight:800; vertical-align:middle; }
+.adjustment-detail { display:block; margin-top:4px; color:var(--text-secondary); font-size:0.68rem; line-height:1.35; }
 /* Botões DRE / PDF */
 .dash-action-row { display: flex; gap: 12px; margin-bottom: 1.4rem; }
 .dash-action-row button { flex: 1; border: none; border-radius: 16px; padding: 16px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -617,6 +638,16 @@ input[type="checkbox"] { accent-color: var(--orange); }
     flex-direction: column;
     gap: 8px;
 }
+.pwa-install-status {
+    margin-top: 0.55rem;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+.pwa-install-status.is-installed { color: #2E9E5B; font-weight: 700; }
+.pwa-install-status.is-ready { color: var(--orange); font-weight: 700; }
+.sidebar-btn[hidden] { display: none !important; }
+
 .sidebar-action-list .sidebar-btn,
 .sidebar-logout-btn {
     margin-bottom: 0;
@@ -825,6 +856,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .theme-opt:focu
 .dash-balance-card .bal-value { font-size: clamp(2rem, 8vw, 2.45rem); letter-spacing: -0.05em; }
 .dash-balance-divider { margin: 0.85rem 0; }
 .dash-balance-card .bal-eye { width: 44px; height: 44px; right: 1.15rem; bottom: 1.15rem; border-radius: 13px; }
+.dash-balance-card .bal-edit { width:26px; height:26px; border-radius:8px; }
 .dash-action-row { gap: 8px; margin-bottom: 0.9rem; }
 .dash-action-row button {
     padding: 12px 14px;
@@ -1586,6 +1618,23 @@ input[data-money-input="true"] { font-variant-numeric: tabular-nums; }
             </div>
         </section>
 
+        <!-- APLICATIVO / PWA -->
+        <section class="sidebar-module" id="pwa-install-module">
+            <div class="sidebar-module-head">
+                <span class="sidebar-module-icon"><i data-lucide="smartphone"></i></span>
+                <div>
+                    <h3>Aplicativo</h3>
+                    <p>Instale o Family Finance na tela inicial e abra em modo de aplicativo.</p>
+                </div>
+            </div>
+            <div class="sidebar-action-list">
+                <button type="button" class="sidebar-btn" id="pwa-install-btn" onclick="installFamilyFinanceApp()" hidden>
+                    <i data-lucide="download"></i> <span id="pwa-install-btn-label">Instalar aplicativo</span>
+                </button>
+            </div>
+            <p id="pwa-install-status" class="pwa-install-status" aria-live="polite">Verificando disponibilidade de instalação...</p>
+        </section>
+
         <!-- SUPORTE -->
         <section class="sidebar-module">
             <div class="sidebar-module-head">
@@ -1689,6 +1738,33 @@ input[data-money-input="true"] { font-variant-numeric: tabular-nums; }
             <input type="number" id="meta-edit-total" placeholder="Valor total (R$)">
             <input type="number" id="meta-edit-entrada" placeholder="Valor já poupado (R$)">
             <button class="btn-primary" onclick="submitEditMeta()">Salvar Alterações</button>
+        </div>
+    </div>
+    <div id="modal-balance-adjust" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width:420px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 style="font-size:1rem; font-weight:800;">Ajustar saldo atual</h3>
+                <button onclick="closeBalanceAdjustment()" style="background:none; border:none; color:var(--black);"><i data-lucide="x"></i></button>
+            </div>
+            <p style="font-size:0.76rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.45;">O ajuste será registrado no histórico para manter o saldo rastreável. Ele não altera nem apaga seus lançamentos existentes.</p>
+            <div class="balance-adjust-current">
+                <small>Saldo atual calculado</small>
+                <strong id="balance-adjust-current">R$ 0,00</strong>
+            </div>
+            <label style="font-size:0.78rem; font-weight:700;">Como deseja ajustar?</label>
+            <select id="balance-adjust-mode" onchange="updateBalanceAdjustmentPreview()">
+                <option value="set">Definir saldo para</option>
+                <option value="add">Adicionar ao saldo</option>
+                <option value="subtract">Subtrair do saldo</option>
+            </select>
+            <label id="balance-adjust-amount-label" style="font-size:0.78rem; font-weight:700;">Novo saldo</label>
+            <input type="number" step="0.01" id="balance-adjust-amount" placeholder="0,00" oninput="updateBalanceAdjustmentPreview()">
+            <label style="font-size:0.78rem; font-weight:700;">Motivo do ajuste</label>
+            <input type="text" id="balance-adjust-reason" maxlength="240" placeholder="Ex.: correção do saldo inicial">
+            <label style="font-size:0.78rem; font-weight:700;">Data do ajuste</label>
+            <input type="date" id="balance-adjust-date">
+            <div id="balance-adjust-preview" class="balance-adjust-preview">Informe o valor para visualizar o novo saldo.</div>
+            <button class="btn-primary" onclick="submitBalanceAdjustment()"><i data-lucide="save" style="width:17px;height:17px;"></i> Salvar ajuste</button>
         </div>
     </div>
     <div id="modal-history" class="modal-overlay hidden">
@@ -1819,7 +1895,10 @@ input[data-money-input="true"] { font-variant-numeric: tabular-nums; }
             <!-- Card de saldo laranja grande -->
             <div class="dash-balance-card">
                 <img class="dash-balance-watermark" id="dash-bal-watermark" alt="">
-                <div class="bal-label">Saldo atual</div>
+                <div class="bal-label-row">
+                    <div class="bal-label">Saldo atual</div>
+                    <button class="bal-edit" id="balance-adjust-btn" onclick="openBalanceAdjustment()" aria-label="Ajustar saldo atual"><i data-lucide="pencil"></i></button>
+                </div>
                 <div class="bal-value" id="stat-balance">R$ 0,00</div>
                 <div class="dash-balance-divider"></div>
                 <div class="bal-label">Resultado do mês</div>
@@ -2583,7 +2662,12 @@ async function loadDebit() {
         const data = await fetchAllRowsFromTable('transactions', currentUserId);
         debitCache = (data || []).map(r => ({
             id: r.id, desc: r.description, val: Number(r.val), date: r.date,
-            cat: r.cat, type: r.type, recurringGroupId: r.recurring_group_id || undefined
+            cat: r.cat, type: r.type, recurringGroupId: r.recurring_group_id || undefined,
+            isBalanceAdjustment: !!r.is_balance_adjustment,
+            adjustmentMode: r.adjustment_mode || undefined,
+            balanceBefore: r.balance_before != null ? Number(r.balance_before) : undefined,
+            balanceAfter: r.balance_after != null ? Number(r.balance_after) : undefined,
+            adjustmentReason: r.adjustment_reason || undefined
         }));
         return true;
     } catch (e) { console.log('loadDebit falhou:', e); return false; }
@@ -2597,7 +2681,12 @@ async function addDebitNuvem(t) {
             user_id: currentUserId, description: t.desc, val: t.val,
             date: t.date, cat: t.cat, type: t.type,
             recurring_group_id: t.recurringGroupId || null,
-            client_request_id: t.clientRequestId || null
+            client_request_id: t.clientRequestId || null,
+            is_balance_adjustment: !!t.isBalanceAdjustment,
+            adjustment_mode: t.adjustmentMode || null,
+            balance_before: t.balanceBefore != null ? t.balanceBefore : null,
+            balance_after: t.balanceAfter != null ? t.balanceAfter : null,
+            adjustment_reason: t.adjustmentReason || null
         };
         let result = await sb.from('transactions')
             .upsert(row, { onConflict: 'user_id,client_request_id' }).select().single();
@@ -2607,7 +2696,15 @@ async function addDebitNuvem(t) {
         }
         const { data, error } = result;
         if (error) { console.log('Erro add transação:', error.message); return null; }
-        const novo = { id: data.id, desc: data.description, val: Number(data.val), date: data.date, cat: data.cat, type: data.type, recurringGroupId: data.recurring_group_id || undefined };
+        const novo = {
+            id: data.id, desc: data.description, val: Number(data.val), date: data.date, cat: data.cat, type: data.type,
+            recurringGroupId: data.recurring_group_id || undefined,
+            isBalanceAdjustment: !!data.is_balance_adjustment,
+            adjustmentMode: data.adjustment_mode || undefined,
+            balanceBefore: data.balance_before != null ? Number(data.balance_before) : undefined,
+            balanceAfter: data.balance_after != null ? Number(data.balance_after) : undefined,
+            adjustmentReason: data.adjustment_reason || undefined
+        };
         const existing = debitCache.find(x => String(x.id) === String(data.id));
         if (existing) Object.assign(existing, novo); else debitCache.push(novo);
         return novo;
@@ -3255,7 +3352,7 @@ async function confirmarPossivelDuplicidadeFatura(type, desc, cat) {
 function getCategoryExpenseValues(cat) {
     const values = [];
     getData('debit').forEach(t => {
-        if (t.type === 'despesa' && (t.cat || 'Outros') === cat) values.push(Number(t.val || 0));
+        if (!t.isBalanceAdjustment && t.type === 'despesa' && (t.cat || 'Outros') === cat) values.push(Number(t.val || 0));
     });
     getData('cards').forEach(c => (c.expenses || []).forEach(e => {
         if ((e.cat || 'Outros') === cat) values.push(Number(e.val || 0));
@@ -3290,7 +3387,7 @@ document.addEventListener('change', e => { if (e.target.classList.contains('inpu
 
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-        const m = ['modal-alert','modal-confirm','modal-recurring-delete','modal-convert-recurring','modal-edit','modal-annual','modal-noti','modal-dre','modal-cat','modal-meta-add','modal-meta-edit','modal-history'].find(id => {
+        const m = ['modal-alert','modal-confirm','modal-recurring-delete','modal-convert-recurring','modal-edit','modal-annual','modal-noti','modal-dre','modal-cat','modal-meta-add','modal-meta-edit','modal-balance-adjust','modal-history'].find(id => {
             const el = document.getElementById(id); return el && !el.classList.contains('hidden');
         });
         if (m) {
@@ -3299,6 +3396,7 @@ document.addEventListener('keydown', e => {
             else if (m === 'modal-recurring-delete') resolveRecurringDelete('cancel');
             else if (m === 'modal-convert-recurring') cancelConvert();
             else if (m === 'modal-edit') closeEditModal();
+            else if (m === 'modal-balance-adjust') closeBalanceAdjustment();
             else if (m === 'modal-annual') closeAnnualModal();
             else if (m === 'modal-noti') closeNotifications();
             else if (m === 'modal-dre') closeDRE();
@@ -3672,7 +3770,15 @@ async function loadMonitorData(ownerId) {
         const loadedInvoiceStatuses = await withLoadTimeout(loadInvoiceStatuses(ownerId), 'faturas do familiar', 10000);
         const budgetOk = await withLoadTimeout(loadMonitorBudgets(ownerId), 'orçamento do familiar', 10000);
         monitorMetasCache = (metas || []).map(r => ({ id: r.id, nome: r.nome, total: Number(r.total), entrada: Number(r.entrada), concluida: r.concluida }));
-        monitorDebitCache = (trans || []).map(r => ({ id: r.id, desc: r.description, val: Number(r.val), date: r.date, cat: r.cat, type: r.type, recurringGroupId: r.recurring_group_id || undefined }));
+        monitorDebitCache = (trans || []).map(r => ({
+            id: r.id, desc: r.description, val: Number(r.val), date: r.date, cat: r.cat, type: r.type,
+            recurringGroupId: r.recurring_group_id || undefined,
+            isBalanceAdjustment: !!r.is_balance_adjustment,
+            adjustmentMode: r.adjustment_mode || undefined,
+            balanceBefore: r.balance_before != null ? Number(r.balance_before) : undefined,
+            balanceAfter: r.balance_after != null ? Number(r.balance_after) : undefined,
+            adjustmentReason: r.adjustment_reason || undefined
+        }));
         if (invoiceStatusSyncAvailable) monitorInvoiceStatusCache = loadedInvoiceStatuses;
         monitorCardsCache = (cards || []).map(c => ({
             id: c.id, name: c.name, limit: Number(c.card_limit), day: c.closing_day,
@@ -3733,6 +3839,148 @@ function updateHeader() {
     // Header mostra a marca "family finance" (a saudação personalizada fica no greeting abaixo)
     document.getElementById('header-brand').innerHTML = `<img src="${LOGO_SYMBOL}" alt="" style="width:38px; height:38px; object-fit:contain;"><h1 style="font-weight: 800; font-size: 1.1rem; letter-spacing:-0.5px;"><span style="color:var(--black);">family</span> <span style="color:var(--orange);">finance</span></h1>`;
     safeCreateIcons();
+}
+
+function getCurrentAccountBalance(asOfDate = getLocalDateISO()) {
+    return getData('debit').filter(t => t.date && t.date <= asOfDate).reduce((sum, t) => {
+        const value = Number(t.val || 0);
+        return sum + (t.type === 'receita' ? value : (t.type === 'despesa' ? -value : 0));
+    }, 0);
+}
+function balanceAdjustmentModeText(mode) {
+    if (mode === 'add') return 'Adicionar ao saldo';
+    if (mode === 'subtract') return 'Subtrair do saldo';
+    return 'Definir saldo para';
+}
+function openBalanceAdjustment() {
+    if (viewingUser) return;
+    const modal = document.getElementById('modal-balance-adjust');
+    const mode = document.getElementById('balance-adjust-mode');
+    const amount = document.getElementById('balance-adjust-amount');
+    const reason = document.getElementById('balance-adjust-reason');
+    const date = document.getElementById('balance-adjust-date');
+    if (!modal || !mode || !amount || !reason || !date) return;
+    mode.value = 'set';
+    amount.value = '';
+    reason.value = '';
+    const today = getLocalDateISO();
+    date.value = today;
+    date.max = today;
+    modal.classList.remove('hidden');
+    updateBalanceAdjustmentPreview();
+    setTimeout(() => amount.focus(), 80);
+    safeCreateIcons();
+}
+function closeBalanceAdjustment() {
+    document.getElementById('modal-balance-adjust')?.classList.add('hidden');
+}
+function updateBalanceAdjustmentPreview() {
+    const mode = document.getElementById('balance-adjust-mode')?.value || 'set';
+    const amountEl = document.getElementById('balance-adjust-amount');
+    const label = document.getElementById('balance-adjust-amount-label');
+    const currentEl = document.getElementById('balance-adjust-current');
+    const preview = document.getElementById('balance-adjust-preview');
+    if (!amountEl || !preview) return;
+    const current = getCurrentAccountBalance();
+    if (currentEl) currentEl.textContent = formatBRL(current);
+    if (label) label.textContent = mode === 'set' ? 'Novo saldo' : 'Valor do ajuste';
+    amountEl.min = mode === 'set' ? '' : '0.01';
+    const amount = parseMoneyInput(amountEl.value);
+    if (!Number.isFinite(amount) || (mode !== 'set' && amount <= 0)) {
+        preview.innerHTML = 'Informe o valor para visualizar o novo saldo.';
+        return;
+    }
+    const next = mode === 'set' ? amount : (mode === 'add' ? current + amount : current - amount);
+    const delta = next - current;
+    const action = Math.abs(delta) < 0.005 ? 'Sem alteração' : (delta > 0 ? `Entrada de ${formatBRL(Math.abs(delta))}` : `Saída de ${formatBRL(Math.abs(delta))}`);
+    preview.innerHTML = `<b>${escapeHtml(balanceAdjustmentModeText(mode))}</b><br>${formatBRL(current)} <span class="adjust-arrow">→</span> <b>${formatBRL(next)}</b><br><span style="color:var(--text-secondary);">${escapeHtml(action)}</span>`;
+}
+async function applyBalanceAdjustmentNuvem({ mode, amount, reason, date, clientRequestId }) {
+    if (!sb || !currentUserId) return { ok: false, row: null };
+    try {
+        const { data, error } = await sb.rpc('apply_balance_adjustment', {
+            p_mode: mode,
+            p_amount: amount,
+            p_reason: reason,
+            p_date: date,
+            p_balance_date: getLocalDateISO(),
+            p_client_request_id: clientRequestId
+        });
+        if (error) {
+            console.log('Erro ajuste de saldo:', error.message);
+            return { ok: false, row: null };
+        }
+        if (!data || !data.length) return { ok: true, row: null, noop: true };
+        const d = data[0];
+        const mapped = {
+            id: d.id, desc: d.description, val: Number(d.val), date: d.date, cat: d.cat, type: d.type,
+            recurringGroupId: d.recurring_group_id || undefined,
+            isBalanceAdjustment: !!d.is_balance_adjustment,
+            adjustmentMode: d.adjustment_mode || undefined,
+            balanceBefore: d.balance_before != null ? Number(d.balance_before) : undefined,
+            balanceAfter: d.balance_after != null ? Number(d.balance_after) : undefined,
+            adjustmentReason: d.adjustment_reason || undefined
+        };
+        const existing = debitCache.find(x => String(x.id) === String(mapped.id));
+        if (existing) Object.assign(existing, mapped); else debitCache.push(mapped);
+        return { ok: true, row: mapped, noop: false };
+    } catch (e) {
+        console.log('applyBalanceAdjustmentNuvem falhou:', e);
+        return { ok: false, row: null };
+    }
+}
+async function submitBalanceAdjustment() {
+    if (viewingUser) return;
+    const btn = getActionButton('submitBalanceAdjustment');
+    if (!startActionLock('submitBalanceAdjustment', btn, 'Salvando...')) return;
+    try {
+        const modeEl = document.getElementById('balance-adjust-mode');
+        const amountEl = document.getElementById('balance-adjust-amount');
+        const reasonEl = document.getElementById('balance-adjust-reason');
+        const dateEl = document.getElementById('balance-adjust-date');
+        [amountEl, reasonEl, dateEl].forEach(clearFieldError);
+        const mode = modeEl?.value || 'set';
+        const amount = parseMoneyInput(amountEl?.value);
+        const reason = String(reasonEl?.value || '').trim();
+        const date = String(dateEl?.value || '');
+        const today = getLocalDateISO();
+        let valid = true;
+        if (!Number.isFinite(amount) || (mode !== 'set' && amount <= 0)) { setError(amountEl, mode === 'set' ? 'Informe o novo saldo.' : 'Informe um valor maior que zero.'); valid = false; }
+        if (!reason) { setError(reasonEl, 'Informe o motivo do ajuste.'); valid = false; }
+        if (!date || date > today) { setError(dateEl, 'A data do ajuste não pode estar no futuro.'); valid = false; }
+        if (!valid) return;
+
+        const current = getCurrentAccountBalance();
+        const projected = mode === 'set' ? amount : (mode === 'add' ? current + amount : current - amount);
+        if (Math.abs(projected - current) < 0.005) {
+            await showWarning('O saldo informado já é igual ao saldo atual. Nenhum ajuste é necessário.');
+            return;
+        }
+        const signature = stableSubmissionSignature(['balance-adjustment', currentUserId, mode, Number(amount).toFixed(2), reason, date]);
+        if (isRecentSubmission('balance-adjustment', signature)) {
+            await showWarning('Esse ajuste acabou de ser enviado. Aguarde alguns segundos antes de repetir.');
+            return;
+        }
+        const operation = getPendingOperation('balance-adjustment', signature);
+        const confirmed = await showConfirm(`${balanceAdjustmentModeText(mode)} ${mode === 'set' ? formatBRL(amount) : formatBRL(Math.abs(amount))}? O ajuste ficará registrado no histórico.`, { confirmText: 'Salvar ajuste' });
+        if (!confirmed) return;
+        setButtonLoading(btn, true, 'Salvando...');
+        showActionLoading('Ajustando saldo...');
+        const result = await applyBalanceAdjustmentNuvem({ mode, amount, reason, date, clientRequestId: operation.id });
+        hideActionLoading();
+        if (!result.ok) {
+            await showError('Não foi possível ajustar o saldo. A tentativa foi preservada para evitar duplicidade.');
+            return;
+        }
+        completePendingOperation(operation);
+        closeBalanceAdjustment();
+        renderAll();
+        if (result.noop) await showWarning('O saldo já estava no valor solicitado. Nenhum lançamento foi criado.');
+        else await showSuccess(`Saldo ajustado para ${formatBRL(result.row.balanceAfter)}.`);
+    } finally {
+        hideActionLoading();
+        finishActionLock('submitBalanceAdjustment', btn);
+    }
 }
 
 async function addTransaction() {
@@ -4360,6 +4608,16 @@ async function saveEdit() {
 async function deleteDebitItem(id) {
     if (viewingUser) return;
     const item = debitCache.find(t => String(t.id) === String(id)); if (!item) return;
+    if (item.isBalanceAdjustment) {
+        const before = Number.isFinite(Number(item.balanceBefore)) ? formatBRL(Number(item.balanceBefore)) : 'o saldo anterior';
+        const after = Number.isFinite(Number(item.balanceAfter)) ? formatBRL(Number(item.balanceAfter)) : 'o saldo ajustado';
+        const okAdjust = await showConfirm(`Excluir este ajuste de saldo (${before} → ${after})? O saldo será recalculado sem esse ajuste.`, { danger: true, confirmText: 'Excluir ajuste' });
+        if (!okAdjust) return;
+        const ok = await deleteDebitNuvem(id);
+        if (!ok) { await showError('Erro ao excluir o ajuste. Verifique a conexão.'); return; }
+        renderAll(); checkTips();
+        return;
+    }
     if (item.recurringGroupId) {
         const choice = await showRecurringDeleteConfirm("Selecione qual exclusão efetuar nesta série recorrente.");
         if (choice === 'cancel') return;
@@ -4502,7 +4760,7 @@ async function loadMonitorBudgets(ownerId) {
 }
 function getCategoryExpensesCurrentMonth(cat) {
     let total = getData('debit').filter(t => {
-        const d = parseLocalDateISO(t.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear && t.type === 'despesa' && t.cat === cat;
+        const d = parseLocalDateISO(t.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear && !t.isBalanceAdjustment && t.type === 'despesa' && t.cat === cat;
     }).reduce((a, b) => a + b.val, 0);
     getData('cards').forEach(c => {
         c.expenses.forEach(e => {
@@ -4520,7 +4778,7 @@ function getBudgetGroupSpent(groupName) {
 
 function getCurrentMonthCategoryEntries(debitMonth, creditMonth) {
     const map = {};
-    debitMonth.filter(t => t.type === 'despesa').forEach(t => {
+    debitMonth.filter(t => !t.isBalanceAdjustment && t.type === 'despesa').forEach(t => {
         const cat = t.cat || 'Outros';
         map[cat] = (map[cat] || 0) + Number(t.val || 0);
     });
@@ -4539,8 +4797,8 @@ function getMonthStats(month, year) {
         const d = parseLocalDateISO(t.date);
         return d.getMonth() === month && d.getFullYear() === year;
     };
-    const receitas = debits.filter(t => t.type === 'receita' && inMonth(t)).reduce((a,b) => a + Number(b.val || 0), 0);
-    const despesasDebito = debits.filter(t => t.type === 'despesa' && inMonth(t)).reduce((a,b) => a + Number(b.val || 0), 0);
+    const receitas = debits.filter(t => !t.isBalanceAdjustment && t.type === 'receita' && inMonth(t)).reduce((a,b) => a + Number(b.val || 0), 0);
+    const despesasDebito = debits.filter(t => !t.isBalanceAdjustment && t.type === 'despesa' && inMonth(t)).reduce((a,b) => a + Number(b.val || 0), 0);
     let despesasCartao = 0;
     cards.forEach(c => (c.expenses || []).forEach(e => {
         const cl = getInvoiceMonth(e.date, parseInt(c.day) || 10, e);
@@ -5147,10 +5405,11 @@ function renderAll() {
     const incT = debits.filter(t => t.type === 'receita' && t.date <= todayStr).reduce((a,b) => a+b.val, 0);
     const expT = debits.filter(t => t.type === 'despesa' && t.date <= todayStr).reduce((a,b) => a+b.val, 0);
     document.getElementById('stat-balance').textContent = maskVal(formatBRL(incT - expT));
+    document.getElementById('balance-adjust-btn')?.classList.toggle('hidden', !!viewingUser);
 
     const mD = debits.filter(filterM);
-    const incM = mD.filter(t => t.type === 'receita').reduce((a,b) => a+b.val, 0);
-    const expM = mD.filter(t => t.type === 'despesa').reduce((a,b) => a+b.val, 0);
+    const incM = mD.filter(t => !t.isBalanceAdjustment && t.type === 'receita').reduce((a,b) => a+b.val, 0);
+    const expM = mD.filter(t => !t.isBalanceAdjustment && t.type === 'despesa').reduce((a,b) => a+b.val, 0);
     document.getElementById('month-result-note').innerHTML = isFutureMonth(currentMonth, currentYear) ? `<span style="font-size:0.7rem; color:rgba(255,255,255,0.85); font-weight:700">Projeção</span>` : '';
 
     let ccT = 0, ccH = [];
@@ -5463,19 +5722,29 @@ function populateCategories() {
 
 // Helper: HTML de uma linha de débito
 function debitRowHTML(t, todayStr) {
+    const isAdjustment = !!t.isBalanceAdjustment;
+    const modeLabel = t.adjustmentMode === 'add' ? 'ADIÇÃO' : (t.adjustmentMode === 'subtract' ? 'SUBTRAÇÃO' : 'DEFINIÇÃO');
+    const adjustmentTag = isAdjustment ? `<span class="adjustment-tag"><i data-lucide="sliders-horizontal" style="width:11px;height:11px;"></i>AJUSTE · ${modeLabel}</span>` : '';
+    const adjustmentDetail = isAdjustment
+        ? `<span class="adjustment-detail">${escapeHtml(t.adjustmentReason || 'Sem motivo informado')}${Number.isFinite(Number(t.balanceBefore)) && Number.isFinite(Number(t.balanceAfter)) ? ` · Saldo ${formatBRLNoWrap(Number(t.balanceBefore))} → ${formatBRLNoWrap(Number(t.balanceAfter))}` : ''}</span>`
+        : '';
+    const valueColor = t.type === 'receita' ? '#2ECC71' : (isAdjustment ? '#E74C3C' : '');
+    const normalActions = !t.recurringGroupId ? `<button onclick="convertToRecurring('${escapeJsString(t.id)}')" style="background:none; border:none; color:var(--orange); cursor:pointer;"><i data-lucide="repeat" style="width:14px;"></i></button>` : '';
     return `
         <div class="item-row" ${t.date > todayStr ? 'style="opacity: 0.6"' : ''}>
             <span>
-                <b>${escapeHtml(t.desc)}${t.date > todayStr ? '<span style="background:#FFE4B5; color:#8B4513; padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:700; margin-left:6px;">FUTURO</span>' : ''}${t.recurringGroupId ? '<span style="background:#E0E7FF; color:#3730A3; padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:700; margin-left:6px;">RECORRENTE</span>' : ''}</b>
+                <b>${escapeHtml(t.desc)}${t.date > todayStr ? '<span style="background:#FFE4B5; color:#8B4513; padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:700; margin-left:6px;">FUTURO</span>' : ''}${!isAdjustment && t.recurringGroupId ? '<span style="background:#E0E7FF; color:#3730A3; padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:700; margin-left:6px;">RECORRENTE</span>' : ''}${adjustmentTag}</b>
                 <small style="display:block; color:var(--text-muted);">${t.date} • ${escapeHtml(t.cat)}</small>
+                ${adjustmentDetail}
             </span>
             <div style="display:flex; align-items:center; gap:8px;">
-                <b style="color:${t.type==='receita'?'#2ECC71':''};">${formatBRLNoWrap(t.val)}</b>
-                ${!viewingUser ? `
-                ${!t.recurringGroupId ? `<button onclick="convertToRecurring('${t.id}')" style="background:none; border:none; color:var(--orange); cursor:pointer;"><i data-lucide="repeat" style="width:14px;"></i></button>` : ''}
-                <button onclick="editDebitItem('${t.id}')" style="background:none; border:none; color:var(--black); cursor:pointer;"><i data-lucide="pencil" style="width:14px;"></i></button>
+                <b style="color:${valueColor};">${t.type === 'receita' ? '+' : (isAdjustment ? '−' : '')}${formatBRLNoWrap(t.val)}</b>
+                ${!viewingUser ? (isAdjustment ? `
+                <button onclick="deleteDebitItem('${escapeJsString(t.id)}')" title="Excluir ajuste" style="background:none; border:none; color:#E74C3C; cursor:pointer;"><i data-lucide="trash-2" style="width:14px;"></i></button>` : `
+                ${normalActions}
+                <button onclick="editDebitItem('${escapeJsString(t.id)}')" style="background:none; border:none; color:var(--black); cursor:pointer;"><i data-lucide="pencil" style="width:14px;"></i></button>
                 <button onclick="duplicateDebitItem('${escapeJsString(t.id)}')" style="background:none; border:none; color:var(--text-secondary); cursor:pointer;"><i data-lucide="copy" style="width:14px;"></i></button>
-                <button onclick="deleteDebitItem('${t.id}')" style="background:none; border:none; color:#E74C3C; cursor:pointer;"><i data-lucide="trash-2" style="width:14px;"></i></button>` : ''}
+                <button onclick="deleteDebitItem('${escapeJsString(t.id)}')" style="background:none; border:none; color:#E74C3C; cursor:pointer;"><i data-lucide="trash-2" style="width:14px;"></i></button>`) : ''}
             </div>
         </div>`;
 }
@@ -5556,13 +5825,17 @@ function buildHistoryItems() {
     let seq = 0;
     const todayStr = getLocalDateISO();
     getData('debit').forEach(t => {
-        const kind = t.type === 'receita' ? 'receita' : 'despesa';
+        const isAdjustment = !!t.isBalanceAdjustment;
+        const flowKind = t.type === 'receita' ? 'receita' : 'despesa';
+        const kind = isAdjustment ? 'ajuste' : flowKind;
         items.push({
             kind,
-            label: kind === 'receita' ? 'Receita' : 'Despesa',
+            flowKind,
+            label: isAdjustment ? 'Ajuste de saldo' : (flowKind === 'receita' ? 'Receita' : 'Despesa'),
             date: t.date,
             cat: t.cat || 'Outros',
             desc: t.desc || '',
+            reason: t.adjustmentReason || '',
             val: Number(t.val || 0),
             _seq: seq++,
             html: debitRowHTML(t, todayStr)
@@ -5571,6 +5844,7 @@ function buildHistoryItems() {
     getData('cards').forEach(c => (c.expenses || []).forEach(e => {
         items.push({
             kind: 'cartao',
+            flowKind: 'despesa',
             label: 'Cartão',
             date: e.date,
             cat: e.cat || 'Outros',
@@ -5612,6 +5886,7 @@ function fillHistoryFilters() {
         <option value="lancamentos">Lançamentos</option>
         <option value="receita">Receitas</option>
         <option value="despesa">Despesas</option>
+        <option value="ajuste">Ajustes de saldo</option>
         <option value="cartao">Cartão</option>`;
     kindSel.value = historyType;
 
@@ -5691,13 +5966,13 @@ function renderHistoryModal() {
         return true;
     };
     let items = buildHistoryItems().filter(t => {
-        if (kindFilter === 'lancamentos' && !['receita','despesa'].includes(t.kind)) return false;
+        if (kindFilter === 'lancamentos' && !['receita','despesa','ajuste'].includes(t.kind)) return false;
         if (kindFilter !== 'all' && kindFilter !== 'lancamentos' && t.kind !== kindFilter) return false;
         if (!matchMonth(t.date)) return false;
         if (!inPeriod(t.date)) return false;
         if (catFilter && (t.cat || 'Outros') !== catFilter) return false;
         if (searchTerm) {
-            const haystack = normalizeCategoryKey(`${t.desc} ${t.cat} ${t.cardName || ''} ${t.label}`);
+            const haystack = normalizeCategoryKey(`${t.desc} ${t.cat} ${t.cardName || ''} ${t.label} ${t.reason || ''}`);
             if (!haystack.includes(searchTerm)) return false;
         }
         return true;
@@ -5709,11 +5984,13 @@ function renderHistoryModal() {
         if (sortFilter === 'desc-asc') return String(a.desc).localeCompare(String(b.desc), 'pt-BR') || compareFinanceDateDesc(a, b);
         return compareFinanceDateDesc(a, b);
     });
-    const receitas = items.filter(i => i.kind === 'receita').reduce((a,b) => a + b.val, 0);
-    const saidas = items.filter(i => i.kind !== 'receita').reduce((a,b) => a + b.val, 0);
+    const receitas = items.filter(i => i.kind !== 'ajuste' && i.flowKind === 'receita').reduce((a,b) => a + b.val, 0);
+    const saidas = items.filter(i => i.kind !== 'ajuste' && i.flowKind === 'despesa').reduce((a,b) => a + b.val, 0);
+    const ajustes = items.filter(i => i.kind === 'ajuste');
+    const ajusteLiquido = ajustes.reduce((sum, i) => sum + (i.flowKind === 'receita' ? i.val : -i.val), 0);
     if (summary) {
         summary.classList.toggle('hidden', items.length === 0);
-        summary.innerHTML = `<span>${items.length} registro(s)</span><span>Entradas: <b style="color:#16A34A">${formatBRL(receitas)}</b></span><span>Saídas: <b style="color:#DC2626">${formatBRL(saidas)}</b></span>`;
+        summary.innerHTML = `<span>${items.length} registro(s)</span><span>Entradas: <b style="color:#16A34A">${formatBRL(receitas)}</b></span><span>Saídas: <b style="color:#DC2626">${formatBRL(saidas)}</b></span>${ajustes.length ? `<span>Ajustes: <b>${ajustes.length} · ${formatBRL(ajusteLiquido)}</b></span>` : ''}`;
     }
     list.innerHTML = items.length ? items.map(t => t.html).join('') : `<p style="font-size:0.82rem; color:var(--text-muted); text-align:center; padding:20px;">Nenhum registro encontrado com esses filtros.</p>`;
     safeCreateIcons();
@@ -5801,6 +6078,7 @@ function renderEvolutionChart(debits, cards) {
         const d = parseLocalDateISO(t.date);
         const i = idx(d.getMonth(), d.getFullYear());
         if (i === -1) return;
+        if (t.isBalanceAdjustment) return;
         if (t.type === 'receita') buckets[i].inc += t.val;
         else buckets[i].exp += t.val;
     });
@@ -5838,7 +6116,7 @@ function renderEvolutionChart(debits, cards) {
 
 function renderChart(debit, credit) {
     const dataMap = {};
-    debit.filter(t => t.type === 'despesa').forEach(t => {
+    debit.filter(t => !t.isBalanceAdjustment && t.type === 'despesa').forEach(t => {
         const cat = t.cat || 'Outros';
         dataMap[cat] = (dataMap[cat] || 0) + t.val;
     });
@@ -6000,7 +6278,7 @@ async function exportMonthPDF() {
     const margem = receitaBruta > 0 ? (resultado / receitaBruta * 100) : 0;
 
     const despCat = {};
-    debits.filter(t => t.type === 'despesa' && inM(t)).forEach(t => { const c = t.cat || 'Outros'; despCat[c] = (despCat[c] || 0) + Number(t.val || 0); });
+    debits.filter(t => !t.isBalanceAdjustment && t.type === 'despesa' && inM(t)).forEach(t => { const c = t.cat || 'Outros'; despCat[c] = (despCat[c] || 0) + Number(t.val || 0); });
     let cartaoMes = [];
     cards.forEach(c => (c.expenses || []).forEach(e => {
         const cl = getInvoiceMonth(e.date, parseInt(c.day) || 10, e);
@@ -6011,7 +6289,8 @@ async function exportMonthPDF() {
         }
     }));
     const categoryEntries = Object.entries(despCat).sort((a,b) => b[1] - a[1]);
-    const lancamentos = debits.filter(inM).sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    const lancamentos = debits.filter(t => inM(t) && !t.isBalanceAdjustment).sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    const ajustesSaldo = debits.filter(t => inM(t) && t.isBalanceAdjustment).sort((a,b) => String(a.date).localeCompare(String(b.date)));
     const budgets = getBudgets();
     const budgetAlerts = Object.keys(budgets).map(cat => {
         const limite = Number(budgets[cat] || 0);
@@ -6109,6 +6388,16 @@ async function exportMonthPDF() {
         row(`${dia} • ${t.desc} • ${t.cat || 'Outros'}`, sinal + brl(t.val), { color });
     });
 
+    sectionTitle('Ajustes de saldo');
+    if (!ajustesSaldo.length) row('Nenhum ajuste de saldo neste período.', '', { color: muted });
+    else ajustesSaldo.forEach(t => {
+        const d = parseLocalDateISO(t.date);
+        const dia = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+        const sinal = t.type === 'receita' ? '+' : '-';
+        const color = t.type === 'receita' ? [16,185,129] : [220,38,38];
+        row(`${dia} • ${t.adjustmentReason || 'Ajuste de saldo'}`, sinal + brl(t.val), { color });
+    });
+
     sectionTitle('Compras em cartão no mês');
     if (!cartaoMes.length) row('Nenhuma compra em cartão neste período.', '', { color: muted });
     else cartaoMes.sort((a,b)=>String(a.date).localeCompare(String(b.date))).forEach(e => {
@@ -6190,14 +6479,14 @@ function renderDRE() {
     const inM = (t) => { const d = parseLocalDateISO(t.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; };
 
     // RECEITA BRUTA
-    const receitaBruta = debits.filter(t => t.type === 'receita' && inM(t)).reduce((a,b) => a+b.val, 0);
+    const receitaBruta = debits.filter(t => !t.isBalanceAdjustment && t.type === 'receita' && inM(t)).reduce((a,b) => a+b.val, 0);
     // Deduções (PF normalmente não tem; linha mantida por completude contábil)
     const deducoes = 0;
     const receitaLiquida = receitaBruta - deducoes;
 
     // DESPESAS OPERACIONAIS por categoria (todas as despesas de débito do mês)
     const despCat = {};
-    debits.filter(t => t.type === 'despesa' && inM(t)).forEach(t => {
+    debits.filter(t => !t.isBalanceAdjustment && t.type === 'despesa' && inM(t)).forEach(t => {
         const cat = t.cat || 'Outros';
         despCat[cat] = (despCat[cat] || 0) + t.val;
     });
@@ -6624,40 +6913,122 @@ window.addEventListener('online', () => {
 
 init();
 
-// PWA: registra o service worker e verifica novas versões sem prender o usuário em cache antigo.
-if ('serviceWorker' in navigator) {
-    let swRegistration = null;
-    let swHadController = !!navigator.serviceWorker.controller;
-    let swUpdatePromptShown = false;
-    let swLastUpdateCheck = 0;
+// PWA: instalação, atualização e status no menu Ajustes.
+let ffPwaRegistration = null;
+let ffPwaHadController = !!navigator.serviceWorker?.controller;
+let ffPwaUpdatePromptShown = false;
+let ffPwaLastUpdateCheck = 0;
 
-    async function checkForPwaUpdate(force = false) {
-        if (!swRegistration) return;
-        const now = Date.now();
-        if (!force && now - swLastUpdateCheck < 5 * 60 * 1000) return;
-        swLastUpdateCheck = now;
-        try { await swRegistration.update(); }
-        catch (err) { console.log('Verificação de atualização PWA falhou:', err); }
+function isFamilyFinanceStandalone() {
+    return window.matchMedia?.('(display-mode: standalone)').matches === true
+        || window.navigator.standalone === true;
+}
+
+function isFamilyFinanceIOS() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent || '');
+}
+
+function updatePwaInstallUi() {
+    const btn = document.getElementById('pwa-install-btn');
+    const label = document.getElementById('pwa-install-btn-label');
+    const status = document.getElementById('pwa-install-status');
+    if (!btn || !label || !status) return;
+
+    status.classList.remove('is-installed', 'is-ready');
+
+    if (isFamilyFinanceStandalone()) {
+        btn.hidden = true;
+        status.textContent = 'Family Finance já está instalado neste dispositivo.';
+        status.classList.add('is-installed');
+        return;
     }
 
-    async function offerPwaRefresh(cacheName) {
-        if (!swHadController || swUpdatePromptShown) return;
-        const promptKey = `ff_pwa_prompt_${cacheName || 'new'}`;
-        if (sessionStorage.getItem(promptKey) === '1') return;
-        swUpdatePromptShown = true;
-        sessionStorage.setItem(promptKey, '1');
-        setTimeout(async () => {
-            try {
-                const ok = await showConfirm('Uma nova versão do Family Finance está pronta. Recarregar agora para aplicar a atualização?', {
-                    icon: 'refresh-cw', confirmText: 'Recarregar agora', cancelText: 'Depois'
-                });
-                if (ok) window.location.reload();
-            } finally {
-                swUpdatePromptShown = false;
+    if (window.__ffDeferredInstallPrompt) {
+        btn.hidden = false;
+        label.textContent = 'Instalar aplicativo';
+        status.textContent = 'Pronto para instalar neste dispositivo.';
+        status.classList.add('is-ready');
+        return;
+    }
+
+    if (isFamilyFinanceIOS()) {
+        btn.hidden = false;
+        label.textContent = 'Como instalar no iPhone/iPad';
+        status.textContent = 'No Safari, a instalação é feita pelo menu Compartilhar.';
+        return;
+    }
+
+    btn.hidden = true;
+    status.textContent = 'Se o navegador oferecer instalação, o botão aparecerá aqui automaticamente.';
+}
+
+async function installFamilyFinanceApp() {
+    if (isFamilyFinanceStandalone()) {
+        await showSuccess('O Family Finance já está instalado neste dispositivo.');
+        updatePwaInstallUi();
+        return;
+    }
+
+    const promptEvent = window.__ffDeferredInstallPrompt;
+    if (promptEvent) {
+        try {
+            await promptEvent.prompt();
+            const choice = await promptEvent.userChoice;
+            window.__ffDeferredInstallPrompt = null;
+            updatePwaInstallUi();
+            if (choice?.outcome === 'accepted') {
+                await showSuccess('Instalação iniciada. O Family Finance será adicionado ao dispositivo.');
             }
-        }, 500);
+        } catch (err) {
+            console.log('Prompt de instalação PWA falhou:', err);
+            await showWarning('Não foi possível abrir a instalação agora. Tente novamente pelo menu do navegador.');
+        }
+        return;
     }
 
+    if (isFamilyFinanceIOS()) {
+        await showWarning('No Safari: toque em Compartilhar e depois em “Adicionar à Tela de Início”.');
+        return;
+    }
+
+    await showWarning('A instalação ainda não foi liberada pelo navegador. No Chrome, abra o menu ⋮ e procure “Instalar app” ou “Adicionar à tela inicial”.');
+}
+
+window.addEventListener('ff-pwa-install-ready', updatePwaInstallUi);
+window.addEventListener('appinstalled', () => {
+    window.__ffDeferredInstallPrompt = null;
+    updatePwaInstallUi();
+});
+window.matchMedia?.('(display-mode: standalone)').addEventListener?.('change', updatePwaInstallUi);
+
+async function checkForPwaUpdate(force = false) {
+    if (!ffPwaRegistration) return;
+    const now = Date.now();
+    if (!force && now - ffPwaLastUpdateCheck < 5 * 60 * 1000) return;
+    ffPwaLastUpdateCheck = now;
+    try { await ffPwaRegistration.update(); }
+    catch (err) { console.log('Verificação de atualização PWA falhou:', err); }
+}
+
+async function offerPwaRefresh(cacheName) {
+    if (!ffPwaHadController || ffPwaUpdatePromptShown) return;
+    const promptKey = `ff_pwa_prompt_${cacheName || 'new'}`;
+    if (sessionStorage.getItem(promptKey) === '1') return;
+    ffPwaUpdatePromptShown = true;
+    sessionStorage.setItem(promptKey, '1');
+    setTimeout(async () => {
+        try {
+            const ok = await showConfirm('Uma nova versão do Family Finance está pronta. Recarregar agora para aplicar a atualização?', {
+                icon: 'refresh-cw', confirmText: 'Recarregar agora', cancelText: 'Depois'
+            });
+            if (ok) window.location.reload();
+        } finally {
+            ffPwaUpdatePromptShown = false;
+        }
+    }, 500);
+}
+
+if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', event => {
         if (event.data && event.data.type === 'SW_UPDATED') {
             offerPwaRefresh(event.data.cache || 'new');
@@ -6665,18 +7036,31 @@ if ('serviceWorker' in navigator) {
     });
 
     window.addEventListener('load', async () => {
+        updatePwaInstallUi();
         try {
-            swRegistration = await navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
+            ffPwaRegistration = await navigator.serviceWorker.register('./sw.js', {
+                scope: './',
+                updateViaCache: 'none'
+            });
             await checkForPwaUpdate(true);
-            console.log('Service Worker registrado e verificado:', swRegistration.scope);
+            console.log('Service Worker registrado e verificado:', ffPwaRegistration.scope);
         } catch (err) {
             console.log('Falha ao registrar Service Worker:', err);
+            const status = document.getElementById('pwa-install-status');
+            if (status && !isFamilyFinanceStandalone()) {
+                status.textContent = 'O navegador não conseguiu ativar a instalação do aplicativo. Recarregue a página e tente novamente.';
+            }
         }
     });
 
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') checkForPwaUpdate(false);
+        if (document.visibilityState === 'visible') {
+            updatePwaInstallUi();
+            checkForPwaUpdate(false);
+        }
     });
+} else {
+    window.addEventListener('load', updatePwaInstallUi);
 }
 
 

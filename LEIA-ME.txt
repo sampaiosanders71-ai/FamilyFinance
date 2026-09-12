@@ -1,0 +1,44 @@
+FAMILY FINANCE — ETAPA E / HOMOLOGAÇÃO FINAL
+
+Arquivos para publicação:
+- index.html
+- sw.js
+- manifest.json
+
+Substitua os três arquivos juntos no GitHub. A pasta icons permanece como está.
+
+RESULTADO DA HOMOLOGAÇÃO
+- JavaScript: OK
+- Service Worker: OK
+- Manifest PWA: OK
+- IDs HTML duplicados: 0
+- Botões/handlers com funções inexistentes: 0
+- Estrutura PWA instalável: OK
+- Renovação/limpeza de cache: OK
+- Ajuste de saldo: OK
+- Modos Definir / Adicionar / Subtrair: OK
+- Idempotência: OK — a mesma operação repetida gerou apenas 1 registro
+- Resultado do mês: ajustes excluídos corretamente
+- DRE, orçamento e gráficos: ajustes excluídos corretamente
+- Histórico e filtro de ajustes: OK
+- PDF: seção de ajustes: OK
+- Backup/restauração: campos de ajustes preservados
+- Snapshot offline: ajustes preservados
+- Monitoramento familiar: mapeamento de ajustes preservado
+- RLS sem sessão: 0 registros financeiros visíveis
+- Busca pública de usuário sem sessão: 0 resultados
+- Security Advisor do Supabase: 0 alertas
+
+CORREÇÃO FEITA DURANTE A ETAPA E
+A função apply_balance_adjustment tinha uma ambiguidade interna no campo client_request_id.
+Ela foi corrigida diretamente no Supabase antes da aprovação final.
+
+TESTE REAL DO AJUSTE — TRANSAÇÃO TEMPORÁRIA/ROLLBACK
+- Adicionar R$ 10,00: OK
+- Subtrair R$ 3,00: OK
+- Definir saldo para R$ 123,45: OK
+- Reenvio da mesma operação: apenas 1 registro
+- Registros de teste restantes: 0
+
+OBSERVAÇÃO
+Os avisos de performance atuais do Supabase são apenas índices ainda não utilizados; não são erros funcionais nem bloqueiam a publicação.

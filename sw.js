@@ -1,9 +1,14 @@
 const CACHE_PREFIX = 'family-finance-';
-const CACHE_NAME = 'family-finance-cache-2026-09-10-idempotencia-seguranca-final';
+const CACHE_NAME = 'family-finance-cache-2026-09-11-balance-adjustment';
 const CORE_ASSETS = [
-  './', './index.html', './manifest.json',
-  './icons/icon-152.png', './icons/icon-167.png', './icons/icon-180.png',
-  './icons/icon-192.png', './icons/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-152.png',
+  './icons/icon-167.png',
+  './icons/icon-180.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 const NETWORK_TIMEOUT_MS = 8000;
 
@@ -17,14 +22,18 @@ async function fetchWithTimeout(request, options = {}, timeoutMs = NETWORK_TIMEO
   }
 }
 
+async function cacheResponse(key, response) {
+  if (!response || !response.ok) return;
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(key, response.clone());
+}
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await Promise.allSettled(CORE_ASSETS.map(async asset => {
-      try {
-        const response = await fetchWithTimeout(asset, { cache: 'reload' });
-        if (response && response.ok) await cache.put(asset, response.clone());
-      } catch (_) {}
+      const response = await fetchWithTimeout(asset, { cache: 'reload' });
+      if (response && response.ok) await cache.put(asset, response.clone());
     }));
     await self.skipWaiting();
   })());
@@ -42,47 +51,52 @@ self.addEventListener('activate', event => {
   })());
 });
 
-async function networkFirst(request, fallbackKey) {
+async function networkFirst(request, fallbackKey = request) {
   try {
     const response = await fetchWithTimeout(request, { cache: 'no-store' });
     if (response && response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      await cache.put(fallbackKey || request, response.clone());
+      await cacheResponse(fallbackKey, response);
       return response;
     }
-    const cached = await caches.match(fallbackKey || request);
+    const cached = await caches.match(fallbackKey);
     return cached || response || Response.error();
   } catch (_) {
-    return (await caches.match(fallbackKey || request)) || Response.error();
+    return (await caches.match(fallbackKey)) || Response.error();
   }
 }
 
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
+
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // HTML sempre tenta a rede primeiro. Assim uma publicação nova não fica presa no cache antigo.
+  // Navegação sempre tenta a rede primeiro para não prender uma publicação nova no cache.
   if (request.mode === 'navigate' || url.pathname.endsWith('/index.html')) {
     event.respondWith(networkFirst(request, './index.html'));
     return;
   }
 
-  // Arquivos estáticos: responde rápido do cache e atualiza em segundo plano.
+  // O manifesto precisa ficar atual para o navegador reconhecer a instalação do PWA.
+  if (url.pathname.endsWith('/manifest.json')) {
+    event.respondWith(networkFirst(request, request));
+    return;
+  }
+
+  // Cache-first para ícones/estáticos, com atualização em segundo plano.
+  // IMPORTANTE: waitUntil é chamado de forma síncrona durante o evento fetch.
+  const refreshPromise = fetchWithTimeout(request, { cache: 'no-cache' })
+    .then(async response => {
+      if (response && response.ok) await cacheResponse(request, response);
+      return response;
+    })
+    .catch(() => null);
+
+  event.waitUntil(refreshPromise.then(() => undefined));
   event.respondWith((async () => {
     const cached = await caches.match(request);
-    const refresh = fetchWithTimeout(request, { cache: 'no-cache' }).then(async response => {
-      if (response && response.ok) {
-        const cache = await caches.open(CACHE_NAME);
-        await cache.put(request, response.clone());
-      }
-      return response;
-    }).catch(() => null);
-    if (cached) {
-      event.waitUntil(refresh);
-      return cached;
-    }
-    return (await refresh) || Response.error();
+    if (cached) return cached;
+    return (await refreshPromise) || Response.error();
   })());
 });
