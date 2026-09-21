@@ -1,0 +1,59 @@
+/* Family Finance — animação de download V16.
+   Camada transitória: não redefine layout permanente do botão nem do módulo. */
+#report-generate-btn.ff-download-motion{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  white-space:nowrap;
+}
+#report-generate-btn.ff-download-motion .ff-download-fill{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  transform:scaleX(var(--ff-download-progress,0));
+  transform-origin:left center;
+  background:rgba(255,255,255,.24);
+  transition:transform .22s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+}
+#report-generate-btn.ff-download-motion .ff-download-content{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+}
+#report-generate-btn.ff-download-motion .ff-download-orb{
+  width:18px;
+  height:18px;
+  flex:0 0 18px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:2px solid rgba(17,17,17,.28);
+  border-top-color:#111;
+  font-size:11px;
+  line-height:1;
+}
+#report-generate-btn.ff-download-motion[data-download-state="working"] .ff-download-orb{
+  animation:ffDownloadSpin .72s linear infinite;
+}
+#report-generate-btn.ff-download-motion[data-download-state="success"] .ff-download-orb{
+  border-color:#16794b;
+  background:#16794b;
+  color:#fff;
+  animation:ffDownloadPop .28s ease both;
+}
+#report-generate-btn.ff-download-motion[data-download-state="error"] .ff-download-orb{
+  border-color:#b42318;
+  background:#b42318;
+  color:#fff;
+  animation:ffDownloadPop .28s ease both;
+}
+#report-generate-btn.ff-download-motion[data-download-state="success"]{
+  --ff-download-progress:1;
+}
+@keyframes ffDownloadSpin{to{transform:rotate(360deg)}}
+@keyframes ffDownloadPop{from{transform:scale(.72)}to{transform:scale(1)}}

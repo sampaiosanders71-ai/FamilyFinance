@@ -1,0 +1,34 @@
+.planning-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.planning-month-switch{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.planning-month-switch button{width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text);cursor:pointer}.planning-month-switch strong{min-width:145px;text-align:center;font-size:.82rem}.planning-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.planning-summary article{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.planning-summary span{display:block;color:var(--muted);font-size:.74rem;margin-bottom:6px}.planning-summary strong{font:700 1.3rem Space Grotesk}.planning-summary small{display:block;color:var(--muted);margin-top:5px;font-size:.68rem}.planning-summary .income strong{color:var(--green)}.planning-summary .expense strong{color:var(--red)}.planning-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.planning-filters{display:flex;gap:7px;flex-wrap:wrap}.planning-filter{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:8px 11px;border-radius:999px;cursor:pointer;font-size:.74rem}.planning-filter.active{border-color:rgba(255,122,0,.35);background:rgba(255,122,0,.12);color:var(--text)}.planning-list{display:grid;gap:9px}.planning-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}.planning-row-main{min-width:0}.planning-row-title{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.planning-row-title strong{font-size:.88rem}.planning-type{font-size:.64rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 7px;border-radius:999px;background:var(--surface3);color:var(--muted)}.planning-type.income{color:var(--green)}.planning-type.expense{color:var(--red)}.planning-row-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:.7rem}.planning-row-side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:7px}.planning-row-side>strong{font:700 1rem Space Grotesk}.planning-status{font-size:.66rem;font-weight:800;padding:4px 7px;border-radius:999px;background:var(--surface3);color:var(--muted)}.planning-status.done{color:var(--green)}.planning-status.deferred{color:var(--yellow)}.planning-status.cancelled{color:var(--red)}.planning-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.planning-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;padding:14px 16px}.planning-footer p{margin:0;color:var(--muted);font-size:.76rem}.planning-analysis-status{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.planning-analysis-status article{padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--surface2)}.planning-analysis-status span{display:block;color:var(--muted);font-size:.68rem}.planning-analysis-status strong{display:block;margin-top:4px;font:700 1.05rem Space Grotesk}@media(max-width:900px){.planning-summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.planning-toolbar,.planning-controls,.planning-footer{align-items:stretch;flex-direction:column}.planning-summary{grid-template-columns:1fr 1fr}.planning-row{grid-template-columns:1fr}.planning-row-side{align-items:flex-start;text-align:left}.planning-actions{justify-content:flex-start}.planning-analysis-status{grid-template-columns:1fr 1fr}}@media(max-width:390px){.planning-summary{grid-template-columns:1fr}.planning-analysis-status{grid-template-columns:1fr}}
+
+/* Filtro de status do Planejamento — reconstrução visual */
+#planning-status-filter{
+  width:min(240px,100%);
+  min-height:42px;
+  padding:10px 42px 10px 13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background-color:var(--surface);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ba3ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 13px center;
+  background-size:16px 16px;
+  color:var(--text);
+  font-size:.76rem;
+  font-weight:600;
+  line-height:1.2;
+  outline:none;
+  box-shadow:none;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  color-scheme:dark;
+  cursor:pointer;
+  transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
+}
+#planning-status-filter:hover{border-color:#3a4148;background-color:var(--surface2)}
+#planning-status-filter:focus-visible{border-color:rgba(255,122,0,.72);box-shadow:0 0 0 3px rgba(255,122,0,.12)}
+#planning-status-filter option{background:#131517;color:#f7f8f9}
+[data-theme="light"] #planning-status-filter{background-color:var(--surface);color:var(--text);color-scheme:light}
+[data-theme="light"] #planning-status-filter:hover{background-color:var(--surface2)}
+[data-theme="light"] #planning-status-filter option{background:#fff;color:var(--text)}
+@media(max-width:620px){#planning-status-filter{width:100%;min-height:44px}}
