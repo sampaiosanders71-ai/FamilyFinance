@@ -1,5 +1,5 @@
-const PAGE_W = 595.28;
-const PAGE_H = 841.89;
+const PAGE_W = 612;
+const PAGE_H = 792;
 
 function pdfEscape(value) {
   let out = '';
@@ -27,8 +27,14 @@ function approxTextWidth(text, size, bold = false) {
   return String(text ?? '').length * Number(size || 10) * factor;
 }
 
-function contentForPage(ops) {
+function contentForPage(ops,{backgroundName=null}={}) {
   const out = [];
+  if (backgroundName) {
+    out.push('q');
+    out.push(`${PAGE_W.toFixed(2)} 0 0 ${PAGE_H.toFixed(2)} 0 0 cm`);
+    out.push(`/${backgroundName} Do`);
+    out.push('Q');
+  }
   for (const op of ops || []) {
     if (op.type === 'rect') {
       const [r,g,b] = rgb(op.fill || '#ffffff');
@@ -99,36 +105,60 @@ function contentForPage(ops) {
   return `${out.join('\n')}\n`;
 }
 
-export function buildVisualPdf(pages) {
-  const encoder = new TextEncoder();
-  const objects = [];
-  objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-  objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
-  objects[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
-  const kids = [];
-  let nextId = 5;
-  for (const ops of pages || [[]]) {
-    const pageId = nextId++;
-    const contentId = nextId++;
-    kids.push(`${pageId} 0 R`);
-    const content = contentForPage(ops);
-    objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${contentId} 0 R >>`;
-    objects[contentId] = `<< /Length ${encoder.encode(content).length} >>\nstream\n${content}endstream`;
-  }
-  objects[2] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`;
+function bytes(value){
+  if (value instanceof Uint8Array) return value;
+  return new TextEncoder().encode(String(value ?? ''));
+}
+function concatBytes(parts){
+  const arrays=parts.map(bytes);
+  const length=arrays.reduce((sum,a)=>sum+a.length,0);
+  const out=new Uint8Array(length);
+  let offset=0;
+  for(const a of arrays){out.set(a,offset);offset+=a.length;}
+  return out;
+}
 
-  let pdf = '%PDF-1.4\n%FamilyFinance\n';
-  const offsets = new Array(objects.length).fill(0);
-  for (let i = 1; i < objects.length; i += 1) {
-    offsets[i] = encoder.encode(pdf).length;
-    pdf += `${i} 0 obj\n${objects[i]}\nendobj\n`;
+export function buildVisualPdf(pages,{backgroundJpeg=null}={}) {
+  const objects = [];
+  objects[1] = bytes('<< /Type /Catalog /Pages 2 0 R >>');
+  objects[3] = bytes('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  objects[4] = bytes('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  let nextId=5;
+  let imageId=null;
+  if(backgroundJpeg?.bytes?.length){
+    imageId=nextId++;
+    const imageBytes=backgroundJpeg.bytes instanceof Uint8Array?backgroundJpeg.bytes:new Uint8Array(backgroundJpeg.bytes);
+    const imageHead=`<< /Type /XObject /Subtype /Image /Width ${Number(backgroundJpeg.width)||1530} /Height ${Number(backgroundJpeg.height)||1980} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBytes.length} >>\nstream\n`;
+    objects[imageId]=concatBytes([imageHead,imageBytes,'\nendstream']);
   }
-  const xrefOffset = encoder.encode(pdf).length;
-  pdf += `xref\n0 ${objects.length}\n`;
-  pdf += '0000000000 65535 f \n';
-  for (let i = 1; i < objects.length; i += 1) pdf += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
-  pdf += `trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
-  return encoder.encode(pdf);
+  const kids=[];
+  for (const ops of pages || [[]]) {
+    const pageId=nextId++;
+    const contentId=nextId++;
+    kids.push(`${pageId} 0 R`);
+    const content=contentForPage(ops,{backgroundName:imageId?'BG':null});
+    const resources=imageId?`<< /Font << /F1 3 0 R /F2 4 0 R >> /XObject << /BG ${imageId} 0 R >> >>`:`<< /Font << /F1 3 0 R /F2 4 0 R >> >>`;
+    objects[pageId]=bytes(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources ${resources} /Contents ${contentId} 0 R >>`);
+    const contentBytes=bytes(content);
+    objects[contentId]=concatBytes([`<< /Length ${contentBytes.length} >>\nstream\n`,contentBytes,'endstream']);
+  }
+  objects[2]=bytes(`<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`);
+
+  const parts=[bytes('%PDF-1.4\n%FamilyFinance\n')];
+  const offsets=new Array(objects.length).fill(0);
+  let current=parts[0].length;
+  for(let i=1;i<objects.length;i++){
+    if(!objects[i]) continue;
+    offsets[i]=current;
+    const obj=concatBytes([`${i} 0 obj\n`,objects[i],'\nendobj\n']);
+    parts.push(obj);current+=obj.length;
+  }
+  const xrefOffset=current;
+  let xref=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+  for(let i=1;i<objects.length;i++) xref+=`${String(offsets[i]||0).padStart(10,'0')} 00000 n \n`;
+  xref+=`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+  parts.push(bytes(xref));
+  return concatBytes(parts);
 }
 
 export const PDF_PAGE = { width: PAGE_W, height: PAGE_H };

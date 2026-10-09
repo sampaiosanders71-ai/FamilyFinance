@@ -125,3 +125,167 @@
 @media(max-width:1100px){.planning-limit-panel .budget-category-row{grid-template-columns:minmax(145px,1fr) repeat(4,minmax(76px,.55fr));grid-template-areas:'identity limit spent pending available' 'identity progress progress progress actions'}.planning-limit-panel .budget-category-identity{grid-area:identity}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(1){grid-area:limit}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(2){grid-area:spent}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(3){grid-area:pending}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(4){grid-area:available}.planning-limit-panel .budget-category-progress{grid-area:progress}.planning-limit-panel .budget-category-actions{grid-area:actions}}
 @media(max-width:760px){.planning-limit-panel .budget-category-row{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'identity identity actions' 'limit spent pending' 'available available available' 'progress progress progress'}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(4){display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline}.planning-limit-panel .budget-category-row>.budget-category-stat:nth-of-type(4) strong{text-align:left}}
 @media(max-width:430px){.planning-limit-panel .budget-category-row{grid-template-columns:1fr 1fr;grid-template-areas:'identity actions' 'limit spent' 'pending available' 'progress progress'}}
+
+/* Planejamento > Limites: cartões com barra única em camadas */
+.planning-limit-panel .budget-category-list{display:grid;gap:12px}
+.planning-limit-panel .budget-category-row.layered-budget-card{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(280px,1.35fr) minmax(330px,1fr) auto;gap:16px;align-items:center;padding:15px 16px;border-radius:18px;background:var(--surface2)}
+.planning-limit-panel .layered-budget-card .budget-category-identity{display:flex;align-items:center;gap:11px;min-width:0}
+.planning-limit-panel .layered-budget-card .budget-category-identity .category-icon-tile{width:42px;height:42px;border-radius:13px;flex:0 0 auto}
+.planning-limit-panel .layered-budget-card .budget-category-identity>div{display:grid;gap:3px;min-width:0}
+.planning-limit-panel .layered-budget-card .budget-category-identity strong{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.planning-limit-panel .layered-budget-card .budget-category-identity small{font-size:.64rem;color:var(--muted)}
+.planning-limit-panel .layered-budget-main{display:grid;gap:8px;min-width:0}
+.planning-limit-panel .layered-budget-main .planning-layered-meta{font-size:.65rem}
+.planning-limit-panel .layered-budget-stats{display:grid;grid-template-columns:repeat(3,minmax(86px,1fr));gap:9px}
+.planning-limit-panel .layered-budget-stats>div{display:grid;gap:3px;padding-left:10px;border-left:1px solid var(--line)}
+.planning-limit-panel .layered-budget-stats span{font-size:.61rem;color:var(--muted)}
+.planning-limit-panel .layered-budget-stats strong{font-size:.78rem}
+.planning-limit-panel .layered-budget-stats small{font-size:.58rem;color:var(--muted)}
+.planning-limit-panel .layered-budget-card .budget-category-actions{display:flex;gap:6px;justify-content:flex-end}
+
+@media(max-width:1180px){
+  .planning-limit-panel .budget-category-row.layered-budget-card{grid-template-columns:minmax(170px,.8fr) minmax(250px,1.2fr) minmax(260px,1fr);grid-template-areas:'identity main stats' 'identity main actions'}
+  .planning-limit-panel .layered-budget-card .budget-category-identity{grid-area:identity}
+  .planning-limit-panel .layered-budget-main{grid-area:main}
+  .planning-limit-panel .layered-budget-stats{grid-area:stats}
+  .planning-limit-panel .layered-budget-card .budget-category-actions{grid-area:actions}
+}
+@media(max-width:900px){
+  .planning-limit-panel .budget-category-row.layered-budget-card{grid-template-columns:1fr;grid-template-areas:'identity' 'main' 'stats' 'actions'}
+  .planning-limit-panel .layered-budget-card .budget-category-actions{justify-content:flex-start}
+}
+@media(max-width:520px){
+  .planning-limit-panel .budget-category-row.layered-budget-card{padding:13px}
+  .planning-limit-panel .layered-budget-card .budget-category-identity .category-icon-tile{width:36px;height:36px}
+  .planning-limit-panel .layered-budget-stats{grid-template-columns:1fr 1fr}
+  .planning-limit-panel .layered-budget-stats>div:last-child{grid-column:1/-1}
+  .planning-limit-panel .layered-budget-stats>div{padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+}
+
+/* Sugestão de limites — substitui a antiga análise 50/30/20 */
+.budget-suggestion-open{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;margin:0;white-space:nowrap;color:var(--orange2);border-color:rgba(255,122,0,.32);background:rgba(255,122,0,.06)}
+.budget-suggestion-open .ui-icon{width:16px;height:16px}
+.budget-suggestion-panel{display:grid;gap:16px;padding:20px;border-color:rgba(255,122,0,.34)}
+.budget-suggestion-heading{margin:0}.budget-suggestion-heading h3{font-size:1.15rem}.budget-suggestion-heading p{max-width:760px}
+.budget-suggestion-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center}
+.budget-suggestion-months{display:flex;flex-wrap:wrap;gap:8px}
+.budget-suggestion-months span{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--text);font-size:.74rem;font-weight:700}
+.budget-suggestion-months .ui-icon{width:14px;height:14px;color:var(--muted)}
+.budget-suggestion-income{display:grid;gap:4px;min-width:190px;padding:11px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}
+.budget-suggestion-income span{font-size:.68rem;color:var(--muted)}.budget-suggestion-income strong{font:700 1.05rem Space Grotesk}
+#budget-suggestion-generate{min-height:46px;padding-inline:18px}
+.budget-suggestion-preview{display:grid;gap:14px}
+.budget-suggestion-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px;background:var(--surface2)}
+.budget-suggestion-table{width:100%;min-width:760px;border-collapse:collapse}
+.budget-suggestion-table th,.budget-suggestion-table td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.budget-suggestion-table th{font-size:.67rem;color:var(--muted);font-weight:800;background:var(--surface3)}
+.budget-suggestion-table td{font-size:.76rem;color:var(--text)}
+.budget-suggestion-table tbody tr:last-child td{border-bottom:0}
+.budget-suggestion-table td:nth-child(n+2){font-variant-numeric:tabular-nums}
+.budget-suggestion-category{display:flex;align-items:center;gap:10px;min-width:180px}
+.budget-suggestion-category .category-icon-tile{width:34px;height:34px;border-radius:10px}.budget-suggestion-category strong{font-size:.78rem}
+.budget-suggestion-variation{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border-radius:999px;font-size:.68rem;font-weight:800}
+.budget-suggestion-variation.up{color:#ff8f86;background:rgba(240,68,56,.1);border:1px solid rgba(240,68,56,.24)}
+.budget-suggestion-variation.down{color:var(--green);background:rgba(50,213,131,.09);border:1px solid rgba(50,213,131,.22)}
+.budget-suggestion-variation.neutral{color:var(--muted);background:var(--surface3);border:1px solid var(--line)}
+.budget-suggestion-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--surface2)}
+.budget-suggestion-totals{display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:10px;flex:1}
+.budget-suggestion-totals article{display:grid;gap:4px;padding:8px 10px;border-right:1px solid var(--line)}.budget-suggestion-totals article:last-child{border-right:0}
+.budget-suggestion-totals span{font-size:.66rem;color:var(--muted)}.budget-suggestion-totals strong{font:700 1rem Space Grotesk}
+.budget-suggestion-actions{display:flex;gap:8px;flex:0 0 auto}
+[data-theme="light"] .budget-suggestion-open{background:rgba(255,122,0,.08)}
+@media(max-width:900px){.budget-suggestion-toolbar{grid-template-columns:1fr 1fr}.budget-suggestion-months{grid-column:1/-1}.budget-suggestion-income{min-width:0}.budget-suggestion-footer{align-items:stretch;flex-direction:column}.budget-suggestion-actions{justify-content:flex-end}}
+@media(max-width:760px){.budget-manager-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.budget-manager-actions .budget-suggestion-open,.budget-manager-actions #budget-new-btn{width:100%;grid-column:auto;min-height:44px}.budget-suggestion-panel{padding:14px}.budget-suggestion-toolbar{grid-template-columns:1fr}.budget-suggestion-months{grid-column:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.budget-suggestion-months span{justify-content:center;padding:8px 6px;font-size:.64rem}.budget-suggestion-income{min-width:0}.budget-suggestion-totals{grid-template-columns:1fr 1fr}.budget-suggestion-totals article:last-child{grid-column:1/-1;border-right:0;border-top:1px solid var(--line)}.budget-suggestion-actions{display:grid;grid-template-columns:1fr 1fr}.budget-suggestion-actions button{width:100%}}
+@media(max-width:430px){.budget-manager-actions{grid-template-columns:1fr}.budget-manager-actions .budget-suggestion-open,.budget-manager-actions #budget-new-btn{grid-column:1}.budget-suggestion-months{grid-template-columns:1fr}.budget-suggestion-totals{grid-template-columns:1fr}.budget-suggestion-totals article{border-right:0;border-bottom:1px solid var(--line)}.budget-suggestion-totals article:last-child{grid-column:auto;border-top:0;border-bottom:0}.budget-suggestion-actions{grid-template-columns:1fr}}
+
+/* Sugestão de limites como subpágina de Limites */
+.budget-suggestion-page{display:grid;gap:16px}
+.budget-suggestion-back{justify-self:start;width:auto;margin:0;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--muted);font:inherit;font-size:.75rem;font-weight:760;cursor:pointer}
+.budget-suggestion-back:hover{color:var(--text);border-color:rgba(255,122,0,.28)}
+.budget-suggestion-page-head{margin-bottom:0}
+.budget-suggestion-page-head h2{margin-top:4px}
+.budget-suggestion-page-head p{max-width:760px}
+.budget-suggestion-page .budget-suggestion-panel{margin:0;padding:20px;border-color:rgba(255,122,0,.34)}
+.budget-suggestion-page .budget-suggestion-toolbar{margin-bottom:2px}
+.budget-suggestion-page .budget-suggestion-preview{margin-top:2px}
+@media(max-width:760px){
+  .budget-suggestion-page{gap:12px}
+  .budget-suggestion-back{width:100%;text-align:left}
+  .budget-suggestion-page-head{padding-top:2px}
+  .budget-suggestion-page .budget-suggestion-panel{padding:14px}
+}
+
+/* Reconstrução mobile dos cards de Limites */
+.planning-limit-panel .budget-category-row.layered-budget-card{display:block;padding:0;background:transparent;border:0;box-shadow:none}
+.planning-limit-panel .budget-desktop-limit-layout{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(280px,1.35fr) minmax(330px,1fr) auto;gap:16px;align-items:center;padding:15px 16px;border:1px solid var(--line);border-radius:18px;background:var(--surface2)}
+.planning-limit-panel .budget-mobile-limit-layout{display:none}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-identity{display:flex;align-items:center;gap:11px;min-width:0}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-identity .category-icon-tile{width:42px;height:42px;border-radius:13px;flex:0 0 auto}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-identity>div{display:grid;gap:3px;min-width:0}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-identity strong{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-identity small{font-size:.64rem;color:var(--muted)}
+.planning-limit-panel .budget-desktop-limit-layout .budget-category-actions{display:flex;gap:6px;justify-content:flex-end}
+@media(max-width:1180px) and (min-width:761px){
+  .planning-limit-panel .budget-desktop-limit-layout{grid-template-columns:minmax(170px,.8fr) minmax(250px,1.2fr) minmax(260px,1fr);grid-template-areas:'identity main stats' 'identity main actions'}
+  .planning-limit-panel .budget-desktop-limit-layout .budget-category-identity{grid-area:identity}
+  .planning-limit-panel .budget-desktop-limit-layout .layered-budget-main{grid-area:main}
+  .planning-limit-panel .budget-desktop-limit-layout .layered-budget-stats{grid-area:stats}
+  .planning-limit-panel .budget-desktop-limit-layout .budget-category-actions{grid-area:actions}
+}
+@media(max-width:760px){
+  .planning-limit-panel .budget-category-list{gap:14px}
+  .planning-limit-panel .budget-desktop-limit-layout{display:none}
+  .planning-limit-panel .budget-mobile-limit-layout{display:grid;gap:16px;padding:18px;border:1px solid var(--line);border-radius:22px;background:var(--surface2);box-shadow:0 12px 30px rgba(0,0,0,.16)}
+  .planning-limit-panel .budget-mobile-limit-layout.no-limit{gap:18px}
+  .budget-mobile-limit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .budget-mobile-limit-head .budget-category-identity{display:flex;align-items:center;gap:13px;min-width:0}
+  .budget-mobile-limit-head .budget-category-identity .category-icon-tile{width:50px;height:50px;border-radius:15px;flex:0 0 auto}
+  .budget-mobile-limit-head .budget-category-identity>div{display:grid;gap:4px;min-width:0}
+  .budget-mobile-limit-head .budget-category-identity strong{font-size:1.16rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .budget-mobile-limit-head .budget-category-identity small{font-size:.82rem;color:var(--muted)}
+  .budget-mobile-menu{border:0;background:transparent;color:#aeb8c7;font-size:1.4rem;line-height:1;padding:6px 3px;cursor:pointer;letter-spacing:2px;flex:0 0 auto}
+  .budget-mobile-available{display:flex;align-items:end;justify-content:space-between;gap:12px}
+  .budget-mobile-available>span{font-size:.9rem;font-weight:700;color:var(--muted)}
+  .budget-mobile-available>strong{font:700 1.55rem Space Grotesk;white-space:nowrap}
+  .budget-mobile-layered{display:block}
+  .budget-mobile-layered .layered-limit{height:6px}
+  .budget-mobile-legend{display:flex;align-items:center;gap:24px;flex-wrap:wrap;color:var(--muted);font-size:.82rem;margin-top:-5px}
+  .budget-mobile-legend span{display:inline-flex;align-items:center;gap:7px}
+  .budget-mobile-legend i{width:12px;height:12px;border-radius:50%;display:inline-block;flex:0 0 auto}
+  .budget-mobile-legend .realized i{background:#ff6b00}
+  .budget-mobile-legend .planned i{background:#ffad66}
+  .budget-mobile-legend b{color:var(--text);font-weight:700}
+  .budget-mobile-values{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);padding-top:16px}
+  .budget-mobile-values>div{display:grid;gap:6px;padding:0 8px}
+  .budget-mobile-values>div+div{border-left:1px solid var(--line);padding-left:22px}
+  .budget-mobile-values span{font-size:.86rem;color:var(--muted)}
+  .budget-mobile-values strong{font:700 1.35rem Space Grotesk;color:var(--text)}
+  .budget-mobile-define{width:100%;min-height:48px;border:1px solid var(--orange);border-radius:14px;background:transparent;color:var(--orange2);font-size:1rem;font-weight:800;cursor:pointer}
+  .budget-mobile-actions-dialog .modal-head p{margin:4px 0 0;font-size:.75rem;color:var(--muted)}
+}
+@media(max-width:430px){
+  .planning-limit-panel .budget-mobile-limit-layout{padding:16px;border-radius:20px;gap:14px}
+  .budget-mobile-limit-head .budget-category-identity .category-icon-tile{width:46px;height:46px}
+  .budget-mobile-limit-head .budget-category-identity strong{font-size:1.06rem}
+  .budget-mobile-limit-head .budget-category-identity small{font-size:.76rem}
+  .budget-mobile-available>strong{font-size:1.42rem}
+  .budget-mobile-values strong{font-size:1.2rem}
+  .budget-mobile-legend{gap:18px;font-size:.78rem}
+}
+
+/* Mobile: botão de ações visualmente menor, mantendo área de toque confortável */
+@media(max-width:760px){
+  .budget-mobile-menu{
+    width:36px;
+    height:36px;
+    min-width:36px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    font-size:.78rem;
+    line-height:1;
+    letter-spacing:1.2px;
+    border-radius:10px;
+    color:#aeb8c7;
+  }
+}

@@ -4,7 +4,8 @@ const MONEY_IDS = [
   'stat-projected',
   'stat-income',
   'stat-expense',
-  'stat-card-expense'
+  'stat-card-expense',
+  'stat-allocation'
 ];
 
 const moneyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });

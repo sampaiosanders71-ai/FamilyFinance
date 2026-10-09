@@ -1,0 +1,18 @@
+/* Family Finance 2.9.3: controles condicionais, progresso e filtros integrados */
+.transaction-goal-option{border:1px solid var(--border,#3f4145);border-radius:13px;padding:12px 14px;background:var(--surface-2,rgba(127,127,127,.07));margin:10px 0}
+.transaction-goal-option.hidden{display:none!important}
+.transaction-goal-option .check-row{margin:0}
+.transaction-goal-option .goal-option-note{font-weight:400;opacity:.7}
+.transaction-goal-option .field{margin-top:12px;margin-bottom:0}
+.financial-view-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0 12px}
+.financial-view-switch>span{font-size:13px;font-weight:650;opacity:.78}
+.financial-view-buttons{display:flex;gap:5px;flex-wrap:wrap;padding:4px;border-radius:13px;background:var(--surface-2,rgba(127,127,127,.1))}
+.financial-view-btn{border:0;background:transparent;color:inherit;padding:9px 12px;border-radius:10px;font:inherit;font-size:13px;cursor:pointer}
+.financial-view-btn.active{background:var(--accent,#f28a2b);color:#21170b;font-weight:700}
+.financial-view-btn:focus-visible{outline:2px solid var(--accent,#f28a2b);outline-offset:2px}
+.goal-progress-details{font-size:12px;opacity:.75;line-height:1.4;margin-top:6px}
+.planning-reserve-overview{border:1px solid var(--border,rgba(127,127,127,.25));padding:14px 16px;border-radius:14px;margin:12px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.planning-reserve-overview>div{display:flex;flex:1;min-width:155px;flex-direction:column;gap:4px}
+.planning-reserve-overview small{opacity:.7}
+.financial-focus-note{font-size:12px;opacity:.74;margin:12px 0}
+@media(max-width:600px){.financial-view-switch{align-items:stretch}.financial-view-switch>span{width:100%}.financial-view-buttons{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.financial-view-btn{font-size:11px;padding:9px 4px;overflow-wrap:anywhere}}

@@ -1,0 +1,35 @@
+{
+  "version": "2.9.4",
+  "publishedAt": "09/10/2026",
+  "improvementCount": 5,
+  "title": "Relatórios e consistência financeira",
+  "summary": "Relatórios distinguem despesas, reservas, transferências e fluxo de caixa. Classificações antigas podem ser revisadas sem alteração automática.",
+  "highlights": [
+    {
+      "title": "Relatórios claros",
+      "text": "PDF apresenta resultado de consumo e variação de caixa em visões separadas."
+    },
+    {
+      "title": "Exportação CSV",
+      "text": "Lançamentos exportados com natureza, situação, direção e vínculo com meta."
+    },
+    {
+      "title": "Conferência de transferências",
+      "text": "Detecta possíveis pares por valor e data, sem supor confirmação bancária."
+    },
+    {
+      "title": "Histórico preservado",
+      "text": "Novo filtro permite revisar e confirmar a natureza dos registros anteriores."
+    },
+    {
+      "title": "Proteções financeiras",
+      "text": "Revisão dos sinais da natureza e testes de regressão para cartões e reservas."
+    }
+  ],
+  "details": [
+    "Para vincular reservas a metas, a migração 2.9.3 é obrigatória.",
+    "Sem reconciliação bancária automática: não existem contas de origem e destino identificáveis nesta estrutura.",
+    "Lançamentos históricos nunca são reclassificados automaticamente.",
+    "Esta versão requer homologação em navegador autenticado antes de publicação definitiva."
+  ]
+}

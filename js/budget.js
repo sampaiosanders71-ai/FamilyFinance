@@ -1,6 +1,7 @@
 import { supabase } from './supabase.js';
 import { getCurrentUser } from './database.js';
 import { monthISO } from './finance.js';
+import { buildFinancialMonthLedger } from './financial-ledger.js';
 
 export const BUDGET_CATEGORIES = ['Alimentação','Transporte','Moradia','Saúde','Lazer','Educação','Assinaturas','Dívidas','Investimento','Outros'];
 
@@ -85,17 +86,26 @@ export async function saveBudget(refDate, plannedIncome, limits) {
   return getBudget(refDate);
 }
 
-export function budgetSummary(budget, transactions, installments, refDate) {
-  const monthPrefix = monthISO(refDate).slice(0,7);
-  const itemMap = Object.fromEntries((budget.items || []).map(i => [i.category, Number(i.limit_amount || 0)]));
-  const spentMap = {};
-  transactions.filter(t => t.affects_month_result && Number(t.direction) < 0 && String(t.occurred_on).startsWith(monthPrefix)).forEach(t => {
-    const cat = t.category || 'Outros'; spentMap[cat] = (spentMap[cat] || 0) + Number(t.amount || 0);
+export function budgetSummary(budget, transactions, installments, refDate, today = new Date()) {
+  const ledger = buildFinancialMonthLedger({
+    transactions: transactions || [],
+    installments: installments || [],
+    monthKey: monthISO(refDate),
+    today
   });
-  installments.filter(i => String(i.invoice_month).startsWith(monthPrefix)).forEach(i => {
-    const cat = i.ff2_card_purchases?.category || 'Outros'; spentMap[cat] = (spentMap[cat] || 0) + Number(i.amount || 0);
-  });
-  const totalLimit = Object.values(itemMap).reduce((a,b)=>a+b,0);
-  const totalSpent = Object.values(spentMap).reduce((a,b)=>a+b,0);
-  return { itemMap, spentMap, totalLimit, totalSpent, available: totalLimit - totalSpent, plannedIncome:Number(budget.plan?.planned_income || 0) };
+  const itemMap = Object.fromEntries((budget.items || []).map(item => [item.category, Number(item.limit_amount || 0)]));
+  const spentMap = { ...ledger.budgetUsageMap };
+  const totalLimit = Object.values(itemMap).reduce((sum, value) => sum + Number(value || 0), 0);
+  const totalSpent = Object.values(spentMap).reduce((sum, value) => sum + Number(value || 0), 0);
+  return {
+    itemMap,
+    spentMap,
+    totalLimit,
+    totalSpent,
+    available: totalLimit - totalSpent,
+    plannedIncome: Number(budget.plan?.planned_income || 0),
+    realizedThrough: ledger.cutoff,
+    futureExpense: ledger.futureExpense,
+    futureAllocation: ledger.futureAllocation
+  };
 }

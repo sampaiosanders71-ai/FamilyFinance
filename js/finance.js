@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js';
 import { getCurrentUser, newRequestId } from './database.js';
+import { calculateCashLedgerStats } from './financial-ledger.js';
 
 export const DEFAULT_CATEGORIES = [
   'Salário','Alimentação','Transporte','Moradia','Saúde','Lazer','Educação','Assinaturas','Dívidas','Investimento','Outros'
@@ -128,7 +129,9 @@ export async function createTransaction(input) {
     source: count > 1 ? 'recurring' : 'manual',
     recurring_group_id: groupId,
     client_request_id: newRequestId(),
-    notes: input.notes?.trim() || null
+    notes: input.notes?.trim() || null,
+    financial_nature: input.financialNature || (input.direction>0?'income':'consumption'),
+    goal_id: input.financialNature==='allocation' && input.direction<0 ? (input.goalId || null) : null
   }));
   const { data, error } = await supabase.from('ff2_transactions').insert(rows).select('*');
   if (error) throw error;
@@ -147,6 +150,8 @@ export async function updateTransaction(id, input) {
       occurred_on: input.date,
       category: input.category || 'Outros',
       notes: input.notes?.trim() || null,
+      financial_nature: input.financialNature || (input.direction>0?'income':'consumption'),
+      goal_id: input.financialNature==='allocation' && input.direction<0 ? (input.goalId || null) : null,
       updated_at: new Date().toISOString()
     })
     .eq('id', id).eq('user_id', user.id)
@@ -182,23 +187,8 @@ export async function applyBalanceAdjustment(input) {
   return data;
 }
 
-export function calculateCashStats(transactions, refDate = new Date()) {
-  const today = localISO(new Date());
-  const month = refDate.getMonth();
-  const year = refDate.getFullYear();
-  let balance = 0, income = 0, expense = 0, future = 0;
-  for (const t of transactions) {
-    const signed = Number(t.direction) * Number(t.amount || 0);
-    if (t.occurred_on <= today) balance += signed;
-    const d = parseDateISO(t.occurred_on);
-    if (d.getMonth() === month && d.getFullYear() === year) {
-      if (t.affects_month_result) {
-        if (signed >= 0) income += signed; else expense += Math.abs(signed);
-      }
-      if (t.occurred_on > today) future += signed;
-    }
-  }
-  return { balance, income, expense, cashResult: income - expense, future, projectedCashBalance: balance + future };
+export function calculateCashStats(transactions, refDate = new Date(), today = new Date()) {
+  return calculateCashLedgerStats(transactions || [], refDate, today);
 }
 
 export function filterTransactions(transactions, { search = '', type = 'all', month = '' } = {}) {
