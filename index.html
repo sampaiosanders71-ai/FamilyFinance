@@ -16,15 +16,17 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="css/app.css?v=2.9.4" rel="stylesheet"><link href="css/nature.css?v=2.9.4" rel="stylesheet">
-<link href="css/motion-v15.css?v=15" rel="stylesheet">
-<link href="css/download-motion-v16.css?v=16" rel="stylesheet">
-<link href="css/family-monitor-v17.css?v=17" rel="stylesheet"/>
-<link href="css/planning-v18.css?rev=mobile-overview-rebuild" rel="stylesheet"/>
-<link href="css/categories-budget.css?rev=mobile-overview-rebuild" rel="stylesheet"/>
-<link href="css/context-help.css?rev=global-help" rel="stylesheet"/>
-<link href="css/dashboard-v29.css?v=2.9.4" rel="stylesheet"/>
-<link rel="stylesheet" href="./css/financial-view-293.css?v=2.9.4"/>
+<link href="css/app.css?v=2.9.20" rel="stylesheet"><link href="css/nature.css?v=2.9.20" rel="stylesheet">
+<link href="css/motion-v15.css?v=2.9.20" rel="stylesheet">
+<link href="css/download-motion-v16.css?v=2.9.20" rel="stylesheet">
+<link href="css/family-monitor-v17.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/planning-v18.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/categories-budget.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/context-help.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/dashboard-v29.css?v=2.9.20" rel="stylesheet"/>
+<link rel="stylesheet" href="./css/financial-view-293.css?v=2.9.20"/><link rel="stylesheet" href="./css/reserve-299.css?v=2.9.20"/><link rel="stylesheet" href="./css/ui-295.css?v=2.9.20"/>
+<link href="css/report-export.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/cards-workspace.css?v=2.9.20" rel="stylesheet"/>
 </head>
 <body>
 <svg aria-hidden="true" class="icon-sprite" focusable="false">
@@ -130,7 +132,7 @@
 <div class="content">
 <section class="module-view" id="module-home">
 <div class="dashboard-head"><div><span class="eyebrow">VISÃO GERAL</span><h2 id="home-greeting">Seu mês financeiro</h2><p class="muted" id="home-period"></p></div><div class="month-switch"><button aria-label="Mês anterior" data-month-action="prev">‹</button><strong id="home-month-label"></strong><button aria-label="Próximo mês" data-month-action="next">›</button></div></div>
-<div class="home-kpis" aria-label="Resumo do mês"><article class="home-kpi income" title="Receitas realizadas no mês selecionado. Ajustes de saldo e transferências ficam separados."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-trending-up"></use></svg></span><div><span class="home-kpi-label">Receitas do mês</span><strong id="stat-income">R$ 0,00</strong></div></article><article class="home-kpi expense" title="Despesas à vista e pagamentos de faturas realizados no mês. Reservas e investimentos ficam separados."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-trending-down"></use></svg></span><div><span class="home-kpi-label">Despesas pagas</span><strong id="stat-expense">R$ 0,00</strong></div></article><article class="home-kpi allocation" title="Destinações para reservas e investimentos registradas no mês. Não é a soma dos saldos das metas."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-piggy"></use></svg></span><div><span class="home-kpi-label">Investido / reservado</span><strong id="stat-allocation">R$ 0,00</strong><small id="stat-allocation-count">0 registros no mês</small></div></article><article class="home-kpi invoice" title="Total das faturas da competência selecionada, pagas e abertas. O vencimento pode ocorrer no mês seguinte."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-card"></use></svg></span><div><span class="home-kpi-label">Fatura do mês</span><strong id="stat-card-expense">R$ 0,00</strong></div></article></div>
+<div class="home-kpis" aria-label="Resumo do mês"><article class="home-kpi income" title="Receitas realizadas no mês selecionado. Ajustes de saldo e transferências ficam separados."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-trending-up"></use></svg></span><div><span class="home-kpi-label">Receitas do mês</span><strong id="stat-income">R$ 0,00</strong></div></article><article class="home-kpi expense" title="Despesas à vista e pagamentos de faturas realizados no mês. Reservas e investimentos ficam separados."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-trending-down"></use></svg></span><div><span class="home-kpi-label">Despesas pagas</span><strong id="stat-expense">R$ 0,00</strong></div></article><article id="reserve-kpi-card" class="home-kpi allocation" title="Saldo patrimonial confirmado de reservas e investimentos, somando Metas e reservas independentes sem duplicar valores." tabindex="0" role="button" aria-label="Abrir composição do saldo investido e reservado"><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-piggy"></use></svg></span><div><span class="home-kpi-label">Investido / reservado</span><strong id="stat-allocation">R$ 0,00</strong><small id="stat-allocation-count">Saldo acumulado · até hoje</small><button type="button" id="reserve-kpi-details" class="reserve-kpi-details">Ver composição ↗</button></div><span class="reserve-kpi-corner-icon" aria-hidden="true">↗</span></article><article class="home-kpi invoice" title="Total das faturas da competência selecionada, pagas e abertas. O vencimento pode ocorrer no mês seguinte."><span class="home-kpi-icon"><svg aria-hidden="true" class="ui-icon"><use href="#i-card"></use></svg></span><div><span class="home-kpi-label">Fatura do mês</span><strong id="stat-card-expense">R$ 0,00</strong></div></article></div>
 <div class="dashboard-grid">
 <div class="dashboard-main">
 <article class="balance-card">
@@ -163,10 +165,9 @@
 <div class="history-sync-row"><span class="muted" id="transaction-sync-status">Sincronizando histórico…</span></div>
 <div class="panel-card"><div class="list-stack" id="transactions-list"></div></div>
 </section>
-<section class="module-view hidden" id="module-cards">
-<div class="module-header"><div><span class="eyebrow">CRÉDITO</span><h2>Cartões</h2></div><button class="primary-compact" id="new-card-btn">＋ Novo cartão</button></div>
-<div class="cards-grid" id="cards-list"></div>
-<div class="panel-card"><div class="section-title"><div><h3>Compras</h3></div></div><div class="list-stack" id="card-purchases-list"></div></div>
+<section class="module-view hidden cards-workspace" id="module-cards">
+<div id="cards-overview"><div class="module-header card-overview-header"><span class="card-heading-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-card"/></svg></span><div><h2>Cartões</h2><p>Gerencie seus cartões registrados no Family Finance.</p></div><button class="primary-compact" id="new-card-btn" type="button">＋ Novo cartão</button></div><div class="cards-grid" id="cards-list"></div></div>
+<div id="card-detail" class="hidden"><div class="card-detail-header"><button class="card-back" data-card-back type="button" aria-label="Voltar para cartões">‹</button><span class="card-heading-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-card"/></svg></span><h2 id="card-detail-name" tabindex="-1"></h2><button class="card-settings" data-card-settings type="button" aria-label="Editar cartão"><svg class="ui-icon" aria-hidden="true"><use href="#i-settings"/></svg></button><button class="primary-compact" data-card-new-purchase type="button">＋ Nova compra</button></div><div id="card-detail-content"></div></div>
 </section>
 <section class="module-view hidden" id="module-goals">
 <div class="module-header"><div><span class="eyebrow">OBJETIVOS</span><h2>Metas</h2></div><button class="primary-compact" id="new-goal-btn">＋ Nova meta</button></div>
@@ -195,9 +196,10 @@
 </div>
 <div class="planning-reserve-overview" aria-live="polite">
 <div><small>Reservado neste mês</small><strong id="planning-allocation-realized">R$ 0,00</strong></div>
-<div><small>Reservas futuras cadastradas</small><strong id="planning-allocation-future">R$ 0,00</strong></div>
+<div><small>Reservas futuras cadastradas</small><strong id="planning-allocation-future">R$ 0,00</strong><small id="planning-allocation-planned">Reservas programadas: R$ 0,00</small></div>
 <div><small>Projeção do saldo livre (lançamentos)</small><strong id="planning-cash-projected">—</strong></div>
 </div>
+<section class="panel-card planning-card-panel"><div class="section-title"><h3>Faturas previstas</h3><strong id="planning-card-total">R$ 0,00</strong></div><div id="planning-card-obligations"></div><p class="muted card-planning-note">Saldo pendente por competência, separado de Meus planos. O caixa muda ao registrar o pagamento.</p></section>
 <div class="planning-overview-grid">
 <article class="panel-card planning-overview-panel">
 <div class="section-title"><div><h3>Próximos planos</h3></div><button class="text-btn" data-planning-open="plans" type="button">Ver todos →</button></div>
@@ -406,7 +408,7 @@
 <p class="muted settings-help" id="pwa-install-status">Verificando compatibilidade de instalação…</p>
 <div class="settings-inline-note"><strong>Dica:</strong><span>Depois de instalado, o Family Finance pode ser aberto direto pela tela inicial ou pelo menu de aplicativos.</span></div>
 <div class="settings-update-grid">
-<div class="settings-update-version"><span>Versão instalada</span><strong id="install-current-version">2.9.4</strong></div>
+<div class="settings-update-version"><span>Versão instalada</span><strong id="install-current-version">2.9.11</strong></div>
 <div class="settings-update-version"><span>Versão disponível</span><strong id="install-available-version">Verificando…</strong></div>
 </div>
 <div class="settings-update-state"><span class="status-pill" id="install-update-status">Verificando atualizações…</span></div>
@@ -482,7 +484,7 @@
 <div class="field" id="transaction-nature-wrap"><label for="transaction-nature">Natureza do lançamento</label><select id="transaction-nature"><option value="consumption">Despesa de consumo</option><option value="allocation">Reserva / Investimento</option><option value="transfer">Transferência entre contas próprias</option><option value="resgate">Resgate de reserva ou investimento</option><option value="income">Receita</option></select><p id="transaction-nature-suggestion" class="nature-hint" aria-live="polite">A classificação define como o valor aparece nos relatórios.</p></div>
 <div class="transaction-goal-option hidden" id="transaction-goal-wrap">
 <label class="check-row"><input type="checkbox" id="transaction-goal-link"/><span>Vincular a uma meta <small class="goal-option-note">(opcional)</small></span></label>
-<div class="field hidden" id="transaction-goal-picker"><label for="transaction-goal-id">Selecione a meta</label><select id="transaction-goal-id"></select><p class="nature-hint">O aporte será contabilizado uma única vez e refletido na meta após a data do lançamento.</p></div>
+<div class="field hidden" id="transaction-goal-picker"><label for="transaction-goal-id">Selecione a meta</label><select id="transaction-goal-id"></select><p class="nature-hint">O aporte aumenta a meta e um resgate vinculado a reduz, respeitando a data do lançamento.</p></div>
 </div>
 <div class="field"><label for="transaction-notes">Observação</label><input id="transaction-notes" maxlength="500" placeholder="Opcional" type="text"/></div>
 <div id="recurring-fields"><label class="check-row"><input id="transaction-recurring" type="checkbox"/><span>Repetir mensalmente</span></label><div class="field hidden" id="recurring-count-wrap"><label for="transaction-recurring-count">Quantidade de meses</label><input id="transaction-recurring-count" max="60" min="2" type="number" value="12"/></div></div>
@@ -511,17 +513,19 @@
 <div class="form-grid two"><div class="field"><label for="card-closing">Fechamento</label><input id="card-closing" max="31" min="1" required="" type="number"/></div><div class="field"><label for="card-due">Vencimento</label><input id="card-due" max="31" min="1" required="" type="number"/></div></div>
 <div class="field"><label for="card-interest">Juros rotativo (% a.m.)</label><input id="card-interest" max="50" min="0" step="0.01" type="number" value="0"/></div>
 <p class="form-error hidden" id="card-form-error"></p>
-<div class="modal-actions"><button class="secondary-btn" data-close-dialog="card-dialog" type="button">Cancelar</button><button class="primary-compact" id="card-save-btn" type="submit">Salvar cartão</button></div>
+<div class="modal-actions"><button class="secondary-btn" data-close-dialog="card-dialog" type="button">Cancelar</button><button class="text-btn danger hidden" id="card-archive-btn" type="button">Arquivar cartão</button><button class="primary-compact" id="card-save-btn" type="submit">Salvar cartão</button></div>
 </form>
 </dialog>
 <dialog class="modal" id="purchase-dialog">
 <form class="modal-card" id="purchase-form" method="dialog">
-<div class="modal-head"><div><span class="eyebrow">COMPRA NO CRÉDITO</span><h3 id="purchase-dialog-title">Nova compra</h3></div><button class="modal-close" data-close-dialog="purchase-dialog" type="button">×</button></div>
-<input id="purchase-id" type="hidden"/><input id="purchase-card-id" type="hidden"/>
+<div class="modal-head"><div><span class="eyebrow">CARTÃO DE CRÉDITO</span><h3 id="purchase-dialog-title">Nova compra</h3></div><button class="modal-close" data-close-dialog="purchase-dialog" type="button">×</button></div>
+<input id="purchase-id" type="hidden"/><input id="purchase-card-id" type="hidden"/><p class="purchase-card-caption" id="purchase-card-caption"></p>
 <div class="field"><label for="purchase-description">Descrição</label><input id="purchase-description" maxlength="120" required="" type="text"/></div>
-<div class="form-grid two"><div class="field"><label for="purchase-total">Valor total</label><input id="purchase-total" min="0.01" required="" step="0.01" type="number"/></div><div class="field"><label for="purchase-installments">Parcelas</label><input id="purchase-installments" max="60" min="1" required="" type="number" value="1"/></div></div>
-<div class="form-grid two"><div class="field"><label for="purchase-date">Data</label><input id="purchase-date" required="" type="date"/></div><div class="field"><label for="purchase-category">Categoria</label><select id="purchase-category"></select></div></div>
-<p class="form-error hidden" id="purchase-form-error"></p>
+<div class="form-grid two"><div class="field"><label for="purchase-total">Valor total</label><input id="purchase-total" min="0.01" required="" step="0.01" type="number"/></div><div class="field"><label for="purchase-date">Data</label><input id="purchase-date" required="" type="date"/></div></div>
+<div class="field"><label for="purchase-category">Categoria</label><select id="purchase-category"></select></div>
+<div class="form-grid two"><div class="field"><label for="purchase-mode">Parcelamento</label><select id="purchase-mode"><option value="single">À vista</option><option value="installments">Parcelado</option></select></div><div class="field hidden" id="purchase-installments-wrap"><label for="purchase-installments">Número de parcelas</label><input id="purchase-installments" max="60" min="2" type="number" value="2"/></div></div>
+<p class="purchase-summary" id="purchase-summary" aria-live="polite"></p>
+<p class="card-lock-note hidden" id="purchase-financial-lock">Esta compra possui histórico financeiro protegido. Você pode corrigir descrição e categoria. Para valores, registre um ajuste ou estorno separado.</p><p class="form-error hidden" id="purchase-form-error"></p>
 <div class="modal-actions"><button class="secondary-btn" data-close-dialog="purchase-dialog" type="button">Cancelar</button><button class="primary-compact" id="purchase-save-btn" type="submit">Salvar compra</button></div>
 </form>
 </dialog>
@@ -532,7 +536,17 @@
 <div class="notification-list notification-history-list" id="notification-history-list"></div>
 </div>
 </dialog>
-<dialog class="modal" id="invoice-dialog"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">FATURA</span><h3 id="invoice-title">Fatura</h3></div><button class="modal-close" data-close-dialog="invoice-dialog" type="button">×</button></div><div id="invoice-content"></div></div></dialog>
+<dialog class="modal card-invoice-dialog" id="invoice-edit-dialog" aria-labelledby="invoice-edit-title"><form class="modal-card" id="invoice-edit-form"><div class="modal-head"><h3 id="invoice-edit-title">Editar fatura</h3><button type="button" class="modal-close" data-close-dialog="invoice-edit-dialog" aria-label="Fechar edição">×</button></div><p class="card-history-caption" id="invoice-edit-origin"></p><p class="card-lock-note" id="invoice-edit-preview" role="status" aria-live="polite"></p><div class="field"><label for="invoice-edit-total">Valor total da fatura</label><input id="invoice-edit-total" type="text" inputmode="decimal" autocomplete="off" maxlength="22" required/></div><div class="form-grid"><div class="field"><label for="invoice-edit-date">Data do registro</label><input id="invoice-edit-date" type="date" required/></div><div class="field"><label for="invoice-edit-month">Competência da fatura</label><input id="invoice-edit-month" type="month" required/></div></div><p class="card-history-caption">Ao mudar a data, a competência acompanha o mês. Você também pode escolher a competência manualmente.</p><div class="field hidden" id="invoice-edit-limit-wrap"><label for="invoice-edit-limit">Limite efetivamente liberado</label><input id="invoice-edit-limit" type="number" min="0" step="0.01" value="0"/><small class="card-history-caption">Mantenha zero se a liberação ainda não foi confirmada pelo emissor.</small></div><div class="field"><label for="invoice-edit-reason">Motivo da correção ou confirmação</label><input id="invoice-edit-reason" type="text" minlength="3" maxlength="500" required/></div><label class="check-row"><input id="invoice-edit-confirmed" type="checkbox" required/><span>Conferi o valor, a data e a competência da fatura.</span></label><p class="form-error hidden" id="invoice-edit-error" role="alert"></p><div class="modal-actions"><button type="button" class="secondary-btn" data-close-dialog="invoice-edit-dialog">Cancelar</button><button type="submit" class="primary-compact" id="invoice-edit-save">Confirmar registro</button></div></form></dialog>
+<dialog class="modal card-invoice-dialog" id="card-adjustment-dialog" aria-labelledby="card-adjustment-title"><form class="modal-card" id="card-adjustment-form"><div class="modal-head"><h3 id="card-adjustment-title">Registrar ajuste</h3><button type="button" class="modal-close" data-close-dialog="card-adjustment-dialog" aria-label="Fechar ajuste">×</button></div><p class="card-history-caption" id="card-adjustment-origin"></p><p class="card-lock-note hidden" id="card-invoice-edit-preview" role="status"></p><div class="field"><label for="card-adjustment-kind">Natureza</label><select id="card-adjustment-kind"></select></div><div class="field" id="card-adjustment-destination-wrap"><label for="card-adjustment-destination">Como o estorno foi aplicado?</label><select id="card-adjustment-destination"><option value="invoice">Crédito na fatura</option><option value="cash">Devolução em conta</option></select></div><div class="form-grid"><div class="field"><label id="card-adjustment-amount-label" for="card-adjustment-amount">Valor confirmado</label><input id="card-adjustment-amount" type="number" min="0.01" step="0.01" required/></div><div class="field"><label for="card-adjustment-date">Data efetiva</label><input id="card-adjustment-date" type="date" required/></div></div><div class="field"><label for="card-adjustment-month">Competência aplicada pelo emissor</label><input id="card-adjustment-month" type="month" required/></div><div class="field" id="card-adjustment-category-wrap"><label for="card-adjustment-category">Categoria</label><select id="card-adjustment-category"></select></div><div class="field" id="card-adjustment-limit-wrap"><label for="card-adjustment-limit">Limite efetivamente liberado</label><input id="card-adjustment-limit" type="number" min="0" step="0.01" value="0"/><small class="card-history-caption">Mantenha zero se o emissor ainda não confirmou a liberação do limite.</small></div><div class="field"><label for="card-adjustment-reason">Motivo / referência do emissor</label><input id="card-adjustment-reason" maxlength="500" minlength="3" required/></div><label class="check-row"><input id="card-adjustment-confirmed" type="checkbox" required/><span>Conferi valor, data e forma de aplicação no banco ou emissor.</span></label><p class="card-lock-note hidden" id="card-adjustment-warning" role="alert"></p><p class="form-error hidden" id="card-adjustment-error" role="alert"></p><div class="modal-actions"><button type="button" class="secondary-btn" data-close-dialog="card-adjustment-dialog">Cancelar</button><button type="submit" class="primary-compact" id="card-adjustment-save">Confirmar registro</button></div></form></dialog>
+<dialog class="modal card-invoice-dialog" id="card-conciliation-dialog" aria-labelledby="card-conciliation-title"><form class="modal-card" id="card-conciliation-form"><div class="modal-head"><h3 id="card-conciliation-title">Conciliar saldo legado</h3><button type="button" class="modal-close" data-close-dialog="card-conciliation-dialog" aria-label="Fechar conciliação">×</button></div><p class="card-history-caption" id="card-conciliation-origin"></p><div class="field"><label for="card-conciliation-installment">Compra / parcela identificada</label><select id="card-conciliation-installment" required></select></div><div class="field"><label for="card-conciliation-amount">Valor desta parcela já incluído no saldo antigo</label><input id="card-conciliation-amount" type="number" min="0" step="0.01" required/><small class="card-history-caption">Use zero para corrigir uma vinculação anterior. As operações permanecem registradas.</small></div><div class="field"><label for="card-conciliation-reason">Origem / motivo da conciliação</label><input id="card-conciliation-reason" minlength="3" maxlength="500" required/></div><label class="check-row"><input id="card-conciliation-confirmed" type="checkbox" required/><span>Confirmei que este valor compõe a fatura legada. Ele será compensado para evitar dupla contagem.</span></label><p class="form-error hidden" id="card-conciliation-error" role="alert"></p><div class="modal-actions"><button type="button" class="secondary-btn" data-close-dialog="card-conciliation-dialog">Cancelar</button><button type="submit" class="primary-compact" id="card-conciliation-save">Confirmar conciliação</button></div></form></dialog>
+<dialog class="modal card-invoice-dialog" id="card-linked-transaction-dialog" aria-labelledby="card-linked-transaction-title"><div class="modal-card"><div class="modal-head"><h3 id="card-linked-transaction-title">Lançamento vinculado</h3><button type="button" class="modal-close" data-close-dialog="card-linked-transaction-dialog" aria-label="Fechar lançamento">×</button></div><div id="card-linked-transaction-content"></div></div></dialog>
+<dialog class="modal card-invoice-dialog card-invoice-history-dialog" id="card-invoice-history-dialog" aria-labelledby="card-invoice-history-title"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow" id="card-invoice-history-card"></span><h3 id="card-invoice-history-title">Histórico de faturas</h3><p class="card-history-caption">Faturas anteriores, atuais e futuras deste cartão.</p></div><button class="modal-close" data-close-dialog="card-invoice-history-dialog" type="button" aria-label="Fechar histórico de faturas">×</button></div><div class="card-history-filters" role="group" aria-label="Filtrar faturas"><button type="button" data-card-history-filter="all" aria-pressed="true">Todas</button><button type="button" data-card-history-filter="past" aria-pressed="false">Anteriores</button><button type="button" data-card-history-filter="current" aria-pressed="false">Atual</button><button type="button" data-card-history-filter="future" aria-pressed="false">Futuras</button></div><p class="card-history-caption" id="card-history-result" role="status" aria-live="polite"></p><div id="card-invoice-history-list" class="card-invoice-history-list"></div></div></dialog>
+<dialog class="modal card-invoice-dialog" id="invoice-dialog" aria-labelledby="invoice-title"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">FATURA</span><h3 id="invoice-title">Fatura</h3></div><button class="modal-close" data-close-dialog="invoice-dialog" type="button">×</button></div><div id="invoice-content"></div></div></dialog>
+<dialog class="modal card-invoice-dialog" id="invoice-manage-dialog" aria-labelledby="invoice-manage-title"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">GERENCIAR FATURA</span><h3 id="invoice-manage-title" tabindex="-1">Gerenciar fatura</h3></div><button class="modal-close" data-close-dialog="invoice-manage-dialog" type="button" aria-label="Fechar gerenciamento da fatura">×</button></div><div id="invoice-management-content"></div><div class="modal-actions"><button type="button" class="secondary-btn" data-card-management-return>Voltar à fatura</button></div></div></dialog>
+
+<dialog class="modal card-invoice-dialog" id="card-purchase-dialog" aria-labelledby="card-purchase-title"><div class="modal-card"><div class="modal-head"><h3 id="card-purchase-title">Detalhes da compra</h3><button class="modal-close" data-close-dialog="card-purchase-dialog" type="button" aria-label="Fechar detalhes da compra">×</button></div><div id="card-purchase-detail"></div><div class="modal-actions"><button class="text-btn danger" id="card-purchase-delete" type="button">Excluir compra</button><button class="secondary-btn" id="card-purchase-refund" type="button">Ajuste / estorno</button><button class="secondary-btn" id="card-purchase-edit" type="button">Editar compra</button></div></div></dialog>
+<dialog class="modal card-invoice-dialog" id="card-payment-dialog" aria-labelledby="card-payment-title"><form class="modal-card small" id="card-payment-form"><div class="modal-head"><h3 id="card-payment-title">Pagar fatura</h3><button class="modal-close" data-close-dialog="card-payment-dialog" type="button" aria-label="Fechar pagamento">×</button></div><div class="card-payment-balance"><span>Saldo devido</span><strong id="card-payment-due"></strong></div><div class="field"><label for="card-payment-mode">Pagamento</label><select id="card-payment-mode"><option value="full">Integral</option><option value="partial">Parcial</option></select></div><div class="field"><label for="card-payment-date">Data do pagamento</label><input id="card-payment-date" required type="date"/></div><div class="field hidden" id="card-payment-amount-wrap"><label for="card-payment-amount">Valor do pagamento</label><input id="card-payment-amount" min="0.01" step="0.01" type="number"/></div><div class="card-payment-warning hidden" id="card-payment-warning" role="alert"></div><p class="form-error hidden" id="card-payment-error" role="alert"></p><div class="modal-actions"><button class="secondary-btn" data-close-dialog="card-payment-dialog" type="button">Cancelar</button><button class="primary-compact" id="card-payment-save" type="submit">Confirmar pagamento</button></div></form></dialog>
+<dialog class="modal card-invoice-dialog" id="card-reversal-dialog" aria-labelledby="card-reversal-title"><form class="modal-card small" id="card-reversal-form"><div class="modal-head"><h3 id="card-reversal-title">Corrigir pagamento</h3><button class="modal-close" data-close-dialog="card-reversal-dialog" type="button" aria-label="Fechar correção">×</button></div><input id="card-reversal-id" type="hidden"/><p class="card-lock-note">O pagamento original será preservado. A correção devolve o valor ao saldo disponível e reabre o saldo devido.</p><div class="field"><label for="card-reversal-reason">Motivo da correção</label><input id="card-reversal-reason" maxlength="240" minlength="3" required type="text"/></div><p class="form-error hidden" id="card-reversal-error" role="alert"></p><div class="modal-actions"><button class="secondary-btn" data-close-dialog="card-reversal-dialog" type="button">Cancelar</button><button class="primary-compact" id="card-reversal-save" type="submit">Reverter pagamento</button></div></form></dialog>
 <dialog class="modal" id="goal-dialog">
 <form class="modal-card small" id="goal-form" method="dialog">
 <div class="modal-head"><div><span class="eyebrow">META</span><h3 id="goal-dialog-title">Nova meta</h3></div><button class="modal-close" data-close-dialog="goal-dialog" type="button">×</button></div>
@@ -557,12 +571,20 @@
 <input id="category-editor-id" type="hidden"/>
 <div class="field"><label for="category-editor-kind">Tipo</label><select id="category-editor-kind"><option value="expense">Despesa</option><option value="income">Receita</option></select></div>
 <div class="field"><label for="category-editor-name">Nome</label><input id="category-editor-name" maxlength="60" minlength="2" placeholder="Ex.: Faculdade" required="" type="text"/></div>
-<div class="field category-icon-field">
-<label>Ícone</label>
-<input id="category-editor-icon" type="hidden" value="tag"/>
-<div aria-label="Escolher ícone da categoria" class="category-icon-grid" id="category-icon-grid" role="radiogroup"></div>
+<div class="category-appearance-fields">
+  <div class="field category-icon-field">
+    <label id="category-icon-label">Ícone</label>
+    <input id="category-editor-icon" type="hidden" value="tag"/>
+    <button type="button" class="category-picker-toggle" id="category-icon-toggle" aria-labelledby="category-icon-label" aria-expanded="false" aria-controls="category-icon-panel"><span class="category-picker-preview" id="category-icon-preview" aria-hidden="true"></span><span>Escolher ícone</span><span class="category-picker-chevron" aria-hidden="true">⌄</span></button>
+  </div>
+  <div class="field category-color-field">
+    <label id="category-color-label">Cor</label>
+    <input id="category-editor-color" type="hidden" value="orange"/>
+    <button type="button" class="category-picker-toggle" id="category-color-toggle" aria-labelledby="category-color-label" aria-expanded="false" aria-controls="category-color-panel"><span class="category-color-preview" id="category-color-preview" aria-hidden="true"></span><span>Escolher cor</span><span class="category-picker-chevron" aria-hidden="true">⌄</span></button>
+  </div>
 </div>
-<div class="field"><label for="category-editor-color">Cor</label><select id="category-editor-color"></select></div>
+<div id="category-icon-panel" class="category-picker-panel hidden" aria-label="Ícones disponíveis"><div class="category-icon-grid" id="category-icon-grid" role="radiogroup"></div></div>
+<div id="category-color-panel" class="category-picker-panel category-color-panel hidden" aria-label="Cores disponíveis"><div class="category-color-grid" id="category-color-grid" role="radiogroup"></div></div>
 <p class="field-help" id="category-editor-note">Alterar o nome não modifica lançamentos antigos; o histórico continua preservado.</p>
 <p class="form-error hidden" id="category-editor-error"></p>
 <div class="modal-actions"><button class="secondary-btn" data-close-dialog="category-editor-dialog" type="button">Cancelar</button><button class="primary-compact" id="category-editor-save" type="submit">Salvar categoria</button></div>
@@ -603,6 +625,7 @@
 </div>
 <div class="field"><label for="planning-description">Descrição</label><input id="planning-description" maxlength="140" placeholder="Ex.: Formatura, bolsa, consulta" required="" type="text"/></div>
 <div class="form-grid two"><div class="field"><label for="planning-amount">Valor previsto</label><input id="planning-amount" min="0.01" required="" step="0.01" type="number"/></div><div class="field"><label for="planning-category">Categoria</label><select id="planning-category"></select></div></div>
+<div class="field hidden" id="planning-nature-wrap"><label for="planning-nature">Natureza da saída</label><select id="planning-nature"><option value="consumption">Despesa de consumo</option><option value="allocation">Reserva / Investimento</option><option value="transfer">Transferência própria</option></select><p class="nature-hint">Reservas e transferências não entram nas despesas de consumo.</p></div>
 <div class="field"><label for="planning-notes">Observação <span class="muted">(opcional)</span></label><input id="planning-notes" maxlength="220" type="text"/></div>
 <p class="form-error hidden" id="planning-form-error"></p>
 <div class="modal-actions"><button class="secondary-btn" data-close-dialog="planning-dialog" type="button">Cancelar</button><button class="primary-compact" id="planning-save-btn" type="submit">Salvar</button></div>
@@ -642,44 +665,53 @@
 </div>
 <div class="context-help-body" id="context-help-body"></div>
 </div>
-</dialog><dialog class="modal report-dialog" id="report-dialog">
+</dialog><dialog class="modal report-dialog" id="report-dialog" aria-labelledby="report-dialog-title">
 <div class="modal-card report-builder-card">
-<div class="modal-head">
-<div><span class="eyebrow">RELATÓRIO FINANCEIRO</span><h3>Escolha os meses do relatório</h3></div>
-<button class="modal-close" data-close-dialog="report-dialog" type="button">×</button>
-</div>
-<p class="report-intro">O PDF reúne <strong>resultados, consumo, reservas, transferências e conferência financeira</strong>. O CSV exporta lançamentos do período com natureza e status para análise em planilhas.</p>
+<header class="modal-head">
+<h3 id="report-dialog-title">Exportar relatório</h3>
+<button class="modal-close" data-close-dialog="report-dialog" type="button" aria-label="Fechar exportação"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+</header>
+<div class="report-content">
+<section class="report-period-section" aria-labelledby="report-period-title">
+<h4 id="report-period-title">Período</h4>
 <div aria-label="Seleções rápidas de período" class="report-presets">
-<button class="secondary-btn" data-report-preset="current" type="button">Mês atual</button>
-<button class="secondary-btn" data-report-preset="3" type="button">Últimos 3 meses</button>
-<button class="secondary-btn" data-report-preset="6" type="button">Últimos 6 meses</button>
-<button class="secondary-btn" data-report-preset="all" type="button">Todos com dados</button>
-<button class="text-btn report-clear" data-report-preset="none" type="button">Limpar</button>
+<button data-report-preset="current" aria-pressed="true" type="button">Mês atual</button>
+<button data-report-preset="3" aria-pressed="false" type="button">3 meses</button>
+<button data-report-preset="6" aria-pressed="false" type="button">6 meses</button>
+<button data-report-preset="all" aria-pressed="false" type="button">Todos</button>
 </div>
-<div class="report-month-section">
-<div class="report-section-title"><strong>Meses disponíveis</strong><small>Você pode escolher meses separados, não precisa ser um período contínuo.</small></div>
-<div class="report-month-grid" id="report-month-list"></div>
-</div>
-<div class="report-selection-card">
-<span>Selecionados</span>
-<strong id="report-selection-summary">1 mês</strong>
-<small id="report-selection-detail">Os meses marcados formam o período principal; o mês anterior é usado apenas como referência de comparação.</small>
-</div>
-<div class="report-includes">
-<strong>O relatório inclui</strong>
-<div class="report-includes-grid">
-<span>✓ Resumo visual</span><span>✓ Comparação com mês anterior</span><span>✓ Gráfico de evolução</span><span>✓ Gastos por categoria</span><span>✓ Limites x realizado</span><span>✓ Análise automática</span><span>✓ Reservas e transferências</span><span>✓ Histórico para revisão</span>
+<div class="report-custom-period">
+<button id="report-custom-toggle" class="report-custom-toggle" aria-expanded="false" aria-controls="report-custom-area" type="button">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
+<span>Personalizar período</span>
+<svg class="report-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+</button>
+<p class="form-error hidden" id="report-form-error" role="alert"></p>
+<div id="report-custom-area" hidden>
+<div class="report-month-grid" id="report-month-list" role="group" aria-label="Meses do relatório"></div>
+<div class="report-selection-footer"><span id="report-selection-summary" aria-live="polite">1 mês selecionado</span><button class="report-clear" data-report-preset="none" type="button">Limpar</button></div>
 </div>
 </div>
-<p class="form-error hidden" id="report-form-error"></p>
-<div class="modal-actions"><button class="secondary-btn" data-close-dialog="report-dialog" type="button">Cancelar</button><button class="secondary-btn" id="report-export-csv" type="button">Exportar lançamentos CSV</button><button class="primary-compact" id="report-generate-btn" type="button">Baixar relatório PDF</button></div>
+</section>
+<fieldset class="report-format-section">
+<legend>Formato</legend>
+<div class="report-formats">
+<label class="report-format-option"><input type="radio" name="report-format" value="pdf" checked><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5"/></svg><span>PDF</span><span class="report-radio" aria-hidden="true"></span></label>
+<label class="report-format-option"><input type="radio" name="report-format" value="csv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 12h8v6H8zM12 12v6M8 15h8"/></svg><span>CSV</span><span class="report-radio" aria-hidden="true"></span></label>
+</div>
+</fieldset>
+</div>
+<footer class="modal-actions">
+<button class="report-cancel" data-close-dialog="report-dialog" type="button">Cancelar</button>
+<button class="primary-compact" id="report-generate-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 15v5h14v-5"/></svg><span id="report-download-label">Baixar PDF</span></button>
+</footer>
 </div>
 </dialog>
 <dialog class="modal app-update-dialog" id="app-update-dialog">
 <div class="modal-card app-update-card">
 <div class="app-update-topbar"><div><span class="eyebrow">FAMILY FINANCE</span><strong>Atualizações</strong></div><button class="modal-close" id="app-update-close" type="button">×</button></div>
 <div class="app-update-hero">
-<div class="app-update-badge">Versão <span id="app-update-badge-version">2.9.4</span></div>
+<div class="app-update-badge">Versão <span id="app-update-badge-version">2.9.11</span></div>
 <h3 id="app-update-title">Nova atualização disponível</h3>
 <p id="app-update-subtitle">Veja o que mudou antes de atualizar.</p>
 </div>
@@ -689,11 +721,12 @@
 <div class="app-update-meta-card"><span>Novidades</span><strong id="app-update-count">—</strong></div>
 </div>
 <div class="app-update-status"><strong id="app-update-status-title">Verificando atualização…</strong><small id="app-update-status-text">Aguarde um instante.</small></div>
-<div class="app-update-actions"><button class="primary-compact" id="app-update-now" type="button">Atualizar agora</button><button class="secondary-btn" id="app-update-later" type="button">Mais tarde</button><button class="text-btn" id="app-update-details-btn" type="button">Ver detalhes</button></div>
+<div class="app-update-actions"><button class="primary-compact hidden" id="app-update-retry" type="button">Tentar novamente</button><button class="primary-compact" id="app-update-now" type="button">Atualizar agora</button><button class="secondary-btn" id="app-update-later" type="button">Mais tarde</button><button class="text-btn" id="app-update-details-btn" type="button">Ver detalhes</button></div>
 <div class="app-update-details hidden" id="app-update-details"></div>
 </div>
 </dialog>
+<dialog class="modal" id="reserve-dialog"><div class="modal-card reserve-dialog-card"><div class="modal-head"><div><span class="eyebrow">RESERVAS E INVESTIMENTOS</span><h3>Saldo guardado</h3></div><button class="modal-close" type="button" data-close-dialog="reserve-dialog" aria-label="Fechar">×</button></div><div id="reserve-detail-body"></div></div></dialog>
 <dialog class="modal" id="dre-dialog"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">DRE</span><h3 id="dre-title">Demonstrativo do mês</h3></div><button class="modal-close" data-close-dialog="dre-dialog" type="button">×</button></div><div id="dre-content"></div></div></dialog>
-<script defer src="js/context-help.js"></script><script src="js/app.js?rev=2.9.4" type="module"></script>
+<script defer src="js/context-help.js?v=2.9.20"></script><script src="js/app.js?v=2.9.20" type="module"></script>
 </body>
 </html>

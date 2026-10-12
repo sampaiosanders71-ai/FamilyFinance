@@ -1,0 +1,94 @@
+/* Family Finance v2.9.5: histórico unificado e personalização compacta */
+/* Mesmo componente e proporções nos dois módulos, com adaptações de largura. */
+#module-home .transaction-entry,#module-transactions .transaction-entry{
+ display:grid;grid-template-columns:38px minmax(0,1fr) auto auto;gap:10px;
+ align-items:center;padding:9px 10px;border-radius:13px;min-width:0;
+ background:var(--surface2);border:1px solid var(--line);
+}
+#module-home .transaction-entry .list-row-title,#module-transactions .transaction-entry .list-row-title{font-size:.82rem;font-weight:750;line-height:1.45}
+#module-home .transaction-entry .list-row-meta,#module-transactions .transaction-entry .list-row-meta{font-size:.68rem;gap:5px;margin-top:3px;align-items:center}
+#module-home .transaction-entry .list-row-amount,#module-transactions .transaction-entry .list-row-amount{font-size:.84rem;text-align:right;white-space:nowrap}
+#module-home .transaction-entry .row-actions,#module-transactions .transaction-entry .row-actions{display:flex;align-items:center;gap:6px;margin:0;justify-content:flex-end}
+#module-home .transaction-entry .mini-btn,#module-transactions .transaction-entry .mini-btn{
+ display:grid;place-items:center;width:34px;height:34px;min-width:34px;min-height:34px;
+ padding:7px;border-radius:10px;background:var(--surface3);color:var(--text);
+}
+#module-home .transaction-entry .mini-btn.danger,#module-transactions .transaction-entry .mini-btn.danger{color:var(--red)}
+#module-home .transaction-entry .mini-btn .ui-icon,#module-transactions .transaction-entry .mini-btn .ui-icon{width:17px;height:17px}
+#module-home .transaction-entry .category-icon-tile,#module-transactions .transaction-entry .category-icon-tile,
+#module-home .transaction-entry .home-transaction-icon,#module-transactions .transaction-entry .home-transaction-icon{
+ width:38px;height:38px;flex:0 0 38px;border-radius:10px;display:grid;place-items:center;
+}
+#module-home .transaction-entry .category-icon-svg,#module-transactions .transaction-entry .category-icon-svg{width:21px;height:21px}
+#module-transactions .transaction-entry .home-transaction-icon.income{background:rgba(34,197,94,.17);color:#68dda0}
+#module-transactions .transaction-entry .home-transaction-icon.expense{background:rgba(239,68,68,.17);color:#ffa49e}
+#module-transactions .transaction-entry .home-payment-note{color:var(--muted);font-size:.67rem;max-width:100px;text-align:center}
+#module-transactions .list-stack{gap:8px}
+#module-transactions .list-stack .transaction-entry:hover,#module-home .transaction-entry:hover{border-color:rgba(255,122,0,.30)}
+/* Seletores recolhidos: duas escolhas, nenhum painel permanente. */
+.category-appearance-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.category-picker-toggle{display:flex;align-items:center;gap:8px;min-height:44px;width:100%;padding:9px 10px;
+ border:1px solid var(--line);border-radius:12px;color:var(--text);background:var(--surface2);
+ cursor:pointer;font-size:.76rem;font-weight:700;text-align:left}
+.category-picker-toggle:hover,.category-picker-toggle[aria-expanded="true"]{border-color:var(--orange)}
+.category-picker-toggle:focus-visible,.category-icon-choice:focus-visible,.category-color-choice:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.category-picker-toggle span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.category-picker-chevron{color:var(--muted);font-size:1rem}
+.category-picker-preview{width:25px;height:25px;flex:0 0 25px;display:grid;place-items:center;color:var(--orange2)}
+.category-picker-preview .category-icon-svg{width:20px;height:20px}
+.category-color-preview{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:var(--swatch,#ff982f)}
+.category-picker-panel{margin:-4px 0 14px;padding:10px;border-radius:13px;border:1px solid var(--line);background:var(--surface2);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.category-picker-panel .category-icon-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;max-height:230px;overflow-y:auto;overscroll-behavior:contain;padding:2px;margin:0}
+.category-picker-panel .category-icon-choice.icon-only{height:40px;min-height:40px;padding:4px;border-radius:9px;gap:0}
+.category-picker-panel .category-icon-choice-glyph,.category-picker-panel .category-icon-choice.icon-only .category-icon-choice-glyph{width:27px;height:27px;border-radius:8px}
+.category-picker-panel .category-icon-choice-glyph .category-icon-svg{width:19px;height:19px}
+.category-picker-panel .category-color-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px 5px;align-items:center}
+.category-color-choice{height:33px;min-width:0;display:grid;place-items:center;border:1px solid transparent;border-radius:9px;background:transparent;cursor:pointer;padding:2px}
+.category-color-choice:hover,.category-color-choice.selected{border-color:var(--line);background:var(--surface3)}
+.category-swatch-dot{background:var(--swatch,#ff982f);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.09)}
+.category-swatch-dot .ui-icon{width:12px;height:12px;stroke:#1b1b1b;stroke-width:3;filter:drop-shadow(0 1px 1px #fff9)}
+[data-theme="light"] .category-picker-panel,[data-theme="light"] .category-picker-toggle{background:#fff}
+@media(max-width:760px){
+ #module-home .transaction-entry,#module-transactions .transaction-entry{grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:9px}
+ #module-home .transaction-entry .category-icon-tile,#module-transactions .transaction-entry .category-icon-tile,#module-home .transaction-entry .home-transaction-icon,#module-transactions .transaction-entry .home-transaction-icon{width:34px;height:34px;flex-basis:34px}
+ #module-home .transaction-entry .row-actions,#module-transactions .transaction-entry .row-actions{grid-column:2 / -1;justify-content:flex-end}
+ #module-home .transaction-entry .list-row-amount,#module-transactions .transaction-entry .list-row-amount{font-size:.78rem}
+ .category-picker-panel .category-icon-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+ .category-picker-panel .category-color-grid{grid-template-columns:repeat(8,minmax(0,1fr))}
+}
+@media(max-width:400px){
+ #module-home .transaction-entry,#module-transactions .transaction-entry{grid-template-columns:30px minmax(0,1fr) auto}
+ #module-home .transaction-entry .list-row-title,#module-transactions .transaction-entry .list-row-title{font-size:.76rem}
+ .category-picker-panel .category-icon-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .category-picker-panel .category-color-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+ .category-appearance-fields{gap:7px}.category-picker-toggle{font-size:.7rem;padding:8px;gap:6px}
+}
+
+.category-swatch-orange{--swatch:#ff982f;}
+.category-swatch-blue{--swatch:#59a8ff;}
+.category-swatch-green{--swatch:#40df91;}
+.category-swatch-red{--swatch:#ff6257;}
+.category-swatch-purple{--swatch:#c77dff;}
+.category-swatch-pink{--swatch:#f472b6;}
+.category-swatch-yellow{--swatch:#ffd166;}
+.category-swatch-teal{--swatch:#49e2cb;}
+.category-swatch-slate{--swatch:#cbd5e1;}
+.category-swatch-coral{--swatch:#ff806e;}
+.category-swatch-crimson{--swatch:#db3e60;}
+.category-swatch-rose{--swatch:#ef8bb4;}
+.category-swatch-fuchsia{--swatch:#db6ce7;}
+.category-swatch-lilac{--swatch:#b7a2ff;}
+.category-swatch-indigo{--swatch:#8889f7;}
+.category-swatch-cobalt{--swatch:#477cf4;}
+.category-swatch-sky{--swatch:#6ac2ff;}
+.category-swatch-cyan{--swatch:#35caed;}
+.category-swatch-mint{--swatch:#5adbbd;}
+.category-swatch-lime{--swatch:#a9db59;}
+.category-swatch-amber{--swatch:#fbb644;}
+.category-swatch-gold{--swatch:#f0c864;}
+.category-swatch-brown{--swatch:#c3966a;}
+.category-swatch-graphite{--swatch:#9ea8b7;}
+.category-swatch-peach{--swatch:#ffac8b;}
+.category-swatch-lavender{--swatch:#c99fe9;}
+.category-swatch-forest{--swatch:#69bd89;}
+.category-swatch-sea{--swatch:#58a5b8;}

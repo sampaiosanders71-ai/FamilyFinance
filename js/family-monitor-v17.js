@@ -1,3 +1,5 @@
+import { buildFinancialMonthLedger, classifyTransaction, ledgerMonthKey } from './financial-ledger.js?v=2.9.20';
+import { goalProgress } from './goal-integration.js?v=2.9.20';
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export function familyMonthKey(date = new Date()) {
@@ -22,72 +24,29 @@ function addCategory(map, name, amount) {
   map.set(key, (map.get(key) || 0) + Math.max(0, Number(amount || 0)));
 }
 
-export function buildFamilyMonitorModel(data, link) {
-  const transactions = [...(data?.transactions || [])].sort((a, b) => {
-    const date = String(b.occurred_on || '').localeCompare(String(a.occurred_on || ''));
-    if (date) return date;
-    return String(b.created_at || '').localeCompare(String(a.created_at || ''));
-  });
-
-  let income = 0;
-  let cashExpense = 0;
-  let transactionCount = 0;
-  const categories = new Map();
-
-  if (link?.can_view_transactions) {
-    for (const row of transactions) {
-      transactionCount += 1;
-      if (!row.affects_month_result) continue;
-      const signed = Number(row.direction || 0) * Number(row.amount || 0);
-      if (signed >= 0) income += signed;
-      else {
-        const value = Math.abs(signed);
-        cashExpense += value;
-        addCategory(categories, row.category, value);
-      }
-    }
-  }
-
-  let cardExpense = 0;
-  if (link?.can_view_cards) {
-    for (const row of data?.installments || []) {
-      const value = Math.max(0, Number(row.amount || 0));
-      cardExpense += value;
-      addCategory(categories, row.ff2_card_purchases?.category || 'Cartão', value);
-    }
-  }
-
-  const totalExpense = cashExpense + cardExpense;
-  const result = income - totalExpense;
-  const budgetLimit = link?.can_view_budget
-    ? (data?.budget?.items || []).reduce((sum, item) => sum + Math.max(0, Number(item.limit_amount || 0)), 0)
-    : 0;
-  const activeGoals = link?.can_view_goals
-    ? (data?.goals || []).filter(goal => !['completed', 'archived'].includes(String(goal.status || ''))).length
-    : 0;
-  const categoryTotal = [...categories.values()].reduce((sum, value) => sum + value, 0);
-  const categoryRows = [...categories.entries()]
-    .map(([name, value]) => ({ name, value, percent: categoryTotal > 0 ? (value / categoryTotal) * 100 : 0 }))
-    .sort((a, b) => b.value - a.value || a.name.localeCompare(b.name, 'pt-BR'));
-
-  return {
-    transactions,
-    income,
-    cashExpense,
-    cardExpense,
-    totalExpense,
-    result,
-    transactionCount,
-    budgetLimit,
-    activeGoals,
-    categoryRows,
-    categoryTotal
-  };
+export function buildFamilyMonitorModel(data,link,today=new Date()) {
+  const allowedTransactions=link?.can_view_transactions ? (data?.transactions||[]) : [];
+  const allowedInstallments=link?.can_view_cards ? (data?.installments||[]) : [];
+  const transactions=[...allowedTransactions].sort((a,b)=>String(b.occurred_on||'').localeCompare(String(a.occurred_on||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  const monthKey=ledgerMonthKey(data?.month||today);
+  const ledger=buildFinancialMonthLedger({transactions:allowedTransactions,installments:allowedInstallments,invoiceStatuses:data?.invoiceStatuses||[],monthKey,today});
+  const income=link?.can_view_transactions?ledger.income:0;
+  const cashExpense=link?.can_view_transactions?ledger.cashExpense:0;
+  const cardExpense=link?.can_view_cards?ledger.cardExpense:0;
+  const totalExpense=cashExpense+cardExpense;
+  const result=income-totalExpense;
+  const budgetLimit=link?.can_view_budget?(data?.budget?.items||[]).reduce((sum,item)=>sum+Math.max(0,Number(item.limit_amount||0)),0):0;
+  // Apenas o titular ou permissões válidas fornecem transações vinculadas suficientes.
+  // O status armazenado é sincronizado por triggers no banco para outros espectadores.
+  const activeGoals=link?.can_view_goals?(data?.goals||[]).filter(g=>{if(g.status==='archived')return false;const server=(data?.goalStatus||[]).find(row=>row.goal_id===g.id);return server?!server.completed:(Array.isArray(data?.goalTransactions)?!goalProgress(g,data.goalTransactions,today).completed:g.status!=='completed');}).length:0;
+  const categoryRows=ledger.categories.map(row=>({name:row.category,value:row.total,percent:totalExpense>0?row.total/totalExpense*100:0}));
+  return {transactions,income,cashExpense,cardExpense,totalExpense,result,transactionCount:transactions.length,budgetLimit,activeGoals,categoryRows,categoryTotal:totalExpense,
+    realizedThrough:ledger.cutoff,futureExpense:ledger.futureExpense};
 }
 
 export function filterFamilyTransactions(rows, filter = 'all') {
-  if (filter === 'income') return (rows || []).filter(row => Number(row.direction) > 0);
-  if (filter === 'expense') return (rows || []).filter(row => Number(row.direction) < 0);
+  if (filter === 'income') return (rows || []).filter(row => classifyTransaction(row)==='income');
+  if (filter === 'expense') return (rows || []).filter(row => classifyTransaction(row)==='consumption');
   return rows || [];
 }
 

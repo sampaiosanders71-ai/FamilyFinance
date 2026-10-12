@@ -1,4 +1,4 @@
-import { buildFinancialReportModel } from './reports.js';
+import { buildFinancialReportModel } from './reports.js?v=2.9.20';
 
 export function analysisMonthKey(value) {
   const date = value instanceof Date ? value : new Date(`${String(value).slice(0,7)}-01T12:00:00`);
@@ -61,8 +61,8 @@ export function availableAnalysisYears(transactions = [], installments = [], tod
   return [...years].filter(Number.isFinite).sort((a,b)=>b-a);
 }
 
-export function buildAnalysisPeriod({ transactions = [], installments = [], invoiceStatuses = [], budgetsByMonth = {}, monthKeys = [], monthLabel, today = new Date(), cutoffDaysByMonth = {} }) {
-  return buildFinancialReportModel({ transactions, installments, invoiceStatuses, budgetsByMonth, monthKeys, monthLabel, today, cutoffDaysByMonth });
+export function buildAnalysisPeriod({ transactions = [], installments = [], invoiceStatuses = [], budgetsByMonth = {}, monthKeys = [], monthLabel, today = new Date(), cutoffDaysByMonth = {}, categories = [] }) {
+  return buildFinancialReportModel({ transactions, installments, invoiceStatuses, budgetsByMonth, monthKeys, monthLabel, today, cutoffDaysByMonth, categories });
 }
 
 
@@ -114,12 +114,16 @@ export function compareCategories(periodA, periodB, limit = 10) {
 export function compareCards(periodA, periodB, limit = 8) {
   const aggregate=period=>{
     const map={};
-    (period?.months||[]).forEach(month=>(month.cards||[]).forEach(card=>{map[card.name]=(map[card.name]||0)+Number(card.total||0)}));
+    (period?.months||[]).forEach(month=>(month.cards||[]).forEach(card=>{
+      const key=card.cardId?`id:${card.cardId}`:`legacy:${card.name}`;
+      if(!map[key])map[key]={cardId:card.cardId||null,name:card.name,total:0};
+      map[key].total+=Number(card.total||0);
+    }));
     return map;
   };
   const a=aggregate(periodA), b=aggregate(periodB);
   return [...new Set([...Object.keys(a),...Object.keys(b)])]
-    .map(name=>({name,a:a[name]||0,b:b[name]||0,delta:(a[name]||0)-(b[name]||0)}))
+    .map(key=>({cardId:a[key]?.cardId||b[key]?.cardId||null,name:a[key]?.name||b[key]?.name||'Cartão',a:a[key]?.total||0,b:b[key]?.total||0,delta:(a[key]?.total||0)-(b[key]?.total||0)}))
     .sort((x,y)=>Math.max(y.a,y.b)-Math.max(x.a,x.b)||x.name.localeCompare(y.name,'pt-BR'))
     .slice(0,limit);
 }

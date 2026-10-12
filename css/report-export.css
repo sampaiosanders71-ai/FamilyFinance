@@ -1,0 +1,50 @@
+/* Exportação: conteúdo rolável, cabeçalho e ações fora da área de rolagem. */
+.report-dialog .report-builder-card{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:0;overflow:hidden;display:flex;flex-direction:column;border-radius:20px}
+.report-dialog .modal-head{margin:0;padding:24px 24px 20px;align-items:center;flex-shrink:0;border-bottom:1px solid var(--line);gap:16px}
+.report-dialog .modal-head h3{margin:0;font-size:1.2rem;font-weight:700}
+.report-dialog svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.report-dialog .modal-close{display:grid;place-items:center;background:transparent;border:0;width:36px;height:36px;color:var(--muted)}
+.report-dialog .modal-close svg{width:20px;height:20px}
+.report-content{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:22px 24px 24px;scrollbar-width:thin}
+.report-period-section h4,.report-format-section legend{font:600 .9rem Inter,system-ui,sans-serif;margin:0 0 14px;color:var(--text)}
+.report-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.report-presets button,.report-custom-toggle,.report-month-option,.report-format-option{border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
+.report-presets button{padding:12px 4px;font-size:.8rem;font-weight:500;min-height:44px}
+.report-presets button[aria-pressed="true"],.report-month-option:has(input:checked),.report-format-option:has(input:checked){border-color:var(--orange);background:color-mix(in srgb,var(--orange) 8%,transparent)}
+.report-presets button[aria-pressed="true"]{color:var(--accent-text,var(--orange))}
+.report-custom-period{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.report-custom-toggle{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:12px 14px;border:0;border-radius:0;font-size:.83rem;text-align:left}
+.report-custom-toggle>svg:first-child{color:var(--muted);width:19px;height:19px}
+.report-custom-toggle span{flex:1}
+.report-custom-toggle .report-chevron{width:18px;height:18px;color:var(--muted);transition:transform .15s}
+.report-custom-toggle[aria-expanded="true"] .report-chevron{transform:rotate(180deg)}
+.report-custom-toggle[aria-expanded="true"]{border-bottom:1px solid var(--line)}
+#report-custom-area{padding:14px}
+.report-month-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.report-month-option{position:relative;display:flex;justify-content:center;align-items:center;padding:11px 6px;min-height:44px;font-size:.79rem;font-weight:500}
+.report-month-option input,.report-format-option input{position:absolute;width:1px;height:1px;opacity:0;margin:0}
+.report-month-option:has(input:checked){color:var(--accent-text,var(--orange))}
+.report-selection-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;font-size:.73rem;color:var(--muted)}
+.report-clear{border:0;background:transparent;color:var(--muted);padding:8px 2px;cursor:pointer;font-size:.75rem;text-decoration:underline;text-underline-offset:3px}
+.report-format-section{border:0;margin:24px 0 0;padding:22px 0 0;min-width:0;position:relative}
+.report-format-section::before{content:"";position:absolute;top:0;left:0;right:0;border-top:1px solid var(--line)}
+.report-format-section legend{padding:0;float:left;width:100%;margin-bottom:14px}
+.report-formats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;clear:both}
+.report-format-option{position:relative;display:flex;align-items:center;gap:12px;padding:16px;min-height:64px;font-size:.87rem;font-weight:600}
+.report-format-option>svg{color:var(--muted)}
+.report-radio{margin-left:auto;width:17px;height:17px;border:1px solid var(--muted);border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.report-format-option:has(input:checked) .report-radio{border-color:var(--accent-text,var(--orange))}
+.report-format-option:has(input:checked) .report-radio::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange)}
+.report-dialog .modal-actions{position:static;margin:0;padding:18px 24px;display:flex;flex-shrink:0;gap:12px;border-top:1px solid var(--line);background:var(--surface)}
+.report-dialog .modal-actions button{min-height:44px;border-radius:10px;font-size:.83rem;font-weight:600;padding:11px 18px;width:auto}
+.report-cancel{border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+.report-dialog #report-generate-btn{display:flex;justify-content:center;align-items:center;gap:9px;background:var(--orange);color:#16120e;border:1px solid var(--orange);min-width:155px}
+.report-dialog #report-generate-btn svg{width:19px;height:19px}
+.report-dialog #report-form-error{font-size:.78rem;line-height:1.5;margin:12px 14px}
+.report-dialog button:focus-visible,.report-month-option:has(input:focus-visible),.report-format-option:has(input:focus-visible){outline:2px solid var(--text);outline-offset:3px}
+.report-dialog .report-custom-toggle:focus-visible{outline-offset:-4px}
+@media(hover:hover){.report-presets button:hover,.report-month-option:hover,.report-format-option:hover,.report-cancel:hover{border-color:var(--muted)}.report-custom-toggle:hover,.report-dialog .modal-close:hover{background:var(--surface2)}.report-clear:hover{color:var(--text)}}
+.report-dialog button:disabled,.report-dialog label:has(input:disabled){cursor:wait}
+.report-dialog button:disabled:not(#report-generate-btn),.report-dialog label:has(input:disabled){opacity:.55}
+@media(max-width:480px){.report-dialog .report-builder-card{width:calc(100vw - 24px);max-height:calc(100dvh - 24px);border-radius:16px}.report-dialog .modal-head{padding:18px 18px 16px}.report-dialog .modal-head h3{font-size:1.06rem}.report-content{padding:18px}.report-presets{grid-template-columns:repeat(2,minmax(0,1fr))}.report-dialog .modal-actions{padding:14px 18px;display:grid;grid-template-columns:1fr 1.35fr}.report-dialog .modal-actions button{width:100%;padding:11px 8px}.report-dialog #report-generate-btn{min-width:0}.report-format-option{padding:14px 12px;gap:9px}.report-month-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.report-dialog *{transition:none!important}}

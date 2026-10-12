@@ -1,32 +1,40 @@
-import { signIn,signUp,signOut,getSession,onAuthChange } from './auth.js';
-import { ensureProfile,foundationHealthCheck } from './database.js';
-import { listFamilyData,sendFamilyInvite,respondFamilyInvite,cancelFamilyInvite,updateFamilyPermissions,removeFamilyLink,loadFamilyOverview,subscribeFamilyOverview } from './family.js?v=family-monitor-v17';
-import { getLegacyMigrationStatus,claimLegacyAccount } from './migration.js';
-import { updateProfileSettings } from './settings.js';
-import { initPWA, activateAppUpdate } from './pwa.js';
-import { localISO,listTransactions,createTransaction,updateTransaction,deleteTransaction,applyBalanceAdjustment,calculateCashStats,filterTransactions } from './finance.js';
-import { listCards,createCard,updateCard,deleteCard,createPurchase,updatePurchase,deletePurchase,listPurchases,listInstallments,listInvoiceStatuses,setInvoicePaid,cardInvoiceSummaries } from './cards.js';
-import { listGoals,createGoal,updateGoal,deleteGoal } from './goals.js';
-import { getBudget,listBudgetsByMonths,saveBudget,budgetSummary } from './budget.js';
-import { listCategories,activeCategories,createCategory,updateCategory,setCategoryActive,deleteCustomCategory,categoryIconSVG,normalizeCategoryIconKey,CATEGORY_ICON_OPTIONS,CATEGORY_COLOR_OPTIONS } from './categories.js';
-import { planningMonthKey,planningMonthDate,shiftPlanningMonth,planningMonthInput,planningLocalISO,listPlanningMonth,listPlanningByMonths,createPlanningItem,updatePlanningItem,cancelPlanningItem,completePlanningItem,movePlanningItem,movePendingPlanningMonth,planningNextMonthDate,planningStatusLabel,summarizePlanning,summarizePlanningPeriod } from './planning-v18.js?rev=planejamento-checklist';
-import { listNotifications,markNotificationRead,markAllNotificationsRead,markNotificationsForTarget,syncFinancialNotifications,subscribeNotifications } from './notifications.js';
-import { setAuthMode,showAuth,showApp,showModule,setAuthError,setAuthBusy,setAppBusy,toast,setLoading,formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,emptyState,applyTheme,captureDashboardMoneyState,prepareDashboardMoneyChange,playDashboardMoneyChange,settleDashboardMoneyChange } from './ui.js?v=motion-v15';
-import { getMonthlyDRE,getReportMonthOptions,downloadFinancialReportPDF } from './reports.js';
-import { beginDownloadMotion } from './download-motion-v16.js?v=16';
-import { familyMonthKey,familyDateFromMonth,shiftFamilyMonth,buildFamilyMonitorModel,filterFamilyTransactions,captureFamilyMetricState,animateFamilyMetricChange } from './family-monitor-v17.js?v=17';
-import { buildFinancialMonthLedger,isCardInvoicePayment,classifyTransaction } from './financial-ledger.js';
-import { needsLegacyReview, legacyReview, ownTransferReview } from './financial-integrity.js';
-import { downloadFinancialRowsCSV } from './report-export.js';
-import { suggestNature,natureLabel } from './transaction-nature.js';
-import { goalProgress, financialViewSummary } from './goal-integration.js';
-import { analysisMonthKey,analysisMonthDate,shiftAnalysisMonth,yearMonthKeys,equivalentComparisonSpec,availableAnalysisYears,buildAnalysisPeriod,comparePeriodTotals,compareCategories,compareCards,aggregateBudgetComparison,strongestCategoryChanges,buildMonthlyInsights,buildYearInsights,groupCategoryRowsWithRemainder } from './analytics.js';
-import { buildDashboardOverview } from './dashboard-overview.js?v=2.9.4';
-import { buildDashboardCashView, paidInvoiceMonthsForPurchase } from './dashboard-cash.js?v=2.9.4';
-import { initUpdateCenter, promptAppUpdateIfNeeded } from './update-center.js?v=2.9.4';
+import { initCardsWorkspace,cardErrorMessage } from './cards-workspace.js?v=2.9.20';
+import { adjustmentsAsInstallments,buildCardInvoices,cardToday,cardMonth,invoiceStatusLabel } from './card-domain.js?v=2.9.20';
+import { formOperation, clearFormOperation } from './request-operation.js?v=2.9.20';
+import { canonicalCategoryName, canonicalCategoryAmounts, canonicalCategoryLimits } from './category-alias.js?v=2.9.20';
+import { spendingInPastMonths } from './budget-suggestion.js?v=2.9.20';
+import { signIn,signUp,signOut,getSession,onAuthChange } from './auth.js?v=2.9.20';
+import { ensureProfile,foundationHealthCheck } from './database.js?v=2.9.20';
+import { listFamilyData,sendFamilyInvite,respondFamilyInvite,cancelFamilyInvite,updateFamilyPermissions,removeFamilyLink,loadFamilyOverview,subscribeFamilyOverview } from './family.js?v=2.9.20';
+import { getLegacyMigrationStatus,claimLegacyAccount } from './migration.js?v=2.9.20';
+import { updateProfileSettings } from './settings.js?v=2.9.20';
+import { initPWA, activateAppUpdate } from './pwa.js?v=2.9.20';
+import { localISO,listTransactions,createTransaction,updateTransaction,deleteTransaction,applyBalanceAdjustment,calculateCashStats,filterTransactions } from './finance.js?v=2.9.20';
+import { listCards,createCard,updateCard,deleteCard,createPurchase,updatePurchase,deletePurchase,listPurchases,listInstallments,listInvoiceStatuses,setInvoicePaid,listCardPayments,listCardAdjustments,listCardReconciliations,cardInvoiceSummaries } from './cards.js?v=2.9.20';
+import { listGoals,createGoal,updateGoal,deleteGoal } from './goals.js?v=2.9.20';
+import { getBudget,listBudgetsByMonths,saveBudget,budgetSummary } from './budget.js?v=2.9.20';
+import { listCategories,activeCategories,createCategory,updateCategory,setCategoryActive,deleteCustomCategory,categoryIconSVG,normalizeCategoryIconKey,CATEGORY_ICON_OPTIONS,CATEGORY_COLOR_OPTIONS } from './categories.js?v=2.9.20';
+import { planningMonthKey,planningMonthDate,shiftPlanningMonth,planningMonthInput,planningLocalISO,listPlanningMonth,listPlanningByMonths,createPlanningItem,updatePlanningItem,cancelPlanningItem,completePlanningItem,movePlanningItem,movePendingPlanningMonth,planningNextMonthDate,planningStatusLabel,planningNature,summarizePlanning,summarizePlanningPeriod } from './planning-v18.js?v=2.9.20';
+import { listNotifications,markNotificationRead,markAllNotificationsRead,markNotificationsForTarget,syncFinancialNotifications,subscribeNotifications } from './notifications.js?v=2.9.20';
+import { setAuthMode,showAuth,showApp,showModule,setAuthError,setAuthBusy,setAppBusy,toast,setLoading,formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,emptyState,applyTheme,captureDashboardMoneyState,prepareDashboardMoneyChange,playDashboardMoneyChange,settleDashboardMoneyChange } from './ui.js?v=2.9.20';
+import { getMonthlyDRE,getReportMonthOptions,downloadFinancialReportPDF } from './reports.js?v=2.9.20';
+import { beginDownloadMotion } from './download-motion-v16.js?v=2.9.20';
+import { familyMonthKey,familyDateFromMonth,shiftFamilyMonth,buildFamilyMonitorModel,filterFamilyTransactions,captureFamilyMetricState,animateFamilyMetricChange } from './family-monitor-v17.js?v=2.9.20';
+import { buildFinancialMonthLedger,isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund,classifyTransaction } from './financial-ledger.js?v=2.9.20';
+import { needsLegacyReview, legacyReview, ownTransferReview } from './financial-integrity.js?v=2.9.20';
+import { downloadFinancialRowsCSV } from './report-export.js?v=2.9.20';
+import { suggestNature,natureLabel } from './transaction-nature.js?v=2.9.20';
+import { goalProgress, financialViewSummary } from './goal-integration.js?v=2.9.20';
+import { buildReservePosition } from './reserve-position.js?v=2.9.20';
+import { saveReserveReconciliation } from './reserve-reconciliation.js?v=2.9.20';
+import { analysisMonthKey,analysisMonthDate,shiftAnalysisMonth,yearMonthKeys,equivalentComparisonSpec,availableAnalysisYears,buildAnalysisPeriod,comparePeriodTotals,compareCategories,compareCards,aggregateBudgetComparison,strongestCategoryChanges,buildMonthlyInsights,buildYearInsights,groupCategoryRowsWithRemainder } from './analytics.js?v=2.9.20';
+import { buildDashboardOverview } from './dashboard-overview.js?v=2.9.20';
+import { buildDashboardCashView, paidInvoiceMonthsForPurchase } from './dashboard-cash.js?v=2.9.20';
+import { initUpdateCenter, promptAppUpdateIfNeeded } from './update-center.js?v=2.9.20';
 
 let authMode='login', authBusy=false, appActionBusy=false, reportDownloadBusy=false, enterAppPromise=null, refreshBusy=false, bootstrapGeneration=0, notificationChannel=null, familyMonitorChannel=null;
 let currentUser=null, currentProfile=null;
+let cardsWorkspace=null;
 let dashboardDate=new Date(new Date().getFullYear(),new Date().getMonth(),1,12);
 let budgetDate=new Date(new Date().getFullYear(),new Date().getMonth(),1,12);
 let dashboardBudget={plan:null,items:[]};
@@ -34,7 +42,8 @@ let familyMonitorOwnerId=null,familyMonitorDate=new Date(new Date().getFullYear(
 let planningDate=new Date(new Date().getFullYear(),new Date().getMonth(),1,12),planningItems=[],planningTypeFilter='all',planningStatusFilter='all',planningSection='overview';
 const familyMonitorMonths=new Map();
 let reportReferenceDate=new Date(new Date().getFullYear(),new Date().getMonth(),1,12);
-let state={transactions:[],cards:[],purchases:[],installments:[],invoiceStatuses:[],goals:[],budget:{plan:null,items:[]},planning:[],categories:[],family:null,migration:{claimed:false},notifications:[]};
+let state={transactions:[],cards:[],purchases:[],installments:[],invoiceStatuses:[],cardPayments:[],cardAdjustments:[],cardReconciliations:[],goals:[],budget:{plan:null,items:[]},planning:[],categories:[],family:null,migration:{claimed:false},notifications:[]};
+let reservePosition=null;
 let categoriesKind='expense',categoriesSearch='',categoryActionId=null,budgetActionCategory='';
 
 function categoryKindFromDirection(direction){return Number(direction)>0?'income':'expense'}
@@ -104,7 +113,7 @@ async function loadDeferredStartupData(generation){
 
 async function loadNotificationStartupData(generation){
   try{
-    await syncFinancialNotifications({budget:dashboardBudget,transactions:state.transactions,installments:state.installments,cards:state.cards,invoiceStatuses:state.invoiceStatuses,goals:state.goals});
+    await syncFinancialNotifications({budget:dashboardBudget,transactions:state.transactions,installments:state.installments,cards:state.cards,invoiceStatuses:state.invoiceStatuses,goals:state.goals,categories:state.categories});
     const notifications=await listNotifications();
     if(generation!==bootstrapGeneration||!currentUser)return;
     state.notifications=notifications;
@@ -125,16 +134,16 @@ async function enterApp(session){
   const generation=++bootstrapGeneration;
   enterAppPromise=(async()=>{
     try{
-      currentUser=session.user;
+      currentUser=session.user;cardsWorkspace?.reset();
       await stopFamilyMonitorRealtime();familyMonitorOwnerId=null;familyMonitorData=null;familyMonitorModel=null;
-      state={transactions:[],cards:[],purchases:[],installments:[],invoiceStatuses:[],goals:[],budget:{plan:null,items:[]},planning:[],categories:[],family:null,migration:{claimed:false},notifications:[]};
+      state={transactions:[],cards:[],purchases:[],installments:[],invoiceStatuses:[],cardPayments:[],cardAdjustments:[],cardReconciliations:[],goals:[],budget:{plan:null,items:[]},planning:[],categories:[],family:null,migration:{claimed:false},notifications:[]};
       planningDate=new Date(dashboardDate);planningItems=[];
-      const [profile,transactions,cards,installments,invoiceStatuses,goals,budget,planning,categories]=await Promise.all([
-        ensureProfile(session.user),listTransactions(),listCards(),listInstallments(),listInvoiceStatuses(),listGoals(),getBudget(budgetDate),listPlanningMonth(dashboardDate),listCategories()
+      const [profile,transactions,cards,installments,invoiceStatuses,cardPayments,cardAdjustments,cardReconciliations,goals,budget,planning,categories]=await Promise.all([
+        ensureProfile(session.user),listTransactions(),listCards(),listInstallments(),listInvoiceStatuses(),listCardPayments(),listCardAdjustments(),listCardReconciliations(),listGoals(),getBudget(budgetDate),listPlanningMonth(dashboardDate),listCategories()
       ]);
       if(generation!==bootstrapGeneration)return;
       currentProfile=profile;
-      state.transactions=transactions;state.cards=cards;state.installments=installments;state.invoiceStatuses=invoiceStatuses;state.goals=goals;state.budget=budget;dashboardBudget=budget;state.planning=planning;state.categories=categories;planningItems=planning;
+      state.transactions=transactions;state.cards=cards;state.installments=[...installments.map(i=>({...i,legacy_covered_amount:cardReconciliations.filter(r=>r.installment_id===i.id).reduce((sum,r)=>sum+Number(r.amount),0)})),...adjustmentsAsInstallments(cardAdjustments,cards)];state.invoiceStatuses=invoiceStatuses;state.cardPayments=cardPayments;state.cardAdjustments=cardAdjustments;state.cardReconciliations=cardReconciliations;state.goals=goals;state.budget=budget;dashboardBudget=budget;state.planning=planning;state.categories=categories;planningItems=planning;
       showModule('home');renderBootstrapCore();renderSettings();showApp(session.user,currentProfile);setTimeout(()=>promptAppUpdateIfNeeded(),180);
       void loadDeferredStartupData(generation);
       void loadNotificationStartupData(generation);
@@ -149,23 +158,32 @@ async function enterApp(session){
   return enterAppPromise;
 }
 
-async function refreshAll(){if(refreshBusy)return;refreshBusy=true;setLoading(true);try{const [transactions,cards,purchases,installments,invoiceStatuses,goals,budget,planning,categories,family,migration]=await Promise.all([listTransactions(),listCards(),listPurchases(),listInstallments(),listInvoiceStatuses(),listGoals(),getBudget(budgetDate),listPlanningMonth(dashboardDate),listCategories(),listFamilyData(),getLegacyMigrationStatus()]);state={transactions,cards,purchases,installments,invoiceStatuses,goals,budget,planning,categories,family,migration,notifications:state.notifications||[]};if(planningSameMonth(budgetDate,dashboardDate))dashboardBudget=budget;if(planningMonthKey(planningDate)===planningMonthKey(dashboardDate))planningItems=planning;await syncFinancialNotifications({budget:dashboardBudget,transactions:state.transactions,installments:state.installments,cards:state.cards,invoiceStatuses:state.invoiceStatuses,goals:state.goals});state.notifications=await listNotifications();renderAll()}catch(error){console.error(error);toast(error?.message||'Falha ao sincronizar dados.','error')}finally{setLoading(false);refreshBusy=false}}
+async function refreshAll({throwOnError=false}={}){if(refreshBusy)return;refreshBusy=true;setLoading(true);try{const [transactions,cards,purchases,installments,invoiceStatuses,cardPayments,cardAdjustments,cardReconciliations,goals,budget,planning,categories,family,migration]=await Promise.all([listTransactions(),listCards(),listPurchases(),listInstallments(),listInvoiceStatuses(),listCardPayments(),listCardAdjustments(),listCardReconciliations(),listGoals(),getBudget(budgetDate),listPlanningMonth(dashboardDate),listCategories(),listFamilyData(),getLegacyMigrationStatus()]);state={transactions,cards,purchases,installments:[...installments.map(i=>({...i,legacy_covered_amount:cardReconciliations.filter(r=>r.installment_id===i.id).reduce((sum,r)=>sum+Number(r.amount),0)})),...adjustmentsAsInstallments(cardAdjustments,cards)],invoiceStatuses,cardPayments,cardAdjustments,cardReconciliations,goals,budget,planning,categories,family,migration,notifications:state.notifications||[]};if(planningSameMonth(budgetDate,dashboardDate))dashboardBudget=budget;if(planningMonthKey(planningDate)===planningMonthKey(dashboardDate))planningItems=planning;await syncFinancialNotifications({budget:dashboardBudget,transactions:state.transactions,installments:state.installments,cards:state.cards,invoiceStatuses:state.invoiceStatuses,goals:state.goals,categories:state.categories});state.notifications=await listNotifications();renderAll()}catch(error){console.error(error);toast(error?.message||'Falha ao sincronizar dados.','error');if(throwOnError)throw error;}finally{setLoading(false);refreshBusy=false}}
 
-function renderAll(){renderHome();renderTransactionPeriodOptions();renderTransactions();renderCards();renderGoals();renderBudget();renderPlanningHome();renderPlanning();renderFamily();renderSettings();renderCategoriesManager();renderNotifications();if(!document.getElementById('module-analytics')?.classList.contains('hidden'))void renderAnalytics()}
+function renderAll(){renderHome();if(document.getElementById('reserve-dialog')?.open)renderReserveDetails();renderTransactionPeriodOptions();renderTransactions();renderCards();renderGoals();renderBudget();renderPlanningHome();renderPlanning();renderFamily();renderSettings();renderCategoriesManager();renderNotifications();if(!document.getElementById('module-analytics')?.classList.contains('hidden'))void renderAnalytics()}
 
 function renderHome(){
   document.getElementById('home-month-label').textContent=monthLabel(dashboardDate);document.getElementById('home-period').textContent=`Referência: ${monthLabel(dashboardDate)}`;
   const cash=calculateCashStats(state.transactions,dashboardDate);const dashboardLedger=buildFinancialMonthLedger({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKey:dashboardDate});const invoiceSummaries=cardInvoiceSummaries(state.cards,state.installments,state.invoiceStatuses,dashboardDate);const dashboardCash=buildDashboardCashView({cash,transactions:state.transactions,invoiceSummaries,refDate:dashboardDate});
   document.getElementById('stat-balance').textContent=formatBRL(cash.balance);document.getElementById('stat-income').textContent=formatBRL(cash.income);document.getElementById('stat-expense').textContent=formatBRL(dashboardCash.expensePaid);document.getElementById('stat-card-expense').textContent=formatBRL(invoiceSummaries.reduce((total,s)=>total+s.total,0));document.getElementById('stat-month-result').textContent=formatBRL(dashboardCash.result);document.getElementById('stat-projected').textContent=formatBRL(dashboardCash.projected);
-  const bs=budgetSummary(dashboardBudget,state.transactions,state.installments,dashboardDate);
+  const bs=budgetSummary(dashboardBudget,state.transactions,state.installments,dashboardDate,new Date(),state.categories);
   const overview=buildDashboardOverview({transactions:state.transactions,ledger:dashboardLedger,budget:bs,refDate:dashboardDate});
-  document.getElementById('stat-allocation').textContent=formatBRL(dashboardLedger.allocation);
-  document.getElementById('stat-allocation-count').textContent=`${overview.allocationCount} ${overview.allocationCount===1?'registro':'registros'} no mês`;
+  // Patrimônio reservado: Metas + reservas avulsas confirmadas, menos resgates.
+  // Valores não conciliados nunca são presumidos independentes, pois podem já compor o saldo manual das Metas.
+  reservePosition=buildReservePosition({goals:state.goals,transactions:state.transactions,today:localISO()});
+  document.getElementById('stat-allocation').textContent=formatBRL(reservePosition.confirmedBalance);
+  const pendingCount=reservePosition.pending.length+reservePosition.archivedWithFunds.length;
+  const reserveCaption=document.getElementById('stat-allocation-count');
+  reserveCaption.textContent=pendingCount?`Saldo parcial · ${pendingCount} para conciliar`:'Saldo acumulado · até hoje';
+  reserveCaption.classList.toggle('reserve-pending',pendingCount>0);
+  document.getElementById('reserve-kpi-details').title=pendingCount?'Abrir conciliação das reservas pendentes':'Ver a composição do saldo reservado';
+  const reserveCard=document.getElementById('reserve-kpi-card');
+  if(reserveCard){reserveCard.setAttribute('aria-description', pendingCount?'Abre a composição do saldo reservado com observações pendentes.':'Abre a composição do saldo reservado.')}
   document.getElementById('home-transactions').innerHTML=overview.recent.length?overview.recent.map(homeTransactionRowHTML).join(''):emptyState('Nenhum lançamento realizado neste mês.');
   const summaries=invoiceSummaries.filter(s=>s.total>0).sort((a,b)=>(a.status==='paid')-(b.status==='paid')||a.dueDate-b.dueDate).slice(0,4);
   document.getElementById('home-invoices').innerHTML=summaries.length?summaries.map(s=>{
     const overdue=s.status!=='paid'&&localISO(s.dueDate)<localISO();
-    return `<button type="button" class="list-row home-invoice" data-open-invoice="${escapeHTML(s.card.id)}" aria-label="Abrir fatura de ${escapeHTML(s.card.name)}"><span class="list-row-main"><span class="list-row-title">${escapeHTML(s.card.name)}</span><span class="list-row-meta"><span>Vence ${s.dueDate.toLocaleDateString('pt-BR')}</span><span class="${s.status==='paid'?'positive':overdue?'negative':''}">${s.status==='paid'?'Paga':overdue?'Vencida':'Aberta'}</span></span></span><span class="list-row-amount">${formatBRL(s.total)}</span></button>`;
+    return `<button type="button" class="list-row home-invoice" data-open-invoice="${escapeHTML(s.card.id)}" aria-label="Abrir fatura de ${escapeHTML(s.card.name)}"><span class="list-row-main"><span class="list-row-title">${escapeHTML(s.card.name)}</span><span class="list-row-meta"><span>Vence ${s.dueDate.toLocaleDateString('pt-BR')}</span><span class="${s.status==='paid'?'positive':overdue?'negative':''}">${escapeHTML(invoiceStatusLabel(s.status))}</span></span></span><span class="list-row-amount">${formatBRL(s.total)}</span></button>`;
   }).join(''):emptyState('Nenhuma fatura com valor neste mês.');
   const goals=state.goals.filter(g=>g.status!=='archived').slice(0,4);
   document.getElementById('home-goals').innerHTML=goals.length?goals.map(g=>`<button type="button" class="home-goal" data-edit-goal="${escapeHTML(g.id)}" aria-label="Abrir meta ${escapeHTML(g.name)}">${goalMiniHTML(g)}</button>`).join(''):emptyState('Nenhuma meta cadastrada.');
@@ -178,14 +196,79 @@ function renderHome(){
   renderPlanningHome();
 }
 
-function homeTransactionRowHTML(t){
-  const signed=Number(t.direction)*Number(t.amount||0),isAdj=t.type==='balance_adjustment',isPayment=isCardInvoicePayment(t);
-  const record=(state.categories||[]).find(c=>!c.is_deleted&&String(c.name).toLocaleLowerCase('pt-BR')===String(t.category).toLocaleLowerCase('pt-BR')&&(c.kind==='both'||c.kind===(signed>=0?'income':'expense')));
-  const icon=record?categoryIconMarkup(record,t.category):`<span class="home-transaction-icon ${signed>=0?'income':'expense'}"><svg aria-hidden="true" class="ui-icon"><use href="#i-${isPayment?'card':isAdj?'wallet':signed>=0?'trending-up':'receipt'}"></use></svg></span>`;
-  const actions=isPayment?'<span class="home-payment-note">Via Cartões</span>':`${isAdj?'':`<button class="mini-btn" data-edit-transaction="${escapeHTML(t.id)}" aria-label="Editar ${escapeHTML(t.description)}" title="Editar"><svg aria-hidden="true" class="ui-icon"><use href="#i-pencil"></use></svg></button>`}<button class="mini-btn danger" data-delete-transaction="${escapeHTML(t.id)}" aria-label="Excluir ${escapeHTML(t.description)}" title="Excluir"><svg aria-hidden="true" class="ui-icon"><use href="#i-trash"></use></svg></button>`;
-  return `<div class="list-row home-transaction">${icon}<div class="list-row-main"><div class="list-row-title" title="${escapeHTML(t.description)}">${escapeHTML(t.description)}</div><div class="list-row-meta"><span>${escapeHTML(t.category||'Outros')}</span><span>· ${formatDate(t.occurred_on)}</span>${isAdj?'<span>· Ajuste</span>':''}${t.recurring_group_id?'<span>· Recorrente</span>':''}${transactionNatureBadge(t)}</div></div><div class="list-row-amount ${signed>=0?'positive':'negative'}">${signed>=0?'+':'−'} ${formatBRL(Math.abs(signed))}</div><div class="row-actions">${actions}</div></div>`;
+
+function renderReserveDetails(){
+  const position=reservePosition||buildReservePosition({goals:state.goals,transactions:state.transactions,today:localISO()});
+  const root=document.getElementById('reserve-detail-body');if(!root)return;
+  const shortDate=position.asOf.split('-').reverse().join('/');
+  const goalsList=position.accountedGoals.length
+    ? position.accountedGoals.map(({goal,progress})=>`<div class="reserve-composition-row"><span>${escapeHTML(goal.name)}</span><strong>${formatBRL(progress.saved)}</strong></div>`).join('')
+    : `<div class="reserve-empty-line">Nenhuma meta com saldo no momento.</div>`;
+  const investLabel=position.independentBalance===0?'Nenhum valor investido fora das metas':'Valor investido fora das metas';
+  const archivedNotice=position.archivedWithFunds.length?`<div class="reserve-inline-note">${position.archivedWithFunds.length} meta(s) arquivada(s) com saldo não entram na composição atual.</div>`:'';
+  const pendingNotice=position.pending.length?`<div class="reserve-inline-note">${position.pending.length} movimentação(ões) ainda não conciliadas não entram neste total.</div>`:'';
+  root.innerHTML=`
+    <div class="reserve-detail-total reserve-highlight-card">
+      <small>Saldo confirmado em ${shortDate}</small>
+      <strong>${formatBRL(position.confirmedBalance)}</strong>
+    </div>
+    <section class="reserve-detail-section reserve-composition-block">
+      <h4>Composição do saldo</h4>
+      <div class="reserve-summary-card">
+        <h5>Metas</h5>
+        ${goalsList}
+        <div class="reserve-composition-row reserve-composition-total"><span>Total em Metas</span><strong>${formatBRL(position.goalBalance)}</strong></div>
+      </div>
+      <div class="reserve-summary-card">
+        <h5>Investidos</h5>
+        <div class="reserve-composition-row"><span>${investLabel}</span><strong>${formatBRL(position.independentBalance)}</strong></div>
+        <div class="reserve-composition-row reserve-composition-total"><span>Total Investidos</span><strong>${formatBRL(position.independentBalance)}</strong></div>
+      </div>
+      <div class="reserve-summary-card reserve-highlight-card reserve-grand-total">
+        <h5>Total da composição</h5>
+        <strong>${formatBRL(position.confirmedBalance)}</strong>
+      </div>
+      ${archivedNotice}${pendingNotice}
+    </section>
+  `;
 }
-function transactionRowHTML(t){const signed=Number(t.direction)*Number(t.amount||0);const isAdj=t.type==='balance_adjustment';const isInvoicePayment=isCardInvoicePayment(t);return `<div class="list-row"><div class="list-row-main"><div class="list-row-title">${escapeHTML(t.description)}</div><div class="list-row-meta"><span>${escapeHTML(t.category||'Outros')}</span><span>${formatDate(t.occurred_on)}</span>${t.recurring_group_id?'<span>Recorrente</span>':''}${isAdj?'<span>Ajuste</span>':''}${isInvoicePayment?'<span>Pagamento de fatura</span>':''}${transactionNatureBadge(t,true)}</div></div><div><div class="list-row-amount ${signed>=0?'positive':'negative'}">${signed>=0?'+':'-'} ${formatBRL(Math.abs(signed))}</div><div class="row-actions">${isInvoicePayment?'<span class="muted">Gerenciado em Cartões</span>':`${isAdj?'':`<button class="mini-btn" data-edit-transaction="${t.id}">Editar</button>`}<button class="mini-btn danger" data-delete-transaction="${t.id}">Excluir</button>`}</div></div></div>`}
+function openReserveDetails(){renderReserveDetails();openDialog('reserve-dialog')}
+async function setReserveTreatment(id,value){
+  const row=state.transactions.find(t=>t.id===id);if(!row)return;
+  if(value==='included'&&!confirm('Confirme: esse aporte JÁ está dentro do saldo manual de uma meta. Ele não será somado novamente. Continuar?'))return;
+  if(value==='separate'&&!confirm('Confirme: esse dinheiro é uma reserva independente e NÃO está incluído nos saldos das metas. Continuar?'))return;
+  await runAppOperation('Conciliando reserva…','Verificando a movimentação no banco de dados.',async()=>{
+    await saveReserveReconciliation(id,value==='pending'?null:value);
+    await refreshAll();
+    renderReserveDetails();
+    toast('Classificação da reserva atualizada.','success');
+  },{animateDashboard:true});
+}
+
+// Componente único dos dois históricos: Dashboard (compacto) e Lançamentos (completo).
+// Compartilha ícones, cores, badges, valores e ações; o Dashboard define apenas o recorte dos dados.
+function sharedTransactionRowHTML(t,{compact=false}={}){
+  const signed=Number(t.direction)*Number(t.amount||0);
+  const isAdj=t.type==='balance_adjustment';
+  const isPayment=isCardInvoicePayment(t)||isCardInvoiceReversal(t)||isCardPurchaseRefund(t);
+  const categoryType=signed>=0?'income':'expense';
+  const sameName=(c)=>String(c.name).toLocaleLowerCase('pt-BR')===String(t.category).toLocaleLowerCase('pt-BR');
+  const historicName=(c)=>(c.name_history||[]).some(n=>String(n).toLocaleLowerCase('pt-BR')===String(t.category).toLocaleLowerCase('pt-BR'));
+  const matchesType=(c)=>c.kind==='both'||c.kind===categoryType;
+  const exact=(state.categories||[]).find(c=>sameName(c)&&matchesType(c));
+  const historic=exact?null:(state.categories||[]).find(c=>historicName(c)&&matchesType(c));
+  const originalVisual=historic?Object.entries(historic.name_history_visual||{}).find(([name])=>String(name).toLocaleLowerCase('pt-BR')===String(t.category).toLocaleLowerCase('pt-BR'))?.[1]:null;
+  const record=exact||(historic?{...historic,...(originalVisual||{})}:null);
+  const icon=record?categoryIconMarkup(record,t.category):`<span class="home-transaction-icon ${signed>=0?'income':'expense'}"><svg aria-hidden="true" class="ui-icon"><use href="#i-${isPayment?'card':isAdj?'wallet':signed>=0?'trending-up':'receipt'}"></use></svg></span>`;
+  const name=escapeHTML(t.description||'Lançamento');
+  const key=escapeHTML(t.id||'');
+  const actions=isPayment?'<span class="home-payment-note">Via Cartões</span>':`${isAdj?'':`<button type="button" class="mini-btn" data-edit-transaction="${key}" aria-label="Editar ${name}" title="Editar"><svg aria-hidden="true" class="ui-icon"><use href="#i-pencil"></use></svg></button>`}<button type="button" class="mini-btn danger" data-delete-transaction="${key}" aria-label="Excluir ${name}" title="Excluir"><svg aria-hidden="true" class="ui-icon"><use href="#i-trash"></use></svg></button>`;
+  const reviewTag=transactionNatureBadge(t,!compact);
+  const metadata=`<span>${escapeHTML(t.category||'Outros')}</span><span>· ${formatDate(t.occurred_on)}</span>${isAdj?'<span>· Ajuste</span>':''}${t.recurring_group_id?'<span>· Recorrente</span>':''}${isPayment?`<span>· ${isCardPurchaseRefund(t)?'Estorno de compra':isCardInvoiceReversal(t)?'Correção de pagamento':'Pagamento de fatura'}</span>`:''}${reviewTag}`;
+  return `<div class="list-row transaction-entry ${compact?'home-transaction transaction-entry-compact':'transaction-entry-full'}">${icon}<div class="list-row-main"><div class="list-row-title" title="${name}">${name}</div><div class="list-row-meta">${metadata}</div></div><div class="list-row-amount ${signed>=0?'positive':'negative'}">${signed>=0?'+':'−'} ${formatBRL(Math.abs(signed))}</div><div class="row-actions">${actions}</div></div>`;
+}
+function homeTransactionRowHTML(t){return sharedTransactionRowHTML(t,{compact:true});}
+function transactionRowHTML(t){return sharedTransactionRowHTML(t,{compact:false});}
 function renderTransactionPeriodOptions(){const select=document.getElementById('transaction-filter-month');if(!select)return;const current=select.value||'';const months=[...new Set(state.transactions.map(t=>String(t.occurred_on||'').slice(0,7)).filter(v=>/^\d{4}-\d{2}$/.test(v)))].sort().reverse();select.innerHTML='<option value="">Todos os períodos</option>'+months.map(value=>{const [y,m]=value.split('-').map(Number);return `<option value="${value}">${escapeHTML(monthLabel(new Date(y,m-1,1,12)))}</option>`}).join('');select.value=current&&months.includes(current)?current:'';}
 function transactionNatureBadge(t,showReview=false){return t.financial_nature?`<span class="nature-tag">${escapeHTML(natureLabel(t))}</span>`:(showReview&&needsLegacyReview(t))?'<span class="nature-tag" title="Classificação ainda não confirmada. Clique em Editar para revisar.">Revisar natureza</span>':'';}
 function renderTransactions(){
@@ -208,13 +291,10 @@ function renderTransactions(){
 }
 
 function purchasePaidInvoiceMonths(purchaseId){return paidInvoiceMonthsForPurchase(state.installments,state.invoiceStatuses,purchaseId)}
-function purchaseTouchesPaidInvoice(purchaseId){return purchasePaidInvoiceMonths(purchaseId).length>0}
-function explainPaidPurchaseLock(){toast('Reabra a fatura paga antes de editar ou excluir esta compra.','error')}
+function purchaseTouchesPaidInvoice(purchaseId){return purchasePaidInvoiceMonths(purchaseId).length>0||state.cardAdjustments.some(a=>a.purchase_id===purchaseId)||state.cardReconciliations.some(r=>state.installments.some(i=>i.id===r.installment_id&&i.purchase_id===purchaseId))}
+function explainPaidPurchaseLock(){toast('Corrija os pagamentos vinculados antes de editar ou excluir esta compra.','error')}
 
-function renderCards(){
-  document.getElementById('cards-list').innerHTML=state.cards.length?state.cards.map(card=>{const all=state.installments.filter(i=>i.card_id===card.id);const paidMonths=new Set(state.invoiceStatuses.filter(x=>x.card_id===card.id&&x.status==='paid').map(x=>x.invoice_month));const outstanding=all.filter(i=>!paidMonths.has(i.invoice_month)).reduce((a,b)=>a+Number(b.amount||0),0);const available=Number(card.credit_limit)-outstanding;return `<article class="credit-card"><div class="credit-card-head"><div><span class="eyebrow">CARTÃO</span><h3>${escapeHTML(card.name)}</h3></div><span>${card.closing_day}/${card.due_day}</span></div><div class="credit-limit">${formatBRL(card.credit_limit)}</div><div class="credit-meta"><span>Comprometido ${formatBRL(outstanding)}</span><span>Disponível ${formatBRL(available)}</span><span>Juros ${Number(card.revolving_interest||0).toFixed(2)}%</span></div><div class="card-actions"><button class="mini-btn" data-new-purchase="${card.id}">＋ Compra</button><button class="mini-btn" data-open-invoice="${card.id}">Fatura</button><button class="mini-btn" data-edit-card="${card.id}">Editar</button><button class="mini-btn danger" data-delete-card="${card.id}">Excluir</button></div></article>`}).join(''):emptyState('Nenhum cartão cadastrado.');
-  document.getElementById('card-purchases-list').innerHTML=state.purchases.length?state.purchases.map(p=>{const locked=purchaseTouchesPaidInvoice(p.id);return `<div class="list-row"><div class="list-row-main"><div class="list-row-title">${escapeHTML(p.description)}</div><div class="list-row-meta"><span>${escapeHTML(p.ff2_cards?.name||'Cartão')}</span><span>${formatDate(p.purchase_date)}</span><span>${p.installment_count}x</span><span>${escapeHTML(p.category||'Outros')}</span>${locked?'<span>Fatura paga</span>':''}</div></div><div><div class="list-row-amount">${formatBRL(p.total_amount)}</div><div class="row-actions"><button class="mini-btn" data-edit-purchase="${p.id}" ${locked?'disabled title="Reabra a fatura antes de editar"':''}>Editar</button><button class="mini-btn danger" data-delete-purchase="${p.id}" ${locked?'disabled title="Reabra a fatura antes de excluir"':''}>Excluir</button></div></div></div>`}).join(''):emptyState('Nenhuma compra cadastrada.');
-}
+function renderCards(){cardsWorkspace?.render()}
 
 function goalMiniHTML(g){const progress=goalProgress(g,state.transactions);const pct=progress.percent;return `<div class="list-row"><div class="list-row-main"><div class="list-row-title">${escapeHTML(g.name)}</div><div class="progress"><span style="width:${pct}%"></span></div><div class="list-row-meta"><span>${pct.toFixed(0)}%</span><span>${formatBRL(progress.saved)} de ${formatBRL(g.target_amount)}</span></div></div></div>`}
 function renderGoals(){document.getElementById('goals-list').innerHTML=state.goals.length?state.goals.map(g=>{const progress=goalProgress(g,state.transactions);const pct=progress.percent;return `<article class="goal-card"><div class="goal-card-head"><div><span class="eyebrow">${progress.completed?'CONCLUÍDA':'META'}</span><h3>${escapeHTML(g.name)}</h3></div>${g.due_date?`<span>${formatDate(g.due_date)}</span>`:''}</div><div class="goal-amounts"><strong>${formatBRL(progress.saved)}</strong><span>de ${formatBRL(g.target_amount)}</span></div><div class="progress"><span style="width:${pct}%"></span></div><div class="progress-meta"><span>${pct.toFixed(0)}%</span><span>Faltam ${formatBRL(progress.remaining)}</span></div>${progress.linked||progress.pending?`<p class="goal-progress-details">${formatBRL(progress.linked)} em aportes vinculados${progress.pending?` · ${formatBRL(progress.pending)} futuros`:''}</p>`:''}<div class="card-actions"><button class="mini-btn" data-edit-goal="${g.id}">Editar</button><button class="mini-btn danger" data-delete-goal="${g.id}">Excluir</button></div></article>`}).join(''):emptyState('Nenhuma meta cadastrada.')}
@@ -223,14 +303,14 @@ let budgetDraft={income:0,limits:{}};
 let budgetDraftDirty=false;
 let budgetSuggestion=null;
 function cleanBudgetCategoryName(value){return String(value??'').replace(/\s+/g,' ').trim()}
-function currentBudgetSummary(){return budgetSummary(state.budget,state.transactions,state.installments,budgetDate)}
+function currentBudgetSummary(){return budgetSummary(state.budget,state.transactions,state.installments,budgetDate,new Date(),state.categories)}
 function resetBudgetDraftFromState(){
   const limits={};
-  (state.budget.items||[]).forEach(item=>{const name=cleanBudgetCategoryName(item.category);if(name)limits[name]=Math.max(0,Number(item.limit_amount||0))});
+  Object.assign(limits,canonicalCategoryLimits(state.budget.items||[],state.categories||[]));
   budgetDraft={income:Math.max(0,Number(state.budget.plan?.planned_income||0)),limits};
   budgetDraftDirty=false;
 }
-function budgetCategoryRecord(name){return (state.categories||[]).find(row=>!row.is_deleted&&(row.kind==='expense'||row.kind==='both')&&String(row.name).toLocaleLowerCase('pt-BR')===String(name).toLocaleLowerCase('pt-BR'))||null}
+function budgetCategoryRecord(name){const canonical=canonicalCategoryName(name,state.categories||[]);return (state.categories||[]).find(row=>!row.is_deleted&&(row.kind==='expense'||row.kind==='both')&&String(row.name).toLocaleLowerCase('pt-BR')===String(canonical).toLocaleLowerCase('pt-BR'))||null}
 function budgetDisplayCategories(bs){
   const pending=planningPendingExpenseMap();
   const names=new Set([...Object.keys(budgetDraft.limits||{}),...Object.keys(bs.spentMap||{}),...Object.keys(pending||{})]);
@@ -242,7 +322,7 @@ function categoryIconMarkup(record,name=''){
 }
 function planningPendingExpenseMap(){
   const out={};
-  (planningItems||[]).forEach(item=>{if(item.status!=='pending'||Number(item.direction)>=0)return;const cat=cleanBudgetCategoryName(item.category)||'Outros';out[cat]=(out[cat]||0)+Number(item.amount||0)});
+  (planningItems||[]).forEach(item=>{if(item.status!=='pending'||planningNature(item)!=='consumption')return;const cat=canonicalCategoryName(cleanBudgetCategoryName(item.category)||'Outros',state.categories||[]);out[cat]=(out[cat]||0)+Number(item.amount||0)});
   return out;
 }
 function budgetCategoryRow(cat,bs){
@@ -395,22 +475,11 @@ function buildBudgetSuggestion(){
   const income=budgetSuggestionIncome();
   if(income<=0)throw new Error('Adicione uma receita planejada para este mês antes de gerar a sugestão.');
   const prefixes=[1,2,3].map(back=>monthPrefix(addMonth(budgetDate,-back)));
-  const categoryTotals={};
-  const monthTotals=Object.fromEntries(prefixes.map(prefix=>[prefix,0]));
+  const history=spendingInPastMonths({transactions:state.transactions,installments:state.installments,categories:state.categories,months:prefixes.map(prefix=>prefix+'-01')});
   const activeRows=activeCategories(state.categories||[],'expense');
   const activeNames=new Set(activeRows.map(row=>row.name));
-  state.transactions.filter(t=>t.affects_month_result&&Number(t.direction)<0).forEach(t=>{
-    const prefix=String(t.occurred_on||'').slice(0,7),cat=cleanBudgetCategoryName(t.category)||'Outros';
-    if(!prefixes.includes(prefix)||!activeNames.has(cat))return;
-    categoryTotals[cat]=(categoryTotals[cat]||0)+Number(t.amount||0);
-    monthTotals[prefix]+=Number(t.amount||0);
-  });
-  state.installments.forEach(i=>{
-    const prefix=String(i.invoice_month||'').slice(0,7),cat=cleanBudgetCategoryName(i.ff2_card_purchases?.category)||'Outros';
-    if(!prefixes.includes(prefix)||!activeNames.has(cat))return;
-    categoryTotals[cat]=(categoryTotals[cat]||0)+Number(i.amount||0);
-    monthTotals[prefix]+=Number(i.amount||0);
-  });
+  const categoryTotals=Object.fromEntries(Object.entries(history.categoryTotals).filter(([name])=>activeNames.has(name)));
+  const monthTotals=Object.fromEntries(Object.entries(history.monthlyCategoryTotals).map(([month,map])=>[month,Object.entries(map).filter(([name])=>activeNames.has(name)).reduce((sum,[,value])=>sum+value,0)]));
   const activeMonths=Object.values(monthTotals).filter(value=>value>0).length;
   if(!activeMonths)throw new Error('Ainda não há gastos realizados suficientes nas categorias ativas dos 3 meses anteriores.');
   const raw={};
@@ -506,7 +575,7 @@ function planningFilteredItems(){return planningItems.filter(item=>{if(planningT
 function planningUnifiedModel(){
   const summary=summarizePlanning(planningItems);
   const cash=calculateCashStats(state.transactions,planningDate);
-  const bs=budgetSummary(state.budget,state.transactions,state.installments,planningDate);
+  const bs=budgetSummary(state.budget,state.transactions,state.installments,planningDate,new Date(),state.categories);
   const pendingMap=planningPendingExpenseMap();
   const categories=new Set([...Object.keys(bs.itemMap||{}),...Object.keys(bs.spentMap||{}),...Object.keys(pendingMap||{})]);
   const limitRows=[...categories].map(category=>{
@@ -583,7 +652,7 @@ function setPlanningSection(section='overview'){
 }
 function planningRowHTML(item){
   const dir=Number(item.direction)>0?'income':'expense';
-  const type=dir==='income'?'A receber':'A pagar';
+  const nature=planningNature(item);const type=dir==='income'?'A receber':nature==='allocation'?'Reservar':nature==='transfer'?'Transferir':'A pagar';
   const status=planningStatusLabel(item);
   const isDone=['paid','received'].includes(item.status);
   const isPending=item.status==='pending';
@@ -600,13 +669,18 @@ function planningRowHTML(item){
   }
   return `<article class="planning-row planning-row-${statusClass||'pending'}"><div class="planning-check-slot">${checkControl}</div><div class="planning-row-main"><div class="planning-row-title"><span class="planning-type ${dir}">${type}</span><strong>${escapeHTML(item.description)}</strong></div><div class="planning-row-meta"><span>${escapeHTML(item.category||'Outros')}</span><span>Previsto ${formatDate(item.planned_on)}</span>${realized}${item.notes?`<span>${escapeHTML(item.notes)}</span>`:''}</div></div>${actions?`<div class="planning-actions">${actions}</div>`:''}<div class="planning-row-side"><strong class="${dir==='income'?'positive':'negative'}">${dir==='income'?'+':'-'} ${formatBRL(item.amount)}</strong><span class="planning-status ${statusClass}">${status}</span></div></article>`;
 }
-function renderPlanning(){
+function renderPlanningCardObligations(){
+ const month=planningMonthKey(planningDate),rows=state.cards.flatMap(card=>buildCardInvoices(card,state.installments,state.invoiceStatuses)).filter(inv=>inv.invoiceMonth===month&&inv.balanceDue>0);
+ document.getElementById('planning-card-obligations').innerHTML=rows.length?rows.map(inv=>`<button type="button" class="planning-card-obligation" data-open-invoice="${escapeHTML(inv.card.id)}" data-invoice-month="${inv.invoiceMonth}"><span><strong>${escapeHTML(inv.card.name)}</strong><small>Fatura ${monthLabel(planningDate)} · Vence ${formatDate(inv.dueOn)}</small></span><strong>${formatBRL(inv.balanceDue)}</strong></button>`).join(''):emptyState('Nenhuma fatura pendente nesta competência.');
+ document.getElementById('planning-card-total').textContent=formatBRL(rows.reduce((sum,inv)=>sum+inv.balanceDue,0));
+}
+function renderPlanning(){renderPlanningCardObligations();
   const label=document.getElementById('planning-month-label');if(!label)return;
   const model=planningUnifiedModel(),summary=model.summary;
   const allocations=buildFinancialMonthLedger({transactions:state.transactions,monthKey:planningDate});
   const allocated=document.getElementById('planning-allocation-realized'),future=document.getElementById('planning-allocation-future'),projected=document.getElementById('planning-cash-projected');
   if(allocated)allocated.textContent=formatBRL(allocations.allocation);
-  if(future)future.textContent=formatBRL(allocations.futureAllocation);
+  if(future)future.textContent=formatBRL(allocations.futureAllocation);const plannedAllocation=document.getElementById('planning-allocation-planned');if(plannedAllocation)plannedAllocation.textContent=`Reservas programadas: ${formatBRL(summary.pendingAllocation)}`;
   if(projected){const cash=calculateCashStats(state.transactions,planningDate);const thisMonth=planningSameMonth(planningDate,planningCurrentMonth());projected.textContent=thisMonth?formatBRL(cash.projectedCashBalance):'—';projected.title=thisMonth?'Saldo atual mais lançamentos futuros já registrados, incluindo reservas. Não soma Meus planos para evitar duplicação.':'A projeção do saldo livre aparece somente no mês atual para não sugerir um saldo histórico incorreto.'}
 
   label.textContent=monthLabel(planningDate);
@@ -627,12 +701,13 @@ function renderPlanning(){
 async function loadPlanningMonth(date=planningDate,{quiet=false}={}){
   planningDate=planningMonthDate(date);budgetDate=new Date(planningDate);if(!quiet)setLoading(true);try{const [items,budget]=await Promise.all([listPlanningMonth(planningDate),getBudget(budgetDate)]);planningItems=items;state.budget=budget;if(planningSameMonth(planningDate,dashboardDate)){state.planning=planningItems;renderPlanningHome()}renderBudget();renderPlanning()}finally{if(!quiet)setLoading(false)}
 }
-function openNewPlanning(){const form=document.getElementById('planning-form');form.reset();document.getElementById('planning-id').value='';document.getElementById('planning-dialog-title').textContent='Novo item';document.getElementById('planning-date').value=planningDefaultDate();fillCategorySelect('planning-category','',categoryKindFromDirection(document.getElementById('planning-direction').value));setFormError('planning-form-error','');openDialog('planning-dialog')}
-function openEditPlanning(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;document.getElementById('planning-id').value=item.id;document.getElementById('planning-dialog-title').textContent='Editar item';document.getElementById('planning-direction').value=String(item.direction);document.getElementById('planning-description').value=item.description||'';document.getElementById('planning-amount').value=item.amount||'';document.getElementById('planning-date').value=item.planned_on;fillCategorySelect('planning-category',item.category||'Outros',categoryKindFromDirection(item.direction));document.getElementById('planning-notes').value=item.notes||'';setFormError('planning-form-error','');openDialog('planning-dialog')}
-async function onPlanningSubmit(event){event.preventDefault();const btn=document.getElementById('planning-save-btn');setButtonBusy(btn,true);setFormError('planning-form-error','');try{const id=document.getElementById('planning-id').value;const input={direction:Number(document.getElementById('planning-direction').value),description:document.getElementById('planning-description').value,amount:Number(document.getElementById('planning-amount').value),date:document.getElementById('planning-date').value,category:document.getElementById('planning-category').value,notes:document.getElementById('planning-notes').value};if(!input.description.trim()||!input.date||input.amount<=0)throw new Error('Preencha descrição, data prevista e um valor maior que zero.');if(!input.category)throw new Error('Ative ou crie uma categoria em Configurações > Categorias antes de salvar.');await runAppOperation(id?'Atualizando planejamento…':'Salvando planejamento…','Guardando esta previsão sem alterar seus lançamentos reais.',async()=>{if(id)await updatePlanningItem(id,input);else await createPlanningItem(input);closeDialog('planning-dialog');await loadPlanningMonth(planningDate,{quiet:true});toast(id?'Item atualizado.':'Item adicionado ao planejamento.','success')})}catch(error){console.error(error);setFormError('planning-form-error',error?.message||'Não foi possível salvar este item.')}finally{setButtonBusy(btn,false)}}
+function updatePlanningNatureVisibility(){const income=Number(document.getElementById('planning-direction').value)>0;const wrap=document.getElementById('planning-nature-wrap');if(wrap)wrap.classList.toggle('hidden',income);if(income)document.getElementById('planning-nature').value='consumption';}
+function openNewPlanning(){const form=document.getElementById('planning-form');form.reset();document.getElementById('planning-id').value='';document.getElementById('planning-dialog-title').textContent='Novo item';document.getElementById('planning-date').value=planningDefaultDate();updatePlanningNatureVisibility();fillCategorySelect('planning-category','',categoryKindFromDirection(document.getElementById('planning-direction').value));setFormError('planning-form-error','');openDialog('planning-dialog')}
+function openEditPlanning(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;document.getElementById('planning-id').value=item.id;document.getElementById('planning-dialog-title').textContent='Editar item';document.getElementById('planning-direction').value=String(item.direction);document.getElementById('planning-description').value=item.description||'';document.getElementById('planning-amount').value=item.amount||'';document.getElementById('planning-date').value=item.planned_on;document.getElementById('planning-nature').value=planningNature(item)==='income'?'consumption':planningNature(item);updatePlanningNatureVisibility();fillCategorySelect('planning-category',item.category||'Outros',categoryKindFromDirection(item.direction));document.getElementById('planning-notes').value=item.notes||'';setFormError('planning-form-error','');openDialog('planning-dialog')}
+async function onPlanningSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('planning-save-btn');setButtonBusy(btn,true);setFormError('planning-form-error','');try{const id=document.getElementById('planning-id').value;const input={direction:Number(document.getElementById('planning-direction').value),description:document.getElementById('planning-description').value,amount:Number(document.getElementById('planning-amount').value),date:document.getElementById('planning-date').value,category:document.getElementById('planning-category').value,financialNature:Number(document.getElementById('planning-direction').value)>0?'income':document.getElementById('planning-nature').value,notes:document.getElementById('planning-notes').value};if(!input.description.trim()||!input.date||input.amount<=0)throw new Error('Preencha descrição, data prevista e um valor maior que zero.');if(!input.category)throw new Error('Ative ou crie uma categoria em Configurações > Categorias antes de salvar.');await runAppOperation(id?'Atualizando planejamento…':'Salvando planejamento…','Guardando esta previsão sem alterar seus lançamentos reais.',async()=>{if(id)await updatePlanningItem(id,input);else await createPlanningItem({...input,operation:formOperation(submittedForm,input)});closeDialog('planning-dialog');await loadPlanningMonth(planningDate,{quiet:true});toast(id?'Item atualizado.':'Item adicionado ao planejamento.','success')})}catch(error){console.error(error);setFormError('planning-form-error',error?.message||'Não foi possível salvar este item.')}finally{setButtonBusy(btn,false)}}
 async function setPlanningMonth(date){if(appActionBusy)return;await runAppOperation('Carregando planejamento…',`Buscando as previsões de ${monthLabel(date)}.`,async()=>{await loadPlanningMonth(date,{quiet:true})})}
-async function completePlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;const isIncome=Number(item.direction)>0,verb=isIncome?'recebido':'pago';if(!confirm(`Marcar ${item.description} como ${verb} hoje e registrar ${isIncome?'uma receita':'uma despesa'} de ${formatBRL(item.amount)}?`))return;await runAppOperation(isIncome?'Registrando recebimento…':'Registrando pagamento…',`Criando o lançamento real com a data de hoje e concluindo o item do planejamento.`,async()=>{await completePlanningItem(id,planningLocalISO(new Date()));await refreshAll();await loadPlanningMonth(planningDate,{quiet:true});toast(isIncome?'Recebimento registrado.':'Pagamento registrado.','success')},{animateDashboard:true})}
-async function movePlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;const target=planningNextMonthDate(item.planned_on);if(!confirm(`Mover este item para ${monthLabel(planningMonthDate(target))}? O mês atual ficará registrado como adiado.`))return;await runAppOperation('Movendo planejamento…','Mantendo o histórico do mês original e criando o item pendente no mês seguinte.',async()=>{await movePlanningItem(id,target);await loadPlanningMonth(planningDate,{quiet:true});toast('Item movido para o próximo mês.','success')})}
+async function completePlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;const isIncome=Number(item.direction)>0,nature=planningNature(item),verb=isIncome?'recebido':nature==='allocation'?'reservado':'pago';if(!confirm(`Marcar ${item.description} como ${verb} hoje e registrar ${isIncome?'uma receita':nature==='allocation'?'uma reserva':nature==='transfer'?'uma transferência':'uma despesa'} de ${formatBRL(item.amount)}?`))return;await runAppOperation(isIncome?'Registrando recebimento…':'Registrando pagamento…',`Criando o lançamento real com a data de hoje e concluindo o item do planejamento.`,async()=>{await completePlanningItem(id,planningLocalISO(new Date()),nature);await refreshAll();await loadPlanningMonth(planningDate,{quiet:true});toast(isIncome?'Recebimento registrado.':'Pagamento registrado.','success')},{animateDashboard:true})}
+async function movePlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;const target=planningNextMonthDate(item.planned_on);if(!confirm(`Mover este item para ${monthLabel(planningMonthDate(target))}? O mês atual ficará registrado como adiado.`))return;await runAppOperation('Movendo planejamento…','Mantendo o histórico do mês original e criando o item pendente no mês seguinte.',async()=>{await movePlanningItem(id,target,planningNature(item));await loadPlanningMonth(planningDate,{quiet:true});toast('Item movido para o próximo mês.','success')})}
 async function cancelPlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;if(!confirm('Cancelar este item do planejamento?'))return;await runAppOperation('Cancelando item…','Mantendo o registro no histórico como cancelado.',async()=>{await cancelPlanningItem(id);await loadPlanningMonth(planningDate,{quiet:true});toast('Item cancelado.','success')})}
 async function moveAllPlanningPending(){const summary=summarizePlanning(planningItems);if(!summary.pendingCount)return;const next=shiftPlanningMonth(planningDate,1);if(!confirm(`Mover ${summary.pendingCount} ${summary.pendingCount===1?'item pendente':'itens pendentes'} para ${monthLabel(next)}?`))return;await runAppOperation('Movendo pendências…','Transferindo os itens pendentes e preservando o histórico deste mês.',async()=>{const count=await movePendingPlanningMonth(planningDate,next);await loadPlanningMonth(planningDate,{quiet:true});toast(`${count} ${count===1?'item movido':'itens movidos'} para ${monthLabel(next)}.`,'success')})}
 function planningAnalysisPanel(summary,label,actual){const statusTotal=summary.completedCount+summary.pendingCount+summary.deferredCount;return `<article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>${escapeHTML(label)}</h3><p>Planejado x realizado no período.</p></div></div>${analysisComparisonBars([{label:'Receitas',a:summary.plannedIncome,b:actual.income},{label:'Despesas',a:summary.plannedExpense,b:actual.totalExpense},{label:'Resultado',a:summary.plannedResult,b:actual.result}],'Planejado','Real')}<div class="planning-analysis-status"><article><span>Concluídos</span><strong>${summary.completedCount}</strong></article><article><span>Pendentes</span><strong>${summary.pendingCount}</strong></article><article><span>Adiados</span><strong>${summary.deferredCount}</strong></article><article><span>Execução</span><strong>${statusTotal?Math.round(summary.completionRate):0}%</strong></article></div></article>`}
@@ -810,14 +885,14 @@ async function renderAnalytics(){
     if(financialView==='general'&&analysisTab==='budget')budgets=await listBudgetsByMonths([...keysA,...keysB]);
     if(financialView==='general'&&analysisTab==='planning')planningByMonth=await listPlanningByMonths([...keysA,...keysB]);
     if(seq!==analysisRenderSeq)return;
-    const periodA=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,budgetsByMonth:budgets,monthKeys:keysA,monthLabel,cutoffDaysByMonth:spec.cutoffDaysA});
-    const periodB=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,budgetsByMonth:budgets,monthKeys:keysB,monthLabel,cutoffDaysByMonth:spec.cutoffDaysB});
+    const periodA=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,budgetsByMonth:budgets,monthKeys:keysA,monthLabel,categories:state.categories,cutoffDaysByMonth:spec.cutoffDaysA});
+    const periodB=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,budgetsByMonth:budgets,monthKeys:keysB,monthLabel,categories:state.categories,cutoffDaysByMonth:spec.cutoffDaysB});
     const comparison=comparePeriodTotals(periodA,periodB);
     if(financialView!=='general'){
       host.innerHTML=financialFocusHTML(periodA,periodB,labels,financialView);
     }else if(analysisTab==='overview'){
       const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),6);
-      const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel});
+      const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel,categories:state.categories});
       const direct=[{label:'Receitas',a:periodA.totals.income,b:periodB.totals.income},{label:'Despesas',a:periodA.totals.totalExpense,b:periodB.totals.totalExpense},{label:'Cartões',a:periodA.totals.cardExpense,b:periodB.totals.cardExpense}];
       let insights;
       if(analysisMode==='years'){
@@ -843,7 +918,7 @@ async function renderAnalytics(){
     }else if(analysisTab==='cards'){
       const rows=compareCards(periodA,periodB,8).map(item=>({...item,label:item.name}));
       const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),6);
-      const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel});
+      const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel,categories:state.categories});
       host.innerHTML=`<div class="analytics-metrics cards-analytics-metrics">${analysisMetric('Gasto no cartão',comparison.cardExpense,{goodUp:false})}<article class="analytics-metric"><span>Participação no gasto · ${escapeHTML(labels.a)}</span><strong>${periodA.totals.totalExpense?`${(periodA.totals.cardExpense/periodA.totals.totalExpense*100).toFixed(1)}%`:'0%'}</strong><small>Do total de despesas</small></article></div><div class="analytics-grid two"><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Por cartão</h3><p>${escapeHTML(labels.a)} × ${escapeHTML(labels.b)}</p></div></div>${analysisComparisonBars(rows,labels.a,labels.b)}</article><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Evolução no crédito</h3><p>${analysisMode==='years'?`Compras no cartão em ${yearA}.`:'Últimos 6 meses.'}</p></div></div>${analysisLineChart(context.months,[{label:'Cartão',value:m=>m.cardExpense}])}</article></div>`;
     }
   }catch(error){console.error('Análises:',error);host.innerHTML=analysisEmpty('Não foi possível montar a análise',error?.message||'Tente novamente em alguns instantes.')}
@@ -871,7 +946,7 @@ function notificationTime(value){const date=new Date(value);if(Number.isNaN(date
 function notificationItemHTML(n){const unread=!n.read_at;return `<article class="notification-item ${unread?'unread':''}"><span class="notification-item-icon"><svg class="ui-icon" aria-hidden="true"><use href="#${notificationIcon(n.type)}"></use></svg></span><div class="notification-item-main"><div class="notification-item-title">${unread?'<span class="notification-dot" aria-hidden="true"></span>':''}<span>${escapeHTML(n.title||'Notificação')}</span></div>${n.body?`<div class="notification-item-body">${escapeHTML(n.body)}</div>`:''}<div class="notification-item-meta">${escapeHTML(notificationTime(n.created_at))}</div></div><button class="notification-item-action" type="button" data-notification-open="${n.id}">${escapeHTML(notificationActionLabel(n))}</button></article>`}
 function renderNotifications(){const rows=state.notifications||[];const unread=rows.filter(n=>!n.read_at).length;const badge=document.getElementById('notification-badge');if(badge){badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('hidden',unread===0)}const caption=document.getElementById('notification-popover-caption');if(caption)caption.textContent=unread?`${unread} não lida${unread===1?'':'s'}`:'Nenhuma não lida';const preview=document.getElementById('notification-preview-list');if(preview)preview.innerHTML=rows.length?rows.slice(0,6).map(notificationItemHTML).join(''):'<div class="notification-empty">Nenhuma notificação por enquanto.</div>';const history=document.getElementById('notification-history-list');if(history)history.innerHTML=rows.length?rows.map(notificationItemHTML).join(''):'<div class="notification-empty">Seu histórico de notificações está vazio.</div>';const center=document.getElementById('notification-center-caption');if(center)center.textContent=`${rows.length} notificação${rows.length===1?'':'ões'} · ${unread} não lida${unread===1?'':'s'}`;document.getElementById('notification-mark-all')?.toggleAttribute('disabled',unread===0);document.getElementById('notification-center-mark-all')?.toggleAttribute('disabled',unread===0)}
 function setNotificationPopover(open){const pop=document.getElementById('notification-popover'),bell=document.getElementById('notification-bell');if(!pop||!bell)return;pop.classList.toggle('hidden',!open);bell.setAttribute('aria-expanded',open?'true':'false')}
-async function openNotification(id){const item=(state.notifications||[]).find(n=>n.id===id);if(!item)return;if(!item.read_at){await markNotificationRead(item.id);item.read_at=new Date().toISOString();renderNotifications()}setNotificationPopover(false);closeDialog('notification-center-dialog');if(item.target==='family'){showModule('family');setTimeout(()=>document.getElementById('family-incoming')?.scrollIntoView({behavior:'smooth',block:'center'}),60);return}if(item.target==='budget'){showModule('planning');planningSection='limits';setPlanningSection('limits');void loadPlanningMonth(planningDate,{quiet:true});return}if(item.target==='goals'){showModule('goals');return}if(item.target==='cards'){showModule('cards');if(item.type==='invoice_due'&&item.target_id)setTimeout(()=>openInvoice(item.target_id),60);return}}
+async function openNotification(id){const item=(state.notifications||[]).find(n=>n.id===id);if(!item)return;if(!item.read_at){await markNotificationRead(item.id);item.read_at=new Date().toISOString();renderNotifications()}setNotificationPopover(false);closeDialog('notification-center-dialog');if(item.target==='family'){showModule('family');setTimeout(()=>document.getElementById('family-incoming')?.scrollIntoView({behavior:'smooth',block:'center'}),60);return}if(item.target==='budget'){showModule('planning');planningSection='limits';setPlanningSection('limits');void loadPlanningMonth(planningDate,{quiet:true});return}if(item.target==='goals'){showModule('goals');return}if(item.target==='cards'){showModule('cards');if(['invoice_due','invoice_overdue'].includes(item.type)&&item.target_id)setTimeout(()=>cardsWorkspace?.openInvoiceById(item.target_id),60);return}}
 async function markAllNotifications(){if(!(state.notifications||[]).some(n=>!n.read_at))return;await markAllNotificationsRead();const now=new Date().toISOString();state.notifications.forEach(n=>{if(!n.read_at)n.read_at=now});renderNotifications()}
 
 function familyProfile(id){return state.family?.profiles?.find(x=>x.user_id===id)||null}
@@ -938,6 +1013,20 @@ function openCategoriesManager(){
   openSettingsPage('categories');
 }
 function closeCategoriesManager(){closeSettingsPages()}
+function closeCategoryPickers(){
+  for(const kind of ['icon','color']){
+    const panel=document.getElementById(`category-${kind}-panel`);
+    const trigger=document.getElementById(`category-${kind}-toggle`);
+    panel?.classList.add('hidden');trigger?.setAttribute('aria-expanded','false');
+  }
+}
+function toggleCategoryPicker(kind){
+  const panel=document.getElementById(`category-${kind}-panel`);
+  if(!panel)return;
+  const opening=panel.classList.contains('hidden');
+  closeCategoryPickers();
+  if(opening){panel.classList.remove('hidden');document.getElementById(`category-${kind}-toggle`)?.setAttribute('aria-expanded','true');}
+}
 function renderCategoryIconPicker(selected='tag'){
   const input=document.getElementById('category-editor-icon');
   const grid=document.getElementById('category-icon-grid');
@@ -945,11 +1034,24 @@ function renderCategoryIconPicker(selected='tag'){
   const safeSelected=normalizeCategoryIconKey(selected);
   input.value=safeSelected;
   grid.innerHTML=CATEGORY_ICON_OPTIONS.map(([value,label])=>`<button type="button" class="category-icon-choice icon-only ${value===safeSelected?'selected':''}" data-category-icon="${escapeHTML(value)}" role="radio" aria-checked="${value===safeSelected?'true':'false'}" aria-label="${escapeHTML(label)}" title="${escapeHTML(label)}"><span class="category-icon-choice-glyph">${categoryIconSVG(value)}</span></button>`).join('');
+  const preview=document.getElementById('category-icon-preview');
+  if(preview)preview.innerHTML=categoryIconSVG(safeSelected);
+}
+function renderCategoryColorPicker(selected='orange'){
+  const input=document.getElementById('category-editor-color');
+  const grid=document.getElementById('category-color-grid');
+  if(!input||!grid)return;
+  const available=CATEGORY_COLOR_OPTIONS.map(([key])=>key);
+  // Nunca sobrescreve uma cor antiga válida; a chave da categoria continua a mesma.
+  const safeSelected=available.includes(selected)?selected:'orange';
+  input.value=safeSelected;
+  grid.innerHTML=CATEGORY_COLOR_OPTIONS.map(([value,label])=>`<button type="button" class="category-color-choice ${value===safeSelected?'selected':''}" data-category-color="${escapeHTML(value)}" role="radio" aria-checked="${value===safeSelected?'true':'false'}" aria-label="${escapeHTML(label)}" title="${escapeHTML(label)}"><span class="category-swatch-dot category-swatch-${escapeHTML(value)}">${value===safeSelected?'<svg class="ui-icon" aria-hidden="true"><use href="#i-check"></use></svg>':''}</span></button>`).join('');
+  const preview=document.getElementById('category-color-preview');
+  if(preview)preview.className=`category-color-preview category-swatch-${safeSelected}`;
 }
 function populateCategoryEditorOptions(){
-  const color=document.getElementById('category-editor-color');
-  if(color&&!color.options.length)color.innerHTML=CATEGORY_COLOR_OPTIONS.map(([value,label])=>`<option value="${escapeHTML(value)}">${escapeHTML(label)}</option>`).join('');
   renderCategoryIconPicker(document.getElementById('category-editor-icon')?.value||'tag');
+  renderCategoryColorPicker(document.getElementById('category-editor-color')?.value||'orange');
 }
 function openCategoryEditor(id=''){
   populateCategoryEditorOptions();setFormError('category-editor-error','');
@@ -960,7 +1062,8 @@ function openCategoryEditor(id=''){
   const nameInput=document.getElementById('category-editor-name');nameInput.value=row?.name||'';nameInput.readOnly=row?.origin==='system';
   document.getElementById('category-editor-note').textContent=row?.origin==='system'?'“Outros” é uma categoria de segurança. Você pode alterar sua aparência ou ocultá-la, mas o nome é protegido.':'Alterar o nome não modifica lançamentos antigos; o histórico continua preservado.';
   renderCategoryIconPicker(row?.icon_key||'tag');
-  document.getElementById('category-editor-color').value=row?.color_key||'orange';
+  renderCategoryColorPicker(row?.color_key||'orange');
+  closeCategoryPickers();
   openDialog('category-editor-dialog');setTimeout(()=>document.getElementById('category-editor-name')?.focus(),40);
 }
 function openCategoryActions(id){
@@ -1046,20 +1149,21 @@ function updateNatureSuggestion(){
  const desc=document.getElementById('transaction-description');
  const field=document.getElementById('transaction-nature');
  const hint=document.getElementById('transaction-nature-suggestion');
- if(!desc||!field)return;
+ if(!desc||!field||!hint)return;
  const direction=Number(document.getElementById('transaction-direction').value);
  const suggestion=suggestNature(desc.value,document.getElementById('transaction-category').value);
  const allowed=direction>0?['income','transfer','resgate']:['consumption','allocation','transfer'];
  for(const option of field.options){option.disabled=!allowed.includes(option.value);option.hidden=!allowed.includes(option.value)}
- const isManual=field.dataset.manuallySet==='1';
- if(!allowed.includes(field.value))delete field.dataset.manuallySet;
- if(!isManual||!allowed.includes(field.value)){
-   field.value=suggestion&&allowed.includes(suggestion)?suggestion:direction>0?'income':'consumption';
- }
- const relevant=!!suggestion&&allowed.includes(suggestion);
+ if(!allowed.includes(field.value)){field.value=direction>0?'income':'consumption';delete field.dataset.manuallySet;}
+ const relevant=!!suggestion&&allowed.includes(suggestion)&&field.value!==suggestion;
  hint.classList.toggle('suggested',relevant);
- hint.textContent=relevant?`Sugestão: ${natureLabel({financial_nature:suggestion})}. Confirme ou altere antes de salvar.`:
-   direction>0?'Recebimentos podem ser receitas, resgates ou transferências próprias.':'Selecione como a saída deve ser contabilizada.';
+ hint.replaceChildren();
+ if(relevant){
+   hint.append(document.createTextNode(`Sugestão: ${natureLabel({financial_nature:suggestion})}. `));
+   const accept=document.createElement('button');accept.type='button';accept.className='nature-accept-btn';accept.textContent='Aceitar sugestão';
+   accept.addEventListener('click',()=>{field.value=suggestion;field.dataset.manuallySet='1';updateNatureSuggestion();updateGoalLinkUI({reset:true})});
+   hint.append(accept);
+ }else hint.textContent=direction>0?'Recebimentos podem ser receitas, resgates ou transferências próprias.':'Você decide como esta saída será contabilizada.';
  updateGoalLinkUI();
 }
 function updateGoalLinkUI({reset=false}={}){
@@ -1068,7 +1172,7 @@ function updateGoalLinkUI({reset=false}={}){
   const wrap=document.getElementById('transaction-goal-wrap'),checkbox=document.getElementById('transaction-goal-link');
   const picker=document.getElementById('transaction-goal-picker'),select=document.getElementById('transaction-goal-id');
   if(!wrap||!checkbox||!picker||!select)return;
-  const isAllocation=nature==='allocation'&&direction<0;
+  const isAllocation=(nature==='allocation'&&direction<0)||(nature==='resgate'&&direction>0);
   wrap.classList.toggle('hidden',!isAllocation);
   if(!isAllocation||reset){checkbox.checked=false;select.value=''}
   const goals=(state.goals||[]).filter(g=>g.status!=='archived'||g.id===select.value);
@@ -1079,16 +1183,46 @@ function updateGoalLinkUI({reset=false}={}){
 }
 function resetNatureField(nature,{manual=false}={}){const field=document.getElementById('transaction-nature');if(manual)field.dataset.manuallySet='1';else delete field.dataset.manuallySet;field.value=nature||'consumption';updateNatureSuggestion();updateGoalLinkUI({reset:true});}
 function openNewTransaction(){document.getElementById('transaction-form').reset();resetNatureField('consumption');fillCategorySelect('transaction-category','',categoryKindFromDirection(document.getElementById('transaction-direction').value));document.getElementById('transaction-id').value='';document.getElementById('transaction-dialog-title').textContent='Novo lançamento';document.getElementById('transaction-date').value=localISO();document.getElementById('transaction-recurring-count').value='12';document.getElementById('recurring-fields').classList.remove('hidden');document.getElementById('recurring-count-wrap').classList.add('hidden');setFormError('transaction-form-error','');openDialog('transaction-dialog')}
-function openEditTransaction(id){const t=state.transactions.find(x=>x.id===id);if(!t||t.type==='balance_adjustment')return;document.getElementById('transaction-form').reset();document.getElementById('transaction-direction').value=String(t.direction);fillCategorySelect('transaction-category',t.category||'Outros',categoryKindFromDirection(t.direction));document.getElementById('transaction-id').value=t.id;document.getElementById('transaction-dialog-title').textContent='Editar lançamento';document.getElementById('transaction-direction').value=String(t.direction);document.getElementById('transaction-description').value=t.description||'';document.getElementById('transaction-amount').value=Number(t.amount);document.getElementById('transaction-date').value=t.occurred_on;document.getElementById('transaction-category').value=t.category||'Outros';document.getElementById('transaction-notes').value=t.notes||'';resetNatureField(t.financial_nature||(Number(t.direction)>0?'income':classifyTransaction(t)==='allocation'?'allocation':'consumption'),{manual:true});if(t.goal_id&&t.financial_nature==='allocation'){document.getElementById('transaction-goal-link').checked=true;updateGoalLinkUI();document.getElementById('transaction-goal-id').value=t.goal_id;}document.getElementById('recurring-fields').classList.add('hidden');setFormError('transaction-form-error','');openDialog('transaction-dialog')}
+function openEditTransaction(id){if(isCardPurchaseRefund(state.transactions.find(t=>t.id===id))||isCardInvoicePayment(state.transactions.find(t=>t.id===id))||String(state.transactions.find(t=>t.id===id)?.reference_key||'').startsWith('invoice-reversal:'))return toast('Corrija este pagamento nos detalhes da fatura.','error');const t=state.transactions.find(x=>x.id===id);if(!t||t.type==='balance_adjustment')return;document.getElementById('transaction-form').reset();document.getElementById('transaction-direction').value=String(t.direction);fillCategorySelect('transaction-category',t.category||'Outros',categoryKindFromDirection(t.direction));document.getElementById('transaction-id').value=t.id;document.getElementById('transaction-dialog-title').textContent='Editar lançamento';document.getElementById('transaction-direction').value=String(t.direction);document.getElementById('transaction-description').value=t.description||'';document.getElementById('transaction-amount').value=Number(t.amount);document.getElementById('transaction-date').value=t.occurred_on;document.getElementById('transaction-category').value=t.category||'Outros';document.getElementById('transaction-notes').value=t.notes||'';resetNatureField(t.financial_nature||(Number(t.direction)>0?'income':classifyTransaction(t)==='allocation'?'allocation':'consumption'),{manual:true});if(t.goal_id&&['allocation','resgate'].includes(t.financial_nature)){document.getElementById('transaction-goal-link').checked=true;updateGoalLinkUI();document.getElementById('transaction-goal-id').value=t.goal_id;}document.getElementById('recurring-fields').classList.add('hidden');setFormError('transaction-form-error','');openDialog('transaction-dialog')}
 function openBalance(){const cash=calculateCashStats(state.transactions,dashboardDate);document.getElementById('balance-form').reset();document.getElementById('balance-dialog-current').textContent=formatBRL(cash.balance);document.getElementById('balance-date').value=localISO();setFormError('balance-form-error','');openDialog('balance-dialog')}
-function openNewCard(){document.getElementById('card-form').reset();document.getElementById('card-id').value='';document.getElementById('card-interest').value='0';document.getElementById('card-dialog-title').textContent='Novo cartão';setFormError('card-form-error','');openDialog('card-dialog')}
-function openEditCard(id){const c=state.cards.find(x=>x.id===id);if(!c)return;document.getElementById('card-id').value=c.id;document.getElementById('card-name').value=c.name;document.getElementById('card-limit').value=Number(c.credit_limit);document.getElementById('card-closing').value=c.closing_day;document.getElementById('card-due').value=c.due_day;document.getElementById('card-interest').value=Number(c.revolving_interest||0);document.getElementById('card-dialog-title').textContent='Editar cartão';setFormError('card-form-error','');openDialog('card-dialog')}
-function openNewPurchase(cardId){document.getElementById('purchase-form').reset();fillCategorySelect('purchase-category','','expense');document.getElementById('purchase-id').value='';document.getElementById('purchase-card-id').value=cardId;document.getElementById('purchase-installments').value='1';document.getElementById('purchase-date').value=localISO();document.getElementById('purchase-dialog-title').textContent=`Nova compra — ${state.cards.find(c=>c.id===cardId)?.name||'Cartão'}`;setFormError('purchase-form-error','');openDialog('purchase-dialog')}
-function openEditPurchase(id){const p=state.purchases.find(x=>x.id===id);if(!p)return;if(purchaseTouchesPaidInvoice(id))return explainPaidPurchaseLock();fillCategorySelect('purchase-category',p.category||'Outros','expense');document.getElementById('purchase-id').value=p.id;document.getElementById('purchase-card-id').value=p.card_id;document.getElementById('purchase-description').value=p.description;document.getElementById('purchase-total').value=Number(p.total_amount);document.getElementById('purchase-installments').value=p.installment_count;document.getElementById('purchase-date').value=p.purchase_date;document.getElementById('purchase-category').value=p.category||'Outros';document.getElementById('purchase-dialog-title').textContent='Editar compra';setFormError('purchase-form-error','');openDialog('purchase-dialog')}
+function openNewCard(){document.getElementById('card-form').reset();document.getElementById('card-id').value='';document.getElementById('card-interest').value='0';document.getElementById('card-dialog-title').textContent='Novo cartão';document.getElementById('card-archive-btn').classList.add('hidden');setFormError('card-form-error','');openDialog('card-dialog')}
+function openEditCard(id){const c=state.cards.find(x=>x.id===id);if(!c)return;document.getElementById('card-id').value=c.id;document.getElementById('card-name').value=c.name;document.getElementById('card-limit').value=Number(c.credit_limit);document.getElementById('card-closing').value=c.closing_day;document.getElementById('card-due').value=c.due_day;document.getElementById('card-interest').value=Number(c.revolving_interest||0);document.getElementById('card-dialog-title').textContent='Editar cartão';document.getElementById('card-archive-btn').classList.remove('hidden');setFormError('card-form-error','');openDialog('card-dialog')}
+function updatePurchaseSummary(){
+  const mode=document.getElementById('purchase-mode').value;
+  const input=document.getElementById('purchase-installments');
+  input.disabled=mode==='single';input.required=mode!=='single';
+  document.getElementById('purchase-installments-wrap').classList.toggle('hidden',mode==='single');
+  const card=state.cards.find(c=>c.id===document.getElementById('purchase-card-id').value);
+  const count=mode==='single'?1:Math.max(2,Number(input.value)||2);
+  document.getElementById('purchase-card-caption').textContent=card?.name||'Cartão';
+  document.getElementById('purchase-summary').textContent=`${card?.name||'Cartão'} · ${count===1?'À vista':`${count} parcelas`}. Fatura calculada pela data e fechamento do cartão.`;
+  if(state.purchases.some(p=>p.card_id===card?.id&&p.record_kind==='invoice_opening'))document.getElementById('purchase-summary').textContent+=' Se esta compra já compõe o saldo legado, confirme a conciliação nos detalhes da fatura.';
+}
+function setPurchaseFinancialLock(locked){for(const id of ['purchase-total','purchase-date','purchase-mode','purchase-installments'])document.getElementById(id).disabled=locked;document.getElementById('purchase-financial-lock').classList.toggle('hidden',!locked);}
+function openNewPurchase(cardId){
+  setPurchaseFinancialLock(false);
+  document.getElementById('purchase-form').reset();fillCategorySelect('purchase-category','','expense');
+  document.getElementById('purchase-id').value='';document.getElementById('purchase-card-id').value=cardId;
+  document.getElementById('purchase-mode').value='single';document.getElementById('purchase-installments').value='2';
+  document.getElementById('purchase-date').value=cardToday();document.getElementById('purchase-dialog-title').textContent='Nova compra';
+  updatePurchaseSummary();setFormError('purchase-form-error','');openDialog('purchase-dialog');
+}
+function openEditPurchase(id){
+  const p=state.purchases.find(x=>x.id===id);if(!p)return;
+  if(p.record_kind==='invoice_opening')return toast('Este registro preserva o saldo de conciliação.','error');
+  document.getElementById('purchase-form').reset();fillCategorySelect('purchase-category',p.category||'Outros','expense');
+  document.getElementById('purchase-id').value=p.id;document.getElementById('purchase-card-id').value=p.card_id;
+  document.getElementById('purchase-description').value=p.description;document.getElementById('purchase-total').value=Number(p.total_amount);
+  document.getElementById('purchase-mode').value=Number(p.installment_count)>1?'installments':'single';
+  document.getElementById('purchase-installments').value=Math.max(2,Number(p.installment_count));
+  document.getElementById('purchase-date').value=p.purchase_date;document.getElementById('purchase-category').value=p.category||'Outros';
+  document.getElementById('purchase-dialog-title').textContent='Editar compra';updatePurchaseSummary();setPurchaseFinancialLock(purchaseTouchesPaidInvoice(id));setFormError('purchase-form-error','');openDialog('purchase-dialog');
+}
+
 function openNewGoal(){document.getElementById('goal-form').reset();document.getElementById('goal-id').value='';document.getElementById('goal-saved').value='0';document.getElementById('goal-dialog-title').textContent='Nova meta';setFormError('goal-form-error','');openDialog('goal-dialog')}
 function openEditGoal(id){const g=state.goals.find(x=>x.id===id);if(!g)return;document.getElementById('goal-id').value=g.id;document.getElementById('goal-name').value=g.name;document.getElementById('goal-target').value=Number(g.target_amount);document.getElementById('goal-saved').value=Number(g.saved_amount);document.getElementById('goal-due').value=g.due_date||'';document.getElementById('goal-dialog-title').textContent='Editar meta';setFormError('goal-form-error','');openDialog('goal-dialog')}
 
-function openInvoice(cardId){const card=state.cards.find(c=>c.id===cardId);if(!card)return;const summaries=cardInvoiceSummaries(state.cards,state.installments,state.invoiceStatuses,dashboardDate);const summary=summaries.find(s=>s.card.id===cardId);document.getElementById('invoice-title').textContent=`${card.name} — ${monthLabel(dashboardDate)}`;document.getElementById('invoice-content').innerHTML=`<div class="invoice-headline"><div><span class="muted">Fatura</span><strong>${formatBRL(summary.total)}</strong><small>Vencimento ${summary.dueDate.toLocaleDateString('pt-BR')}</small></div><button class="${summary.status==='paid'?'secondary-btn':'primary-compact'}" data-toggle-invoice="${cardId}" data-invoice-paid="${summary.status==='paid'?'1':'0'}">${summary.status==='paid'?'Reabrir fatura':'Marcar como paga'}</button></div><div class="invoice-installments">${summary.rows.length?summary.rows.map(r=>`<div class="invoice-row"><div><strong>${escapeHTML(r.ff2_card_purchases?.description||'Compra')}</strong><div class="muted">Parcela ${r.installment_no}/${r.ff2_card_purchases?.installment_count||'?'}</div></div><strong>${formatBRL(r.amount)}</strong></div>`).join(''):emptyState('Nenhuma parcela nesta fatura.')}</div>`;openDialog('invoice-dialog')}
+function openInvoice(cardId,month=cardMonth(`${dashboardDate.getFullYear()}-${String(dashboardDate.getMonth()+1).padStart(2,'0')}-01`)){cardsWorkspace?.openInvoice(cardId,month)}
 
 function reportDateOrFallback(refDate, fallbackDate) {
   if (refDate instanceof Date && !Number.isNaN(refDate.getTime())) return new Date(refDate.getFullYear(), refDate.getMonth(), 1, 12);
@@ -1100,7 +1234,7 @@ function openDRE(refDate) {
   document.getElementById('dre-title').textContent = `DRE — ${monthLabel(date)}`;
   const partialNote=d.partial?`<div class="dre-line"><span>Período realizado</span><strong>até ${formatDate(d.realizedThrough)}</strong></div>`:'';
   const allocationLine=d.allocation>0?`<div class="dre-line"><span>Reservas e investimentos</span><strong>${formatBRL(d.allocation)}</strong></div>`:'';
-  const movementsLine=`<div class="dre-line"><span>Transferências / resgates (entradas)</span><strong>${formatBRL(d.transferIn)}</strong></div><div class="dre-line"><span>Transferências próprias (saídas)</span><strong>${formatBRL(d.transferOut)}</strong></div><div class="dre-line"><span>Pagamento de faturas (caixa)</span><strong>${formatBRL(d.cardPayments)}</strong></div><div class="dre-line total"><span>Variação de caixa registrada</span><strong>${formatBRL(d.cashResult)}</strong></div>`;
+  const movementsLine=`<div class="dre-line"><span>Transferências / resgates (entradas)</span><strong>${formatBRL(d.transferIn)}</strong></div><div class="dre-line"><span>Transferências próprias (saídas)</span><strong>${formatBRL(d.transferOut)}</strong></div><div class="dre-line"><span>Pagamento de faturas (caixa)</span><strong>${formatBRL(d.cardPayments)}</strong></div><div class="dre-line"><span>Estornos recebidos em conta</span><strong>${formatBRL(d.cardRefundCash)}</strong></div><div class="dre-line total"><span>Variação de caixa registrada</span><strong>${formatBRL(d.cashResult)}</strong></div>`;
   const futureLine=d.futureExpense>0?`<div class="dre-line"><span>Previsto ainda não realizado</span><strong>${formatBRL(d.futureExpense)}</strong></div>`:'';
   document.getElementById('dre-content').innerHTML = `<div class="dre-grid">${partialNote}<div class="dre-line"><span>Receitas realizadas</span><strong class="positive">${formatBRL(d.income)}</strong></div><div class="dre-line"><span>Consumo à vista realizado</span><strong class="negative">${formatBRL(d.cashExpense)}</strong></div><div class="dre-line"><span>Consumo no cartão realizado</span><strong class="negative">${formatBRL(d.cardExpense)}</strong></div>${allocationLine}${futureLine}<div class="dre-line"><span>Consumo total realizado</span><strong>${formatBRL(d.totalExpense)}</strong></div><div class="dre-line total"><span>Resultado de consumo</span><strong class="${d.result >= 0 ? 'positive' : 'negative'}">${formatBRL(d.result)}</strong></div>${movementsLine}<p class="muted" style="margin:8px 12px 0">Faturas abertas representam consumo no crédito, não saída bancária. Reservas e investimentos são destinos do dinheiro e aparecem separados. Ajustes de saldo e pagamento de fatura não são contados novamente como consumo. A variação de caixa não inclui ajustes de saldo.</p></div>`;
   openDialog('dre-dialog');
@@ -1113,103 +1247,127 @@ function reportDateFromKey(key) {
   const [year,month]=String(key||'').slice(0,7).split('-').map(Number);
   return new Date(year,(month||1)-1,1,12);
 }
-function reportDataMonthKeys() {
-  const keys=new Set();
-  const today=localISO();
-  state.transactions.forEach(row=>{const raw=String(row.occurred_on||'');if(row?.affects_month_result===true&&raw<=today&&/^\d{4}-\d{2}/.test(raw))keys.add(`${raw.slice(0,7)}-01`)});
-  state.installments.forEach(row=>{const raw=String(row.invoice_month||'');const purchaseDate=String(row.ff2_card_purchases?.purchase_date||'');if(/^\d{4}-\d{2}-01$/.test(raw)&&(!purchaseDate||purchaseDate<=today))keys.add(raw)});
-  return keys;
-}
 function selectedReportMonthKeys() {
   return [...document.querySelectorAll('#report-month-list input[data-report-month]:checked')].map(input=>input.dataset.reportMonth).sort();
 }
+function setReportCustomExpanded(expanded) {
+  document.getElementById('report-custom-toggle').setAttribute('aria-expanded',String(expanded));
+  document.getElementById('report-custom-area').hidden=!expanded;
+}
 function updateReportSelectionSummary() {
-  const keys=selectedReportMonthKeys();
-  const summary=document.getElementById('report-selection-summary');
-  const detail=document.getElementById('report-selection-detail');
-  if(!keys.length){summary.textContent='Nenhum mês selecionado';detail.textContent='Marque pelo menos um mês para gerar o relatório.';return}
-  summary.textContent=`${keys.length} ${keys.length===1?'mês selecionado':'meses selecionados'}`;
-  const labels=keys.map(key=>monthLabel(reportDateFromKey(key)));
-  detail.textContent=labels.length<=4?labels.join(' • '):`${labels.slice(0,3).join(' • ')} • +${labels.length-3}`;
+  const count=selectedReportMonthKeys().length;
+  document.getElementById('report-selection-summary').textContent=`${count} ${count===1?'mês selecionado':'meses selecionados'}`;
+}
+function updateReportDownloadLabel() {
+  if(reportDownloadBusy)return;
+  const format=document.querySelector('input[name="report-format"]:checked')?.value==='csv'?'CSV':'PDF';
+  document.getElementById('report-download-label').textContent=`Baixar ${format}`;
+}
+function updateReportPresetState(preset) {
+  document.querySelectorAll('.report-presets [data-report-preset]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.reportPreset===preset)));
 }
 function renderReportMonthSelector(defaultDate=dashboardDate) {
-  reportReferenceDate=reportDateOrFallback(defaultDate,dashboardDate);
-  const options=getReportMonthOptions(state.transactions,state.installments,reportReferenceDate);
+  const today=new Date();
+  const currentMonth=new Date(today.getFullYear(),today.getMonth(),1,12);
+  const requested=reportDateOrFallback(defaultDate,dashboardDate);
+  reportReferenceDate=requested>currentMonth?currentMonth:requested;
+  const options=getReportMonthOptions(state.transactions,state.installments,reportReferenceDate).filter(option=>option.key<=reportMonthKey(currentMonth));
   const selectedKey=reportMonthKey(reportReferenceDate);
-  document.getElementById('report-month-list').innerHTML=options.map(option=>`<label class="report-month-option"><input type="checkbox" data-report-month="${option.key}" ${option.key===selectedKey?'checked':''}><span>${escapeHTML(monthLabel(option.date))}</span></label>`).join('');
+  const shortMonth=new Intl.DateTimeFormat('pt-BR',{month:'short'});
+  document.getElementById('report-month-list').innerHTML=options.map(option=>{
+    const name=shortMonth.format(option.date).replace('.','');
+    const label=`${name.charAt(0).toUpperCase()}${name.slice(1)}/${option.date.getFullYear()}`;
+    return `<label class="report-month-option"><input type="checkbox" data-report-month="${option.key}" aria-label="${escapeHTML(monthLabel(option.date))}" ${option.key===selectedKey?'checked':''}><span>${escapeHTML(label)}</span></label>`;
+  }).join('');
   setFormError('report-form-error','');
+  updateReportPresetState('current');
   updateReportSelectionSummary();
 }
 function applyReportPreset(preset) {
+  if(reportDownloadBusy)return;
   const inputs=[...document.querySelectorAll('#report-month-list input[data-report-month]')];
   const wanted=new Set();
-  if(preset==='current') wanted.add(reportMonthKey(reportReferenceDate));
+  if(preset==='current')wanted.add(reportMonthKey(reportReferenceDate));
   else if(preset==='3'||preset==='6'){
-    const count=Number(preset);for(let i=0;i<count;i+=1)wanted.add(reportMonthKey(addMonth(reportReferenceDate,-i)));
-  } else if(preset==='all') {
-    const dataKeys=reportDataMonthKeys();dataKeys.forEach(key=>wanted.add(key));if(!wanted.size)wanted.add(reportMonthKey(reportReferenceDate));
-  }
-  inputs.forEach(input=>{input.checked=preset==='none'?false:wanted.has(input.dataset.reportMonth)});
+    for(let i=0;i<Number(preset);i+=1)wanted.add(reportMonthKey(addMonth(reportReferenceDate,-i)));
+  }else if(preset==='all')inputs.forEach(input=>wanted.add(input.dataset.reportMonth));
+  inputs.forEach(input=>{input.checked=wanted.has(input.dataset.reportMonth)});
+  updateReportPresetState(preset);
   setFormError('report-form-error','');
   updateReportSelectionSummary();
 }
 function openReportBuilder(refDate) {
+  if(reportDownloadBusy)return;
   renderReportMonthSelector(reportDateOrFallback(refDate,dashboardDate));
+  setReportCustomExpanded(false);
+  document.querySelector('input[name="report-format"][value="pdf"]').checked=true;
+  updateReportDownloadLabel();
   openDialog('report-dialog');
 }
+function setReportControlsBusy(busy) {
+  document.querySelectorAll('#report-dialog button,#report-dialog input').forEach(control=>{control.disabled=busy});
+}
 async function generateSelectedReport() {
-  const monthKeys=selectedReportMonthKeys();
-  if(!monthKeys.length){setFormError('report-form-error','Selecione pelo menos um mês.');return}
   if(reportDownloadBusy)return;
-  const button=document.getElementById('report-generate-btn');
-  const motion=beginDownloadMotion(button,{initialLabel:'Preparando…'});
+  const monthKeys=selectedReportMonthKeys();
+  if(!monthKeys.length){
+    setReportCustomExpanded(true);
+    setFormError('report-form-error','Selecione pelo menos um mês.');
+    document.querySelector('#report-month-list input')?.focus();
+    return;
+  }
+  const format=document.querySelector('input[name="report-format"]:checked')?.value==='csv'?'csv':'pdf';
+  const motion=beginDownloadMotion(document.getElementById('report-generate-btn'),{initialLabel:'Preparando…'});
   reportDownloadBusy=true;
+  setReportControlsBusy(true);
   setFormError('report-form-error','');
   try{
-    const latestKey=monthKeys[monthKeys.length-1];
-    const latestDate=reportDateFromKey(latestKey);
-    const comparisonKey=reportMonthKey(addMonth(latestDate,-1));
-    const contextMonthKeys=Array.from({length:6},(_,i)=>reportMonthKey(addMonth(latestDate,i-5)));
-    const budgetKeys=[...new Set([...monthKeys,comparisonKey,...contextMonthKeys])];
-    motion?.setProgress(18,'Preparando dados…');
-    const budgetsByMonth=await listBudgetsByMonths(budgetKeys);
-    motion?.setProgress(72,'Montando PDF…');
-    // Um frame deixa a etapa visual aparecer antes da geração síncrona do PDF.
-    await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
-    const model=await downloadFinancialReportPDF({
-      transactions:state.transactions,
-      installments:state.installments,
-      invoiceStatuses:state.invoiceStatuses,
-      budgetsByMonth,
-      monthKeys,
-      comparisonMonthKey:comparisonKey,
-      contextMonthKeys,
-      formatDate,
-      formatBRL,
-      monthLabel
-    });
+    if(format==='csv'){
+      motion?.setProgress(72,'Montando CSV…');
+      await new Promise(resolve=>requestAnimationFrame(resolve));
+      downloadFinancialRowsCSV({transactions:state.transactions,monthKeys});
+    }else{
+      const latestDate=reportDateFromKey(monthKeys[monthKeys.length-1]);
+      const comparisonKey=reportMonthKey(addMonth(latestDate,-1));
+      const contextMonthKeys=Array.from({length:6},(_,i)=>reportMonthKey(addMonth(latestDate,i-5)));
+      const budgetKeys=[...new Set([...monthKeys,comparisonKey,...contextMonthKeys])];
+      motion?.setProgress(18,'Preparando dados…');
+      const budgetsByMonth=await listBudgetsByMonths(budgetKeys);
+      motion?.setProgress(72,'Montando PDF…');
+      await new Promise(resolve=>requestAnimationFrame(resolve));
+      await downloadFinancialReportPDF({
+        transactions:state.transactions,installments:state.installments,
+        invoiceStatuses:state.invoiceStatuses,budgetsByMonth,categories:state.categories,
+        monthKeys,comparisonMonthKey:comparisonKey,contextMonthKeys,formatDate,formatBRL,monthLabel
+      });
+    }
     motion?.setProgress(96,'Finalizando…');
-    await motion?.complete({hold:820});
+    await motion?.complete({hold:320});
     closeDialog('report-dialog');
-    toast(`Relatório financeiro gerado com ${model.months.length} ${model.months.length===1?'mês':'meses'}.`,'success');
+    toast(format==='csv'?'Arquivo CSV gerado.':`Relatório financeiro gerado com ${monthKeys.length} ${monthKeys.length===1?'mês':'meses'}.`,'success');
   }catch(error){
-    console.error('Falha ao gerar relatório financeiro:',error);
-    setFormError('report-form-error',error?.message||'Não foi possível gerar o relatório.');
-    toast('Não foi possível gerar o relatório PDF.','error');
-    await motion?.fail('Erro — tente novamente',{hold:1100});
-  }finally{reportDownloadBusy=false}
+    console.error('Falha ao exportar relatório financeiro:',error);
+    setFormError('report-form-error',`Não foi possível gerar o ${format.toUpperCase()}. Tente novamente.`);
+    await motion?.fail('Tente novamente',{hold:600});
+  }finally{
+    reportDownloadBusy=false;
+    setReportControlsBusy(false);
+    updateReportDownloadLabel();
+  }
 }
 
-async function onTransactionSubmit(event){event.preventDefault();const btn=document.getElementById('transaction-save-btn');setButtonBusy(btn,true);setFormError('transaction-form-error','');try{const id=document.getElementById('transaction-id').value;const input={direction:Number(document.getElementById('transaction-direction').value),description:document.getElementById('transaction-description').value,amount:Number(document.getElementById('transaction-amount').value),date:document.getElementById('transaction-date').value,category:document.getElementById('transaction-category').value,notes:document.getElementById('transaction-notes').value,recurring:document.getElementById('transaction-recurring').checked,recurringCount:Number(document.getElementById('transaction-recurring-count').value),financialNature:document.getElementById('transaction-nature').value,goalId:document.getElementById('transaction-goal-link').checked?document.getElementById('transaction-goal-id').value:null};if(!input.description.trim()||!input.date||input.amount<=0)throw new Error('Preencha descrição, data e um valor maior que zero.');if(!input.category)throw new Error('Ative ou crie uma categoria em Configurações > Categorias antes de salvar.');if(input.direction>0&&!['income','transfer','resgate'].includes(input.financialNature))throw new Error('Classificação inválida para recebimento.');if(input.direction<0&&!['consumption','allocation','transfer'].includes(input.financialNature))throw new Error('Classificação inválida para saída.');if(input.goalId&&!(input.financialNature==='allocation'&&input.direction<0))throw new Error('Somente reservas podem ser vinculadas a metas.');if(document.getElementById('transaction-goal-link').checked&&!input.goalId)throw new Error('Selecione uma meta para vincular o aporte.');if(input.goalId&&!state.goals.some(g=>g.id===input.goalId))throw new Error('Esta meta não está mais disponível.');if(id&&needsLegacyReview(state.transactions.find(t=>t.id===id))&&!window.confirm('Este lançamento antigo ainda não tinha uma natureza financeira confirmada. Deseja confirmar a classificação selecionada e salvar?'))return;await runAppOperation(id?'Atualizando lançamento…':'Salvando lançamento…',input.recurring&&!id?'Criando a série recorrente e protegendo contra envios repetidos.':'Registrando a alteração no seu histórico financeiro.',async()=>{if(id)await updateTransaction(id,input);else await createTransaction(input);closeDialog('transaction-dialog');toast(id?'Lançamento atualizado.':'Lançamento salvo.','success');syncOperationMessage('Conferindo o histórico completo após a alteração.');await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('transaction-form-error',e.message||'Não foi possível salvar.')}finally{setButtonBusy(btn,false)}}
-async function onBalanceSubmit(event){event.preventDefault();const btn=document.getElementById('balance-save-btn');setButtonBusy(btn,true);setFormError('balance-form-error','');try{const input={mode:document.getElementById('balance-mode').value,amount:Number(document.getElementById('balance-amount').value),reason:document.getElementById('balance-reason').value,date:document.getElementById('balance-date').value};if(input.amount<0||!input.reason.trim()||!input.date)throw new Error('Informe valor, motivo e data.');await runAppOperation('Ajustando saldo…','Registrando o ajuste sem duplicar o resultado mensal.',async()=>{await applyBalanceAdjustment(input);closeDialog('balance-dialog');toast('Saldo ajustado.','success');syncOperationMessage();await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('balance-form-error',e.message||'Não foi possível ajustar o saldo.')}finally{setButtonBusy(btn,false)}}
-async function onCardSubmit(event){event.preventDefault();const btn=document.getElementById('card-save-btn');setButtonBusy(btn,true);setFormError('card-form-error','');try{const id=document.getElementById('card-id').value;const input={name:document.getElementById('card-name').value,limit:Number(document.getElementById('card-limit').value),closingDay:Number(document.getElementById('card-closing').value),dueDay:Number(document.getElementById('card-due').value),interest:Number(document.getElementById('card-interest').value||0)};if(!input.name.trim()||input.limit<0||input.closingDay<1||input.closingDay>31||input.dueDay<1||input.dueDay>31)throw new Error('Revise nome, limite, fechamento e vencimento.');await runAppOperation(id?'Atualizando cartão…':'Criando cartão…','Salvando limite, fechamento e vencimento.',async()=>{if(id)await updateCard(id,input);else await createCard(input);closeDialog('card-dialog');toast(id?'Cartão atualizado.':'Cartão criado.','success');syncOperationMessage();await refreshAll()})}catch(e){console.error(e);setFormError('card-form-error',e.message||'Não foi possível salvar o cartão.')}finally{setButtonBusy(btn,false)}}
-async function onPurchaseSubmit(event){event.preventDefault();const btn=document.getElementById('purchase-save-btn');setButtonBusy(btn,true);setFormError('purchase-form-error','');try{const id=document.getElementById('purchase-id').value;if(id&&purchaseTouchesPaidInvoice(id))throw new Error('Reabra a fatura paga antes de editar esta compra.');const input={cardId:document.getElementById('purchase-card-id').value,description:document.getElementById('purchase-description').value,total:Number(document.getElementById('purchase-total').value),installments:Number(document.getElementById('purchase-installments').value),date:document.getElementById('purchase-date').value,category:document.getElementById('purchase-category').value};if(!input.description.trim()||input.total<=0||!input.date||input.installments<1||input.installments>60)throw new Error('Revise descrição, valor, data e parcelas.');if(!input.category)throw new Error('Ative ou crie uma categoria de despesa em Configurações > Categorias antes de salvar.');await runAppOperation(id?'Atualizando compra…':'Salvando compra…',input.installments>1?'Gerando as parcelas e vinculando-as às faturas corretas.':'Registrando a compra no cartão.',async()=>{if(id)await updatePurchase(id,input);else await createPurchase(input);closeDialog('purchase-dialog');toast(id?'Compra atualizada.':'Compra salva e parcelas geradas.','success');syncOperationMessage();await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('purchase-form-error',e.message||'Não foi possível salvar a compra.')}finally{setButtonBusy(btn,false)}}
-async function onGoalSubmit(event){event.preventDefault();const btn=document.getElementById('goal-save-btn');setButtonBusy(btn,true);setFormError('goal-form-error','');try{const id=document.getElementById('goal-id').value;const input={name:document.getElementById('goal-name').value,target:Number(document.getElementById('goal-target').value),saved:Number(document.getElementById('goal-saved').value||0),dueDate:document.getElementById('goal-due').value};if(!input.name.trim()||input.target<=0||input.saved<0)throw new Error('Revise nome e valores da meta.');await runAppOperation(id?'Atualizando meta…':'Criando meta…','Salvando valores e progresso da meta.',async()=>{if(id)await updateGoal(id,input);else await createGoal(input);closeDialog('goal-dialog');toast(id?'Meta atualizada.':'Meta criada.','success');syncOperationMessage();await refreshAll()})}catch(e){console.error(e);setFormError('goal-form-error',e.message||'Não foi possível salvar a meta.')}finally{setButtonBusy(btn,false)}}
+async function onTransactionSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('transaction-save-btn');setButtonBusy(btn,true);setFormError('transaction-form-error','');try{const id=document.getElementById('transaction-id').value;const input={direction:Number(document.getElementById('transaction-direction').value),description:document.getElementById('transaction-description').value,amount:Number(document.getElementById('transaction-amount').value),date:document.getElementById('transaction-date').value,category:document.getElementById('transaction-category').value,notes:document.getElementById('transaction-notes').value,recurring:document.getElementById('transaction-recurring').checked,recurringCount:Number(document.getElementById('transaction-recurring-count').value),financialNature:document.getElementById('transaction-nature').value,goalId:document.getElementById('transaction-goal-link').checked?document.getElementById('transaction-goal-id').value:null};if(!input.description.trim()||!input.date||input.amount<=0)throw new Error('Preencha descrição, data e um valor maior que zero.');if(!input.category)throw new Error('Ative ou crie uma categoria em Configurações > Categorias antes de salvar.');if(input.direction>0&&!['income','transfer','resgate'].includes(input.financialNature))throw new Error('Classificação inválida para recebimento.');if(input.direction<0&&!['consumption','allocation','transfer'].includes(input.financialNature))throw new Error('Classificação inválida para saída.');if(input.goalId&&!((input.financialNature==='allocation'&&input.direction<0)||(input.financialNature==='resgate'&&input.direction>0)))throw new Error('Somente aportes e resgates podem ser vinculados a metas.');if(document.getElementById('transaction-goal-link').checked&&!input.goalId)throw new Error('Selecione uma meta para vincular esta movimentação.');if(input.goalId&&!state.goals.some(g=>g.id===input.goalId))throw new Error('Esta meta não está mais disponível.');if(!input.goalId&&input.financialNature==='resgate'&&state.goals.length&&!window.confirm('Resgate sem meta vinculada: o saldo disponível aumentará, mas nenhuma meta será reduzida. Continuar?'))return;if(id&&needsLegacyReview(state.transactions.find(t=>t.id===id))&&!window.confirm('Este lançamento antigo ainda não tinha uma natureza financeira confirmada. Deseja confirmar a classificação selecionada e salvar?'))return;await runAppOperation(id?'Atualizando lançamento…':'Salvando lançamento…',input.recurring&&!id?'Criando a série recorrente e protegendo contra envios repetidos.':'Registrando a alteração no seu histórico financeiro.',async()=>{if(id){const original=state.transactions.find(t=>t.id===id);input.resetReserveReconciliation=!!original&&(!!input.goalId||input.financialNature!==original.financial_nature||Number(input.direction)!==Number(original.direction));await updateTransaction(id,input);}else await createTransaction({...input,operation:formOperation(submittedForm,input)});closeDialog('transaction-dialog');toast(id?'Lançamento atualizado.':'Lançamento salvo.','success');syncOperationMessage('Conferindo o histórico completo após a alteração.');await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('transaction-form-error',String(e?.message||'').includes('SALDO_META_INSUFICIENTE')?'Não há saldo suficiente na meta para esse resgate. Confira o valor disponível.':(e.message||'Não foi possível salvar.'))}finally{setButtonBusy(btn,false)}}
+async function onBalanceSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('balance-save-btn');setButtonBusy(btn,true);setFormError('balance-form-error','');try{const input={mode:document.getElementById('balance-mode').value,amount:Number(document.getElementById('balance-amount').value),reason:document.getElementById('balance-reason').value,date:document.getElementById('balance-date').value};if(input.amount<0||!input.reason.trim()||!input.date)throw new Error('Informe valor, motivo e data.');await runAppOperation('Ajustando saldo…','Registrando o ajuste sem duplicar o resultado mensal.',async()=>{await applyBalanceAdjustment({...input,operation:formOperation(submittedForm,input)});closeDialog('balance-dialog');toast('Saldo ajustado.','success');syncOperationMessage();await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('balance-form-error',e.message||'Não foi possível ajustar o saldo.')}finally{setButtonBusy(btn,false)}}
+async function onCardSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('card-save-btn');setButtonBusy(btn,true);setFormError('card-form-error','');try{const id=document.getElementById('card-id').value;const input={name:document.getElementById('card-name').value,limit:Number(document.getElementById('card-limit').value),closingDay:Number(document.getElementById('card-closing').value),dueDay:Number(document.getElementById('card-due').value),interest:Number(document.getElementById('card-interest').value||0)};if(!input.name.trim()||input.limit<0||input.closingDay<1||input.closingDay>31||input.dueDay<1||input.dueDay>31)throw new Error('Revise nome, limite, fechamento e vencimento.');await runAppOperation(id?'Atualizando cartão…':'Criando cartão…','Salvando limite, fechamento e vencimento.',async()=>{if(id)await updateCard(id,input);else await createCard({...input,operation:formOperation(submittedForm,input)});closeDialog('card-dialog');toast(id?'Cartão atualizado.':'Cartão criado.','success');syncOperationMessage();await refreshAll()})}catch(e){console.error(e);setFormError('card-form-error',e.message||'Não foi possível salvar o cartão.')}finally{setButtonBusy(btn,false)}}
+async function onPurchaseSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('purchase-save-btn');setButtonBusy(btn,true);setFormError('purchase-form-error','');try{const id=document.getElementById('purchase-id').value;const input={cardId:document.getElementById('purchase-card-id').value,description:document.getElementById('purchase-description').value,total:Number(document.getElementById('purchase-total').value),installments:document.getElementById('purchase-mode').value==='single'?1:Number(document.getElementById('purchase-installments').value),date:document.getElementById('purchase-date').value,category:document.getElementById('purchase-category').value};if(!input.description.trim()||input.total<=0||!input.date||input.installments<1||input.installments>60)throw new Error('Revise descrição, valor, data e parcelas.');if(!input.category)throw new Error('Ative ou crie uma categoria de despesa em Configurações > Categorias antes de salvar.');await runAppOperation(id?'Atualizando compra…':'Salvando compra…',input.installments>1?'Gerando as parcelas e vinculando-as às faturas corretas.':'Registrando a compra no cartão.',async()=>{if(id)await updatePurchase(id,input);else await createPurchase({...input,operation:formOperation(submittedForm,input)});closeDialog('purchase-dialog');toast(id?'Compra atualizada.':'Compra salva e parcelas geradas.','success');syncOperationMessage();await refreshAll()},{animateDashboard:true})}catch(e){console.error(e);setFormError('purchase-form-error',cardErrorMessage(e))}finally{setButtonBusy(btn,false)}}
+async function onGoalSubmit(event){event.preventDefault();const submittedForm=event.currentTarget;const btn=document.getElementById('goal-save-btn');setButtonBusy(btn,true);setFormError('goal-form-error','');try{const id=document.getElementById('goal-id').value;const input={name:document.getElementById('goal-name').value,target:Number(document.getElementById('goal-target').value),saved:Number(document.getElementById('goal-saved').value||0),dueDate:document.getElementById('goal-due').value};if(!input.name.trim()||input.target<=0||input.saved<0)throw new Error('Revise nome e valores da meta.');await runAppOperation(id?'Atualizando meta…':'Criando meta…','Salvando valores e progresso da meta.',async()=>{if(id)await updateGoal(id,input);else await createGoal({...input,operation:formOperation(submittedForm,input)});closeDialog('goal-dialog');toast(id?'Meta atualizada.':'Meta criada.','success');syncOperationMessage();await refreshAll()})}catch(e){console.error(e);setFormError('goal-form-error',String(e?.message||'').includes('SALDO_META_INSUFICIENTE')?'O valor manual da meta não pode ser reduzido abaixo dos resgates já vinculados.':(e.message||'Não foi possível salvar a meta.'))}finally{setButtonBusy(btn,false)}}
 async function onFamilyInviteSubmit(event){event.preventDefault();const btn=document.getElementById('family-invite-save');setButtonBusy(btn,true,'Enviando…');setFormError('family-invite-error','');try{await runAppOperation('Enviando convite…','Localizando o usuário e registrando o convite familiar.',async()=>{await sendFamilyInvite(document.getElementById('family-invite-username').value);closeDialog('family-invite-dialog');toast('Convite enviado.','success');syncOperationMessage('Atualizando os vínculos e convites familiares.');await refreshAll()})}catch(e){console.error(e);setFormError('family-invite-error',e.message||'Não foi possível enviar o convite.')}finally{setButtonBusy(btn,false)}}
 async function onFamilyPermissionsSubmit(event){event.preventDefault();const btn=document.getElementById('family-permissions-save');setButtonBusy(btn,true);setFormError('family-permissions-error','');try{await runAppOperation('Salvando permissões…','Atualizando exatamente quais grupos financeiros podem ser visualizados.',async()=>{await updateFamilyPermissions(document.getElementById('family-link-id').value,{transactions:document.getElementById('perm-transactions').checked,cards:document.getElementById('perm-cards').checked,goals:document.getElementById('perm-goals').checked,budget:document.getElementById('perm-budget').checked});closeDialog('family-permissions-dialog');toast('Permissões atualizadas.','success');syncOperationMessage('Atualizando os vínculos familiares.');await refreshAll()})}catch(e){console.error(e);setFormError('family-permissions-error',e.message||'Não foi possível salvar as permissões.')}finally{setButtonBusy(btn,false)}}
 async function onProfileSettingsSubmit(event){event.preventDefault();const btn=document.getElementById('save-profile-settings-btn');setButtonBusy(btn,true);try{await runAppOperation('Salvando perfil…','Atualizando suas informações de exibição.',async()=>{currentProfile=await updateProfileSettings({displayName:document.getElementById('settings-display-name').value});showApp(currentUser,currentProfile);toast('Nome atualizado.','success');renderSettings()})}catch(e){console.error(e);toast('Não foi possível atualizar o perfil.','error')}finally{setButtonBusy(btn,false)}}
 async function onLegacyMigrationSubmit(event){event.preventDefault();const btn=document.getElementById('legacy-migration-btn');setButtonBusy(btn,true,'Migrando…');setFormError('migration-error','');try{await runAppOperation('Migrando dados antigos…','Validando sua conta antiga e copiando os dados com segurança. Esta etapa pode levar alguns segundos.',async()=>{const result=await claimLegacyAccount(document.getElementById('legacy-username').value,document.getElementById('legacy-password').value);document.getElementById('legacy-password').value='';currentProfile=await ensureProfile(currentUser);showApp(currentUser,currentProfile);toast(`Migração concluída: ${result.transactions||0} lançamentos e ${result.goals||0} metas importados.`,'success');syncOperationMessage('Conferindo os dados migrados e reconstruindo a visão financeira.');await refreshAll()})}catch(e){console.error(e);setFormError('migration-error',e.message||'Não foi possível migrar os dados.')}finally{setButtonBusy(btn,false)}}
 async function handleDynamicClick(event){const target=event.target.closest('button');if(!target||appActionBusy)return;try{
+  if(target.dataset.reserveTreatment)return await setReserveTreatment(target.dataset.reserveId,target.dataset.reserveTreatment);
+  if(target.dataset.reserveEdit){closeDialog('reserve-dialog');return openEditTransaction(target.dataset.reserveEdit);}
   if(target.dataset.notificationOpen)return await openNotification(target.dataset.notificationOpen);
   if(target.dataset.familyRespond)return await runAppOperation(target.dataset.accept==='1'?'Aceitando convite…':'Recusando convite…','Atualizando o vínculo familiar.',async()=>{const inviteId=target.dataset.familyRespond;await respondFamilyInvite(inviteId,target.dataset.accept==='1');await markNotificationsForTarget('family',inviteId).catch(()=>{});toast(target.dataset.accept==='1'?'Convite aceito.':'Convite recusado.','success');syncOperationMessage('Atualizando a área Família.');await refreshAll()});
   if(target.dataset.familyCancelInvite)return await runAppOperation('Cancelando convite…','Removendo o convite pendente.',async()=>{await cancelFamilyInvite(target.dataset.familyCancelInvite);toast('Convite cancelado.','success');syncOperationMessage('Atualizando a área Família.');await refreshAll()});
@@ -1233,8 +1391,8 @@ async function handleDynamicClick(event){const target=event.target.closest('butt
   if(target.dataset.newPurchase)return openNewPurchase(target.dataset.newPurchase);
   if(target.dataset.editPurchase)return openEditPurchase(target.dataset.editPurchase);
   if(target.dataset.deletePurchase){if(purchaseTouchesPaidInvoice(target.dataset.deletePurchase))return explainPaidPurchaseLock();if(!confirm('Excluir esta compra e suas parcelas?'))return;return await runAppOperation('Excluindo compra…','Removendo a compra e as parcelas vinculadas.',async()=>{await deletePurchase(target.dataset.deletePurchase);toast('Compra excluída.','success');syncOperationMessage();await refreshAll()},{animateDashboard:true})}
-  if(target.dataset.openInvoice)return openInvoice(target.dataset.openInvoice);
-  if(target.dataset.toggleInvoice){const cardId=target.dataset.toggleInvoice;const paid=target.dataset.invoicePaid==='1';await runAppOperation(!paid?'Confirmando pagamento…':'Reabrindo fatura…',!paid?'Registrando o pagamento da fatura sem duplicar despesas.':'Revertendo o status de pagamento da fatura.',async()=>{await setInvoicePaid(cardId,`${dashboardDate.getFullYear()}-${String(dashboardDate.getMonth()+1).padStart(2,'0')}-01`,!paid);toast(!paid?'Fatura marcada como paga.':'Fatura reaberta.','success');closeDialog('invoice-dialog');syncOperationMessage();await refreshAll()},{animateDashboard:true});return openInvoice(cardId)}
+  if(target.dataset.openInvoice)return target.dataset.invoiceMonth?openInvoice(target.dataset.openInvoice,target.dataset.invoiceMonth):openInvoice(target.dataset.openInvoice);
+
   if(target.hasAttribute('data-open-categories'))return openCategoriesManager();
   if(target.dataset.categoryEdit)return openCategoryEditor(target.dataset.categoryEdit);
   if(target.dataset.categoryMenu)return openCategoryActions(target.dataset.categoryMenu);
@@ -1247,18 +1405,22 @@ async function handleDynamicClick(event){const target=event.target.closest('butt
   if(target.dataset.deleteGoal){if(!confirm('Excluir esta meta?'))return;return await runAppOperation('Excluindo meta…','Removendo a meta selecionada.',async()=>{await deleteGoal(target.dataset.deleteGoal);toast('Meta excluída.','success');syncOperationMessage();await refreshAll()})}
   if(target.dataset.goModule){if(target.dataset.goModule==='settings')closeSettingsPages();if(target.dataset.goModule==='planning'){showModule('planning');if(target.dataset.planningTarget)setPlanningSection(target.dataset.planningTarget);void loadPlanningMonth(planningDate,{quiet:true});return}return showModule(target.dataset.goModule)}
 }catch(e){console.error(e);toast(e.message||'Não foi possível concluir a ação.','error')}}
-function bindUI(){setAuthMode(authMode);fillCategorySelect('transaction-category','',categoryKindFromDirection(document.getElementById('transaction-direction')?.value||1));fillCategorySelect('purchase-category','','expense');fillCategorySelect('planning-category','',categoryKindFromDirection(document.getElementById('planning-direction')?.value||1));document.getElementById('transaction-filter-month').value='';document.getElementById('app-loading-dialog')?.addEventListener('cancel',event=>event.preventDefault());
+function bindUI(){cardsWorkspace=initCardsWorkspace({getState:()=>state,onRefresh:()=>refreshAll({throwOnError:true}),onOperation:runAppOperation,onNewPurchase:openNewPurchase,onEditPurchase:openEditPurchase,onEditCard:openEditCard,onCancelPurchase:async id=>runAppOperation('Excluindo compra…','Preservando o histórico da exclusão.',async()=>{await deletePurchase(id);await refreshAll();toast('Compra excluída.','success')},{animateDashboard:true})});
+  document.getElementById('purchase-mode').addEventListener('change',updatePurchaseSummary);document.getElementById('purchase-installments').addEventListener('input',updatePurchaseSummary);
+document.querySelectorAll('form').forEach(form=>form.addEventListener('reset',()=>clearFormOperation(form)));setAuthMode(authMode);fillCategorySelect('transaction-category','',categoryKindFromDirection(document.getElementById('transaction-direction')?.value||1));fillCategorySelect('purchase-category','','expense');fillCategorySelect('planning-category','',categoryKindFromDirection(document.getElementById('planning-direction')?.value||1));document.getElementById('transaction-filter-month').value='';document.getElementById('app-loading-dialog')?.addEventListener('cancel',event=>event.preventDefault());
   document.getElementById('auth-toggle').addEventListener('click',()=>{if(authBusy)return;authMode=authMode==='login'?'register':'login';setAuthError('');setAuthMode(authMode)});
   document.getElementById('auth-form').addEventListener('submit',async event=>{event.preventDefault();if(authBusy)return;setAuthError('');const username=document.getElementById('username').value.trim().toLowerCase(),password=document.getElementById('password').value;if(!username||!password)return setAuthError('Informe usuário e senha.');if(!/^[a-z0-9._-]{3,24}$/.test(username))return setAuthError('O usuário deve ter de 3 a 24 caracteres: letras minúsculas, números, ponto, hífen ou underline.');if(password.length<6)return setAuthError('A senha precisa ter pelo menos 6 caracteres.');authBusy=true;setAuthBusy(true,authMode,'auth');try{const submittedMode=authMode;const {data,error}=submittedMode==='register'?await signUp(username,password):await signIn(username,password);if(error)throw error;setAuthBusy(true,submittedMode,'data');await enterApp(data.session);if(submittedMode==='register')toast('Conta criada com sucesso.','success')}catch(error){console.error(error);setAuthError(error?.message||'Não foi possível autenticar.')}finally{authBusy=false;setAuthBusy(false,authMode)}});
-  document.querySelectorAll('.nav-item[data-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.module==='settings')closeSettingsPages();showModule(b.dataset.module);if(b.dataset.module==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.querySelectorAll('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.dataset.closeDialog)));document.querySelectorAll('[data-go-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goModule==='settings')closeSettingsPages();showModule(b.dataset.goModule);if(b.dataset.goModule==='planning'){if(b.closest('#module-home'))planningDate=new Date(dashboardDate);setPlanningSection(b.dataset.planningTarget||'overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.querySelectorAll('.mobile-nav-item[data-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.module==='settings')closeSettingsPages();showModule(b.dataset.module);if(b.dataset.module==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.getElementById('mobile-more-btn').addEventListener('click',()=>openDialog('mobile-more-dialog'));document.querySelectorAll('[data-mobile-go]').forEach(b=>b.addEventListener('click',()=>{closeDialog('mobile-more-dialog');if(b.dataset.mobileGo==='settings')closeSettingsPages();showModule(b.dataset.mobileGo);if(b.dataset.mobileGo==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));
+  document.querySelectorAll('.nav-item[data-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.module==='settings')closeSettingsPages();showModule(b.dataset.module);if(b.dataset.module==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.querySelectorAll('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>{if(appActionBusy||cardsWorkspace?.isBusy())return;closeDialog(b.dataset.closeDialog)}));document.querySelectorAll('[data-go-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goModule==='settings')closeSettingsPages();showModule(b.dataset.goModule);if(b.dataset.goModule==='planning'){if(b.closest('#module-home'))planningDate=new Date(dashboardDate);setPlanningSection(b.dataset.planningTarget||'overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.querySelectorAll('.mobile-nav-item[data-module]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.module==='settings')closeSettingsPages();showModule(b.dataset.module);if(b.dataset.module==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));document.getElementById('mobile-more-btn').addEventListener('click',()=>openDialog('mobile-more-dialog'));document.querySelectorAll('[data-mobile-go]').forEach(b=>b.addEventListener('click',()=>{closeDialog('mobile-more-dialog');if(b.dataset.mobileGo==='settings')closeSettingsPages();showModule(b.dataset.mobileGo);if(b.dataset.mobileGo==='planning'){planningSection='overview';setPlanningSection('overview');void loadPlanningMonth(planningDate,{quiet:true})}}));
   document.getElementById('notification-bell').addEventListener('click',event=>{event.stopPropagation();const pop=document.getElementById('notification-popover');setNotificationPopover(pop?.classList.contains('hidden'))});document.getElementById('notification-mark-all').addEventListener('click',()=>markAllNotifications().catch(e=>{console.error(e);toast('Não foi possível atualizar as notificações.','error')}));document.getElementById('notification-center-mark-all').addEventListener('click',()=>markAllNotifications().catch(e=>{console.error(e);toast('Não foi possível atualizar as notificações.','error')}));document.getElementById('notification-view-all').addEventListener('click',()=>{setNotificationPopover(false);renderNotifications();openDialog('notification-center-dialog')});document.addEventListener('click',event=>{if(!event.target.closest('.notification-anchor'))setNotificationPopover(false)});
   document.getElementById('logout-btn').addEventListener('click',()=>void executeLogout());document.getElementById('mobile-logout-btn').addEventListener('click',()=>void executeLogout({closeMobile:true}));
-  document.getElementById('report-export-csv')?.addEventListener('click',()=>{const monthKeys=selectedReportMonthKeys();if(!monthKeys.length){setFormError('report-form-error','Selecione pelo menos um mês.');return;}downloadFinancialRowsCSV({transactions:state.transactions,monthKeys});toast('Arquivo CSV gerado.','success');});
-  document.getElementById('new-transaction-btn').addEventListener('click',openNewTransaction);document.getElementById('quick-transaction').addEventListener('click',openNewTransaction);document.getElementById('open-balance-adjust').addEventListener('click',openBalance);document.getElementById('new-card-btn').addEventListener('click',openNewCard);document.getElementById('new-goal-btn').addEventListener('click',openNewGoal);document.getElementById('quick-dre').addEventListener('click',()=>openDRE(dashboardDate));document.getElementById('quick-pdf').addEventListener('click',()=>openReportBuilder(dashboardDate));document.getElementById('quick-analytics').addEventListener('click',openAnalytics);document.querySelectorAll('[data-planning-section]').forEach(btn=>btn.addEventListener('click',()=>setPlanningSection(btn.dataset.planningSection)));document.querySelectorAll('[data-planning-open]').forEach(btn=>btn.addEventListener('click',()=>setPlanningSection(btn.dataset.planningOpen)));document.querySelectorAll('[data-new-planning-shortcut]').forEach(btn=>btn.addEventListener('click',openNewPlanning));document.querySelectorAll('[data-module="analytics"],[data-go-module="analytics"],[data-mobile-go="analytics"]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>void renderAnalytics(),0)));document.querySelectorAll('[data-analysis-mode]').forEach(btn=>btn.addEventListener('click',()=>setAnalysisMode(btn.dataset.analysisMode)));document.querySelectorAll('[data-financial-view]').forEach(btn=>btn.addEventListener('click',()=>setFinancialView(btn.dataset.financialView)));document.querySelectorAll('[data-analysis-tab]').forEach(btn=>btn.addEventListener('click',()=>setAnalysisTab(btn.dataset.analysisTab)));['analytics-month-a','analytics-month-b','analytics-year-a','analytics-year-b'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>void renderAnalytics()));document.getElementById('report-generate-btn').addEventListener('click',generateSelectedReport);document.getElementById('report-month-list').addEventListener('change',event=>{if(event.target.matches('[data-report-month]')){setFormError('report-form-error','');updateReportSelectionSummary()}});document.querySelectorAll('[data-report-preset]').forEach(btn=>btn.addEventListener('click',()=>applyReportPreset(btn.dataset.reportPreset)));document.getElementById('budget-new-btn')?.addEventListener('click',()=>openBudgetCategoryEditor());document.getElementById('budget-current-btn')?.addEventListener('click',async()=>{const now=new Date();budgetDate=new Date(now.getFullYear(),now.getMonth(),1,12);await runAppOperation('Carregando limites…',`Buscando os limites de ${monthLabel(budgetDate)}.`,async()=>{state.budget=await getBudget(budgetDate);renderBudget()})});document.getElementById('budget-suggestion-toggle')?.addEventListener('click',openBudgetSuggestionPage);document.getElementById('budget-suggestion-back')?.addEventListener('click',()=>closeBudgetSuggestionPage({clear:true}));document.getElementById('budget-suggestion-generate')?.addEventListener('click',generateBudgetSuggestion);document.getElementById('budget-suggestion-cancel')?.addEventListener('click',cancelBudgetSuggestion);document.getElementById('budget-suggestion-apply')?.addEventListener('click',()=>void applyBudgetSuggestion());document.getElementById('budget-category-select')?.addEventListener('change',updateBudgetCategoryDialog);document.getElementById('budget-category-apply')?.addEventListener('click',applyBudgetCategoryDraft);document.getElementById('budget-category-remove')?.addEventListener('click',()=>removeBudgetCategoryLimit());document.getElementById('budget-mobile-action-primary')?.addEventListener('click',()=>{const cat=budgetActionCategory;closeBudgetMobileActions();if(cat)openBudgetCategoryEditor(cat)});document.getElementById('budget-mobile-action-remove')?.addEventListener('click',async()=>{const cat=budgetActionCategory;closeBudgetMobileActions();if(cat)await removeBudgetCategoryLimit(cat)});document.getElementById('budget-mobile-action-manage')?.addEventListener('click',()=>{closeBudgetMobileActions();openCategoriesManager()});document.querySelectorAll('[data-settings-page]').forEach(btn=>btn.addEventListener('click',()=>openSettingsPage(btn.dataset.settingsPage)));document.querySelectorAll('[data-settings-back]').forEach(btn=>btn.addEventListener('click',closeSettingsPages));document.getElementById('categories-back-settings')?.addEventListener('click',closeSettingsPages);document.getElementById('new-category-btn')?.addEventListener('click',()=>openCategoryEditor());document.getElementById('category-icon-grid')?.addEventListener('click',event=>{const btn=event.target.closest('[data-category-icon]');if(!btn)return;renderCategoryIconPicker(btn.dataset.categoryIcon||'tag')});document.getElementById('category-editor-form')?.addEventListener('submit',onCategoryEditorSubmit);document.getElementById('category-search-input')?.addEventListener('input',event=>{categoriesSearch=event.target.value||'';renderCategoriesManager()});document.querySelectorAll('[data-category-kind]').forEach(btn=>btn.addEventListener('click',()=>{categoriesKind=btn.dataset.categoryKind==='income'?'income':'expense';categoriesSearch='';renderCategoriesManager()}));document.getElementById('category-action-edit')?.addEventListener('click',()=>{const id=categoryActionId;closeDialog('category-actions-dialog');if(id)openCategoryEditor(id)});document.getElementById('category-action-toggle')?.addEventListener('click',async()=>{const row=(state.categories||[]).find(item=>item.id===categoryActionId);if(row)await toggleCategoryAction(row.id,!!row.is_active)});document.getElementById('category-action-delete')?.addEventListener('click',async()=>{if(categoryActionId)await deleteCategoryAction(categoryActionId)});
+  document.getElementById('report-custom-toggle').addEventListener('click',()=>setReportCustomExpanded(document.getElementById('report-custom-toggle').getAttribute('aria-expanded')!=='true'));
+  document.querySelectorAll('input[name="report-format"]').forEach(input=>input.addEventListener('change',updateReportDownloadLabel));
+  document.getElementById('report-dialog').addEventListener('cancel',event=>{if(reportDownloadBusy)event.preventDefault()});
+  document.getElementById('new-transaction-btn').addEventListener('click',openNewTransaction);document.getElementById('quick-transaction').addEventListener('click',openNewTransaction);document.getElementById('reserve-kpi-details').addEventListener('click',openReserveDetails);const reserveKpiCard=document.getElementById('reserve-kpi-card');if(reserveKpiCard){const reserveKpiMobileMedia=window.matchMedia('(max-width: 760px)');const openReserveFromCard=event=>{if(!reserveKpiMobileMedia.matches)return;if(event.target.closest('#reserve-kpi-details'))return;event.preventDefault();openReserveDetails()};reserveKpiCard.addEventListener('click',openReserveFromCard);reserveKpiCard.addEventListener('keydown',event=>{if(!reserveKpiMobileMedia.matches)return;if(event.key!=='Enter'&&event.key!==' ')return;if(event.target.closest('#reserve-kpi-details'))return;event.preventDefault();openReserveDetails()})}document.getElementById('open-balance-adjust').addEventListener('click',openBalance);document.getElementById('new-card-btn').addEventListener('click',openNewCard);document.getElementById('new-goal-btn').addEventListener('click',openNewGoal);document.getElementById('quick-dre').addEventListener('click',()=>openDRE(dashboardDate));document.getElementById('quick-pdf').addEventListener('click',()=>openReportBuilder(dashboardDate));document.getElementById('quick-analytics').addEventListener('click',openAnalytics);document.querySelectorAll('[data-planning-section]').forEach(btn=>btn.addEventListener('click',()=>setPlanningSection(btn.dataset.planningSection)));document.querySelectorAll('[data-planning-open]').forEach(btn=>btn.addEventListener('click',()=>setPlanningSection(btn.dataset.planningOpen)));document.querySelectorAll('[data-new-planning-shortcut]').forEach(btn=>btn.addEventListener('click',openNewPlanning));document.querySelectorAll('[data-module="analytics"],[data-go-module="analytics"],[data-mobile-go="analytics"]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>void renderAnalytics(),0)));document.querySelectorAll('[data-analysis-mode]').forEach(btn=>btn.addEventListener('click',()=>setAnalysisMode(btn.dataset.analysisMode)));document.querySelectorAll('[data-financial-view]').forEach(btn=>btn.addEventListener('click',()=>setFinancialView(btn.dataset.financialView)));document.querySelectorAll('[data-analysis-tab]').forEach(btn=>btn.addEventListener('click',()=>setAnalysisTab(btn.dataset.analysisTab)));['analytics-month-a','analytics-month-b','analytics-year-a','analytics-year-b'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>void renderAnalytics()));document.getElementById('report-generate-btn').addEventListener('click',generateSelectedReport);document.getElementById('report-month-list').addEventListener('change',event=>{if(event.target.matches('[data-report-month]')){setFormError('report-form-error','');updateReportPresetState(null);updateReportSelectionSummary()}});document.querySelectorAll('[data-report-preset]').forEach(btn=>btn.addEventListener('click',()=>applyReportPreset(btn.dataset.reportPreset)));document.getElementById('budget-new-btn')?.addEventListener('click',()=>openBudgetCategoryEditor());document.getElementById('budget-current-btn')?.addEventListener('click',async()=>{const now=new Date();budgetDate=new Date(now.getFullYear(),now.getMonth(),1,12);await runAppOperation('Carregando limites…',`Buscando os limites de ${monthLabel(budgetDate)}.`,async()=>{state.budget=await getBudget(budgetDate);renderBudget()})});document.getElementById('budget-suggestion-toggle')?.addEventListener('click',openBudgetSuggestionPage);document.getElementById('budget-suggestion-back')?.addEventListener('click',()=>closeBudgetSuggestionPage({clear:true}));document.getElementById('budget-suggestion-generate')?.addEventListener('click',generateBudgetSuggestion);document.getElementById('budget-suggestion-cancel')?.addEventListener('click',cancelBudgetSuggestion);document.getElementById('budget-suggestion-apply')?.addEventListener('click',()=>void applyBudgetSuggestion());document.getElementById('budget-category-select')?.addEventListener('change',updateBudgetCategoryDialog);document.getElementById('budget-category-apply')?.addEventListener('click',applyBudgetCategoryDraft);document.getElementById('budget-category-remove')?.addEventListener('click',()=>removeBudgetCategoryLimit());document.getElementById('budget-mobile-action-primary')?.addEventListener('click',()=>{const cat=budgetActionCategory;closeBudgetMobileActions();if(cat)openBudgetCategoryEditor(cat)});document.getElementById('budget-mobile-action-remove')?.addEventListener('click',async()=>{const cat=budgetActionCategory;closeBudgetMobileActions();if(cat)await removeBudgetCategoryLimit(cat)});document.getElementById('budget-mobile-action-manage')?.addEventListener('click',()=>{closeBudgetMobileActions();openCategoriesManager()});document.querySelectorAll('[data-settings-page]').forEach(btn=>btn.addEventListener('click',()=>openSettingsPage(btn.dataset.settingsPage)));document.querySelectorAll('[data-settings-back]').forEach(btn=>btn.addEventListener('click',closeSettingsPages));document.getElementById('categories-back-settings')?.addEventListener('click',closeSettingsPages);document.getElementById('new-category-btn')?.addEventListener('click',()=>openCategoryEditor());document.getElementById('category-icon-toggle')?.addEventListener('click',()=>toggleCategoryPicker('icon'));document.getElementById('category-color-toggle')?.addEventListener('click',()=>toggleCategoryPicker('color'));document.getElementById('category-icon-grid')?.addEventListener('click',event=>{const btn=event.target.closest('[data-category-icon]');if(!btn)return;renderCategoryIconPicker(btn.dataset.categoryIcon||'tag');closeCategoryPickers()});document.getElementById('category-color-grid')?.addEventListener('click',event=>{const btn=event.target.closest('[data-category-color]');if(!btn)return;renderCategoryColorPicker(btn.dataset.categoryColor||'orange');closeCategoryPickers()});document.addEventListener('click',event=>{if(!document.getElementById('category-editor-dialog')?.open)return;if(event.target.closest('.category-picker-toggle,.category-picker-panel'))return;closeCategoryPickers()});document.getElementById('category-editor-dialog')?.addEventListener('close',closeCategoryPickers);document.getElementById('category-editor-form')?.addEventListener('submit',onCategoryEditorSubmit);document.getElementById('category-search-input')?.addEventListener('input',event=>{categoriesSearch=event.target.value||'';renderCategoriesManager()});document.querySelectorAll('[data-category-kind]').forEach(btn=>btn.addEventListener('click',()=>{categoriesKind=btn.dataset.categoryKind==='income'?'income':'expense';categoriesSearch='';renderCategoriesManager()}));document.getElementById('category-action-edit')?.addEventListener('click',()=>{const id=categoryActionId;closeDialog('category-actions-dialog');if(id)openCategoryEditor(id)});document.getElementById('category-action-toggle')?.addEventListener('click',async()=>{const row=(state.categories||[]).find(item=>item.id===categoryActionId);if(row)await toggleCategoryAction(row.id,!!row.is_active)});document.getElementById('category-action-delete')?.addEventListener('click',async()=>{if(categoryActionId)await deleteCategoryAction(categoryActionId)});
   document.getElementById('transaction-form').addEventListener('submit',onTransactionSubmit);document.getElementById('planning-form').addEventListener('submit',onPlanningSubmit);document.getElementById('balance-form').addEventListener('submit',onBalanceSubmit);document.getElementById('card-form').addEventListener('submit',onCardSubmit);document.getElementById('purchase-form').addEventListener('submit',onPurchaseSubmit);document.getElementById('goal-form').addEventListener('submit',onGoalSubmit);document.getElementById('family-invite-form').addEventListener('submit',onFamilyInviteSubmit);document.getElementById('family-permissions-form').addEventListener('submit',onFamilyPermissionsSubmit);document.getElementById('profile-settings-form').addEventListener('submit',onProfileSettingsSubmit);document.getElementById('settings-logout-btn')?.addEventListener('click',()=>void executeLogout());document.getElementById('legacy-migration-form').addEventListener('submit',onLegacyMigrationSubmit);document.getElementById('new-planning-btn').addEventListener('click',openNewPlanning);document.getElementById('planning-prev').addEventListener('click',()=>void setPlanningMonth(shiftPlanningMonth(planningDate,-1)));document.getElementById('planning-next').addEventListener('click',()=>void setPlanningMonth(shiftPlanningMonth(planningDate,1)));document.getElementById('planning-current').addEventListener('click',()=>void setPlanningMonth(planningCurrentMonth()));document.getElementById('planning-status-filter').addEventListener('change',event=>{planningStatusFilter=event.target.value||'all';renderPlanning()});document.getElementById('planning-move-all').addEventListener('click',()=>void moveAllPlanningPending());document.getElementById('new-family-invite-btn').addEventListener('click',()=>{document.getElementById('family-invite-form').reset();setFormError('family-invite-error','');openDialog('family-invite-dialog')});document.getElementById('family-monitor-close').addEventListener('click',()=>void closeFamilyMonitor());document.getElementById('family-monitor-prev').addEventListener('click',()=>void setFamilyMonitorMonth(shiftFamilyMonth(familyMonitorDate,-1)));document.getElementById('family-monitor-next').addEventListener('click',()=>{if(familyMonitorCanAdvance())void setFamilyMonitorMonth(shiftFamilyMonth(familyMonitorDate,1))});document.getElementById('family-monitor-current').addEventListener('click',()=>void setFamilyMonitorMonth(familyMonitorCurrentMonth()));document.getElementById('family-monitor-month-input').addEventListener('change',event=>{const date=familyDateFromMonth(event.target.value);if(date)void setFamilyMonitorMonth(date)});document.querySelectorAll('[data-theme-choice]').forEach(btn=>btn.addEventListener('click',async()=>{if(appActionBusy)return;try{await runAppOperation('Salvando aparência…','Guardando sua preferência de tema.',async()=>{currentProfile=await updateProfileSettings({theme:btn.dataset.themeChoice});applyTheme(currentProfile.theme);toast('Tema atualizado.','success');renderSettings()})}catch(e){console.error(e);toast('Não foi possível salvar o tema.','error')}}));
   document.getElementById('transaction-description').addEventListener('input',updateNatureSuggestion);document.getElementById('transaction-nature').addEventListener('change',e=>{e.target.dataset.manuallySet='1';updateNatureSuggestion();updateGoalLinkUI({reset:true})});document.getElementById('transaction-goal-link').addEventListener('change',()=>updateGoalLinkUI());
-  document.getElementById('transaction-recurring').addEventListener('change',e=>document.getElementById('recurring-count-wrap').classList.toggle('hidden',!e.target.checked));document.getElementById('transaction-direction')?.addEventListener('change',event=>{fillCategorySelect('transaction-category','',categoryKindFromDirection(event.target.value));updateNatureSuggestion()});document.getElementById('planning-direction')?.addEventListener('change',event=>fillCategorySelect('planning-category','',categoryKindFromDirection(event.target.value)));['transaction-search','transaction-filter-type','transaction-filter-month'].forEach(id=>document.getElementById(id).addEventListener(id==='transaction-search'?'input':'change',renderTransactions));
+  document.getElementById('transaction-recurring').addEventListener('change',e=>document.getElementById('recurring-count-wrap').classList.toggle('hidden',!e.target.checked));document.getElementById('transaction-direction')?.addEventListener('change',event=>{fillCategorySelect('transaction-category','',categoryKindFromDirection(event.target.value));updateNatureSuggestion()});document.getElementById('planning-direction')?.addEventListener('change',event=>{fillCategorySelect('planning-category','',categoryKindFromDirection(event.target.value));updatePlanningNatureVisibility();});['transaction-search','transaction-filter-type','transaction-filter-month'].forEach(id=>document.getElementById(id).addEventListener(id==='transaction-search'?'input':'change',renderTransactions));
   document.querySelectorAll('[data-month-action]').forEach(b=>b.addEventListener('click',async()=>{if(appActionBusy)return;const previousDashboard=new Date(dashboardDate);dashboardDate=addMonth(dashboardDate,b.dataset.monthAction==='next'?1:-1);try{await runAppOperation('Carregando mês…',`Buscando os dados de ${monthLabel(dashboardDate)}.`,async()=>{const [budget,planning]=await Promise.all([getBudget(dashboardDate),listPlanningMonth(dashboardDate)]);dashboardBudget=budget;state.planning=planning;if(planningSameMonth(planningDate,dashboardDate))planningItems=planning;renderHome();if(planningSameMonth(planningDate,dashboardDate)){state.budget=budget;budgetDate=new Date(planningDate);renderBudget();renderPlanning()}})}catch(e){dashboardDate=previousDashboard;renderHome();toast('Não foi possível carregar o mês.','error')}}));document.querySelectorAll('[data-budget-month]').forEach(b=>b.addEventListener('click',async()=>{if(appActionBusy)return;const previousBudget=new Date(budgetDate);budgetDate=addMonth(budgetDate,b.dataset.budgetMonth==='next'?1:-1);try{await runAppOperation('Carregando limites…',`Buscando os limites de ${monthLabel(budgetDate)}.`,async()=>{state.budget=await getBudget(budgetDate);renderBudget()})}catch(e){budgetDate=previousBudget;renderBudget();toast('Não foi possível carregar os limites.','error')}}));document.addEventListener('click',handleDynamicClick)}
 
-async function init(){bindUI();initUpdateCenter({onUpdateNow:async()=>{await activateAppUpdate()}});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&familyMonitorOwnerId&&!document.getElementById('family-monitor-panel')?.classList.contains('hidden'))void loadFamilyMonitor({animate:true,reason:'Conferindo atualizações…'})});void initPWA().catch(error=>console.warn('PWA:',error));const session=await getSession().catch(()=>null);if(session){setAuthBusy(true,'login','data');try{await enterApp(session)}finally{setAuthBusy(false,'login')}}else showAuth();onAuthChange(async next=>{if(next)await enterApp(next);else{bootstrapGeneration++;currentUser=null;currentProfile=null;if(notificationChannel){try{await notificationChannel.unsubscribe()}catch{}notificationChannel=null}await stopFamilyMonitorRealtime();familyMonitorOwnerId=null;showAuth()}})}
+async function init(){bindUI();initUpdateCenter({onUpdateNow:async()=>{await activateAppUpdate()}});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&familyMonitorOwnerId&&!document.getElementById('family-monitor-panel')?.classList.contains('hidden'))void loadFamilyMonitor({animate:true,reason:'Conferindo atualizações…'})});void initPWA().catch(error=>console.warn('PWA:',error));const session=await getSession().catch(()=>null);if(session){setAuthBusy(true,'login','data');try{await enterApp(session)}finally{setAuthBusy(false,'login')}}else showAuth();onAuthChange(async (next,event)=>{if(next){if(currentUser?.id===next.user.id)return;await enterApp(next);}else{bootstrapGeneration++;currentUser=null;currentProfile=null;if(notificationChannel){try{await notificationChannel.unsubscribe()}catch{}notificationChannel=null}await stopFamilyMonitorRealtime();familyMonitorOwnerId=null;showAuth()}})}
 init();

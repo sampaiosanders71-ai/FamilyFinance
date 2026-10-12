@@ -1,5 +1,5 @@
-import { supabase } from './supabase.js';
-import { setCurrentUserCache, clearCurrentUserCache } from './database.js';
+import { supabase } from './supabase.js?v=2.9.20';
+import { setCurrentUserCache, clearCurrentUserCache } from './database.js?v=2.9.20';
 
 const DIRECT_LOGIN_PREFIX = 'ff-direct-login:';
 
@@ -157,8 +157,8 @@ export async function getSession() {
 }
 
 export function onAuthChange(callback) {
-  return supabase.auth.onAuthStateChange((_event, session) => {
+  return supabase.auth.onAuthStateChange((event, session) => {
     setCurrentUserCache(session?.user || null);
-    callback(session);
+    window.setTimeout(()=>{Promise.resolve(callback(session,event)).catch(error=>console.error('Sessão:',error));},0);
   });
 }

@@ -289,3 +289,24 @@
     color:#aeb8c7;
   }
 }
+
+/* 2.9.5: paleta expandida com chaves retrocompatíveis */
+.category-color-coral{background:#ff806e29;color:#ff806e;}
+.category-color-crimson{background:#db3e6029;color:#db3e60;}
+.category-color-rose{background:#ef8bb429;color:#ef8bb4;}
+.category-color-fuchsia{background:#db6ce729;color:#db6ce7;}
+.category-color-lilac{background:#b7a2ff29;color:#b7a2ff;}
+.category-color-indigo{background:#8889f729;color:#8889f7;}
+.category-color-cobalt{background:#477cf429;color:#477cf4;}
+.category-color-sky{background:#6ac2ff29;color:#6ac2ff;}
+.category-color-cyan{background:#35caed29;color:#35caed;}
+.category-color-mint{background:#5adbbd29;color:#5adbbd;}
+.category-color-lime{background:#a9db5929;color:#a9db59;}
+.category-color-amber{background:#fbb64429;color:#fbb644;}
+.category-color-gold{background:#f0c86429;color:#f0c864;}
+.category-color-brown{background:#c3966a29;color:#c3966a;}
+.category-color-graphite{background:#9ea8b729;color:#9ea8b7;}
+.category-color-peach{background:#ffac8b29;color:#ffac8b;}
+.category-color-lavender{background:#c99fe929;color:#c99fe9;}
+.category-color-forest{background:#69bd8929;color:#69bd89;}
+.category-color-sea{background:#58a5b829;color:#58a5b8;}

@@ -1,35 +1,22 @@
 {
-  "version": "2.9.4",
-  "publishedAt": "09/10/2026",
-  "improvementCount": 5,
-  "title": "Relatórios e consistência financeira",
-  "summary": "Relatórios distinguem despesas, reservas, transferências e fluxo de caixa. Classificações antigas podem ser revisadas sem alteração automática.",
+  "version": "2.9.20",
+  "publishedAt": "12/10/2026",
+  "improvementCount": 2,
+  "title": "Consulta de faturas simplificada",
+  "summary": "Resumo e compras em destaque; pagamentos e ajustes acessíveis em Gerenciar fatura.",
   "highlights": [
     {
-      "title": "Relatórios claros",
-      "text": "PDF apresenta resultado de consumo e variação de caixa em visões separadas."
+      "title": "Consulta mais limpa",
+      "text": "Compras e parcelas ficam visíveis junto ao resumo, sem blocos de pagamentos e ajustes na consulta."
     },
     {
-      "title": "Exportação CSV",
-      "text": "Lançamentos exportados com natureza, situação, direção e vínculo com meta."
-    },
-    {
-      "title": "Conferência de transferências",
-      "text": "Detecta possíveis pares por valor e data, sem supor confirmação bancária."
-    },
-    {
-      "title": "Histórico preservado",
-      "text": "Novo filtro permite revisar e confirmar a natureza dos registros anteriores."
-    },
-    {
-      "title": "Proteções financeiras",
-      "text": "Revisão dos sinais da natureza e testes de regressão para cartões e reservas."
+      "title": "Gerenciamento sob demanda",
+      "text": "Acesse pagamentos, correções, encargos e conciliação pelo botão Gerenciar fatura."
     }
   ],
   "details": [
-    "Para vincular reservas a metas, a migração 2.9.3 é obrigatória.",
-    "Sem reconciliação bancária automática: não existem contas de origem e destino identificáveis nesta estrutura.",
-    "Lançamentos históricos nunca são reclassificados automaticamente.",
-    "Esta versão requer homologação em navegador autenticado antes de publicação definitiva."
+    "Mantém edição, confirmação com mesmo valor e registro de pagamento.",
+    "Remove o antigo expansor de detalhes e a orientação longa da consulta.",
+    "Preserva os registros e as regras financeiras existentes."
   ]
 }

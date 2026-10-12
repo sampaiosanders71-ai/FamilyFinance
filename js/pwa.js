@@ -1,4 +1,4 @@
-import { APP_VERSION } from './version.js';
+import { APP_VERSION } from './version.js?v=2.9.20';
 
 let deferredInstallPrompt=null;
 let registrationRef=null;
@@ -25,12 +25,13 @@ function armReloadOnce(){
 export async function initPWA(){
   window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;updateInstallUI()});
   window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;updateInstallUI('Instalação concluída.')});
-  window.addEventListener('online',()=>updateInstallUI());window.addEventListener('offline',()=>updateInstallUI('Sem conexão. A interface pode abrir do cache; sincronizações exigem internet.'));
+  window.addEventListener('online',()=>updateInstallUI());window.addEventListener('offline',()=>updateInstallUI('Sem conexão. Consulte apenas dados carregados; login e sincronização exigem internet.'));
   document.getElementById('install-app-btn')?.addEventListener('click',async()=>{if(!deferredInstallPrompt)return updateInstallUI();const prompt=deferredInstallPrompt;deferredInstallPrompt=null;await prompt.prompt();const choice=await prompt.userChoice.catch(()=>null);updateInstallUI(choice?.outcome==='accepted'?'Instalação iniciada.':'Instalação não concluída.')});
   if('serviceWorker'in navigator){
     try{
       registrationRef=await navigator.serviceWorker.getRegistration('./');
       if(!registrationRef)registrationRef=await navigator.serviceWorker.register(`./sw.js?rev=${APP_VERSION}`,{scope:'./',updateViaCache:'none'});
+      else await registrationRef.update();
     }catch(error){console.error('Falha ao registrar Service Worker:',error);updateInstallUI('O navegador não conseguiu ativar o modo aplicativo. Atualize a página e tente novamente.');return}
   }
   updateInstallUI();

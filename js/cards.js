@@ -1,22 +1,24 @@
-import { supabase } from './supabase.js';
-import { getCurrentUser, newRequestId } from './database.js';
-import { monthISO } from './finance.js';
+import { buildCardInvoices, cardMonth,cardCalendarDates,cardDate } from './card-domain.js?v=2.9.20';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.20';
+import { listAllRows } from './pagination.js?v=2.9.20';
+import { supabase } from './supabase.js?v=2.9.20';
+import { getCurrentUser } from './database.js?v=2.9.20';
+import { monthISO } from './finance.js?v=2.9.20';
 
 export async function listCards() {
   const user = await getCurrentUser();
-  const { data, error } = await supabase.from('ff2_cards').select('*').eq('user_id', user.id).eq('active', true).order('created_at');
-  if (error) throw error;
-  return data || [];
+  const rows = await listAllRows(options => supabase.from('ff2_cards').select('*',options).eq('user_id',user.id).eq('active',true).order('created_at').order('id'), 'listCards');
+  return rows;
 }
 
 export async function createCard(input) {
   const user = await getCurrentUser();
-  const { data, error } = await supabase.from('ff2_cards').insert({
+  const row = {
+    id: operationIds(input)[0],
     user_id: user.id, name: input.name.trim(), credit_limit: Number(input.limit), closing_day: Number(input.closingDay),
     due_day: Number(input.dueDay), revolving_interest: Number(input.interest || 0), active: true
-  }).select('*').single();
-  if (error) throw error;
-  return data;
+  };
+  return (await insertOnce(supabase, 'ff2_cards', row, user.id, 'id'))[0];
 }
 
 export async function updateCard(id, input) {
@@ -30,9 +32,8 @@ export async function updateCard(id, input) {
 }
 
 export async function deleteCard(id) {
-  const user = await getCurrentUser();
-  const { error } = await supabase.from('ff2_cards').delete().eq('id', id).eq('user_id', user.id);
-  if (error) throw error;
+  const {data,error}=await supabase.rpc('ff2_archive_card_2914',{p_card_id:id});
+  if(error)throw error;return data;
 }
 
 export async function createPurchase(input) {
@@ -43,7 +44,7 @@ export async function createPurchase(input) {
     p_purchase_date: input.date,
     p_category: input.category || 'Outros',
     p_installment_count: Number(input.installments),
-    p_client_request_id: newRequestId()
+    p_client_request_id: operationIds(input)[0]
   });
   if (error) throw error;
   return data;
@@ -63,40 +64,27 @@ export async function updatePurchase(id, input) {
 }
 
 export async function deletePurchase(id) {
-  const user = await getCurrentUser();
-  const { error } = await supabase.from('ff2_card_purchases').delete().eq('id', id).eq('user_id', user.id);
-  if (error) throw error;
+  const {data,error}=await supabase.rpc('ff2_cancel_card_purchase_2914',{p_purchase_id:id,p_reason:'Compra excluída pelo usuário'});
+  if(error)throw error;return data;
 }
 
 export async function listPurchases() {
   const user = await getCurrentUser();
-  const { data, error } = await supabase
-    .from('ff2_card_purchases')
-    .select('*, ff2_cards(name)')
-    .eq('user_id', user.id)
-    .order('purchase_date', { ascending: false })
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return data || [];
+  const rows = await listAllRows(options => supabase.from('ff2_card_purchases').select('*, ff2_cards(name)',options).eq('user_id',user.id).is('cancelled_at',null).order('created_at',{ascending:false}).order('id',{ascending:false}), 'listPurchases');
+  return rows.sort((a,b)=>String(b.purchase_date||'').localeCompare(String(a.purchase_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||''))); 
 }
 
 export async function listInstallments() {
   const user = await getCurrentUser();
-  const { data, error } = await supabase
-    .from('ff2_card_installments')
-    .select('*, ff2_card_purchases(description,category,total_amount,installment_count,purchase_date), ff2_cards(name,due_day,closing_day)')
-    .eq('user_id', user.id)
-    .order('invoice_month')
-    .order('installment_no');
-  if (error) throw error;
-  return data || [];
+  const rows = await listAllRows(options => supabase.from('ff2_card_installments').select('*, ff2_card_purchases(description,category,total_amount,installment_count,purchase_date,record_kind,cancelled_at), ff2_cards(name,due_day,closing_day)',options).eq('user_id',user.id).order('invoice_month').order('installment_no').order('id'), 'listInstallments');
+  return rows;
 }
 
 export async function listInvoiceStatuses() {
+  await syncCardInvoices();
   const user = await getCurrentUser();
-  const { data, error } = await supabase.from('ff2_card_invoices').select('*').eq('user_id', user.id);
-  if (error) throw error;
-  return data || [];
+  const rows = await listAllRows(options => supabase.from('ff2_card_invoices').select('*',options).eq('user_id',user.id).order('id'), 'listInvoiceStatuses');
+  return rows;
 }
 
 export async function setInvoicePaid(cardId, invoiceMonth, paid) {
@@ -114,17 +102,40 @@ export function sumCardExpensesForMonth(installments, refDate) {
   return installments.filter(i => i.invoice_month === key).reduce((sum, i) => sum + Number(i.amount || 0), 0);
 }
 
-export function cardInvoiceSummaries(cards, installments, statuses, refDate = new Date()) {
-  const key = monthISO(refDate);
-  return cards.map(card => {
-    const rows = installments.filter(i => i.card_id === card.id && i.invoice_month === key);
-    const total = rows.reduce((sum, i) => sum + Number(i.amount || 0), 0);
-    const status = statuses.find(s => s.card_id === card.id && s.invoice_month === key)?.status || 'open';
-    const month = new Date(refDate.getFullYear(), refDate.getMonth(), 1, 12);
-    let dueMonth = new Date(month.getFullYear(), month.getMonth(), 1, 12);
-    if (Number(card.due_day) <= Number(card.closing_day)) dueMonth = new Date(month.getFullYear(), month.getMonth() + 1, 1, 12);
-    const dueDay = Math.min(Number(card.due_day), new Date(dueMonth.getFullYear(), dueMonth.getMonth() + 1, 0).getDate());
-    const dueDate = new Date(dueMonth.getFullYear(), dueMonth.getMonth(), dueDay, 12);
-    return { card, rows, total, status, invoiceMonth:key, dueDate };
+export function cardInvoiceSummaries(cards,installments,statuses,refDate=new Date()) {
+  const key=cardMonth(`${refDate.getFullYear()}-${String(refDate.getMonth()+1).padStart(2,'0')}-01`);
+  return cards.map(card=>buildCardInvoices(card,installments,statuses).find(invoice=>invoice.invoiceMonth===key)||{
+    card,rows:[],total:0,status:'open',invoiceMonth:key,balanceDue:0,paidAmount:0,
+    dueDate:cardDate(cardCalendarDates(card,key).dueOn)
   });
+}
+export async function syncCardInvoices(){
+  const {data,error}=await supabase.rpc('ff2_sync_card_invoices_2914');if(error)throw error;return data;
+}
+export async function listCardPayments(){
+  const user=await getCurrentUser();
+  return listAllRows(options=>supabase.from('ff2_card_payments').select('*',options).eq('user_id',user.id).order('paid_on',{ascending:false}).order('id'),'Pagamentos de cartão');
+}
+export async function payCardInvoice(input){
+ const {data,error}=await supabase.rpc('ff2_pay_card_invoice_2914',{
+  p_card_id:input.cardId,p_invoice_month:input.month,p_paid_on:input.date,
+  p_amount:input.amount,p_client_request_id:operationIds(input)[0],p_allow_negative:!!input.allowNegative
+ });if(error)throw error;return data;
+}
+export async function reverseCardPayment(id,reason){
+ const {data,error}=await supabase.rpc('ff2_reverse_card_payment_2914',{p_payment_id:id,p_reason:reason});if(error)throw error;return data;
+}
+
+export async function listCardAdjustments(){const user=await getCurrentUser();return listAllRows(options=>supabase.from('ff2_card_adjustments').select('*, ff2_cards(name)',options).eq('user_id',user.id).order('created_at').order('id'),'Ajustes de cartão');}
+export async function listCardReconciliations(){const user=await getCurrentUser();return listAllRows(options=>supabase.from('ff2_card_legacy_reconciliations').select('*',options).eq('user_id',user.id).order('created_at').order('id'),'Conciliações de cartão');}
+export async function recordCardAdjustment(input){const {data,error}=await supabase.rpc('ff2_record_card_adjustment_2916',{p_card_id:input.cardId,p_month:input.month,p_kind:input.kind,p_amount:Number(input.amount),p_date:input.date,p_reason:input.reason,p_purchase_id:input.purchaseId||null,p_destination:input.destination||'invoice',p_limit_released:Number(input.limitReleased)||0,p_category:input.category||'Outros',p_client_request_id:operationIds(input)[0],p_confirmed:!!input.confirmed,p_reversal_of:input.reversalOf||null,p_allow_negative:!!input.allowNegative});if(error)throw error;return data;}
+export async function reconcileCardLegacy(input){const {data,error}=await supabase.rpc('ff2_reconcile_card_legacy_2916',{p_invoice_id:input.invoiceId,p_installment_id:input.installmentId,p_covered_amount:Number(input.amount),p_reason:input.reason,p_client_request_id:operationIds(input)[0],p_confirmed:!!input.confirmed});if(error)throw error;return data;}
+
+export async function editCardInvoice(input){
+ const {data,error}=await supabase.rpc('ff2_edit_card_invoice_2919',{
+  p_invoice_id:input.invoiceId,p_purchase_id:input.purchaseId,p_expected_total:input.expectedTotal,
+  p_expected_date:input.expectedDate,p_expected_month:input.expectedMonth,p_total:input.total,
+  p_date:input.date,p_month:input.month,p_reason:input.reason,p_client_request_id:operationIds(input)[0],
+  p_confirmed:!!input.confirmed,p_limit_released:input.limitReleased||0
+ });if(error)throw error;return data;
 }

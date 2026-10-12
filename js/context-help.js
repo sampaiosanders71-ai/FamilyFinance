@@ -12,8 +12,8 @@
     },
     cartoes: {
       title: 'Sobre Cartões',
-      intro: 'Use Cartões para controlar compras no crédito, parcelas, faturas e pagamentos.',
-      bullets: ['Compras entram na fatura conforme a competência do cartão e já contam nos limites e análises de consumo.', 'Enquanto a fatura estiver aberta, ela não é tratada como despesa paga no Dashboard.', 'Ao marcar a fatura como paga, o pagamento vira saída real de caixa; ao reabrir, essa saída é revertida.', 'Compras de uma fatura já paga só podem ser alteradas depois que a fatura for reaberta.']
+      intro: 'Abra um cartão para consultar limite, fatura atual, gráfico de faturas e compras. Toque em uma barra para abrir a fatura daquele mês ou use Histórico de faturas para navegar entre competências anteriores e futuras.',
+      bullets: ['Compras entram na fatura conforme a competência do cartão e já contam nos limites e análises de consumo.', 'Enquanto a fatura estiver aberta, ela não é tratada como despesa paga no Dashboard.', 'Registre o pagamento integral ou parcial com a data efetiva. Ele atualiza o caixa, o saldo devido e o limite, sem duplicar o consumo.', 'Compras com histórico protegido permitem corrigir descrição e categoria. Valores exigem ajuste ou estorno separado, com aplicação confirmada pelo emissor.']
     },
     metas: {
       title: 'Sobre Metas',

@@ -1,6 +1,7 @@
-import { supabase } from './supabase.js';
-import { getCurrentUser, newRequestId } from './database.js';
-import { calculateCashLedgerStats } from './financial-ledger.js';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.20';
+import { supabase } from './supabase.js?v=2.9.20';
+import { getCurrentUser } from './database.js?v=2.9.20';
+import { calculateCashLedgerStats } from './financial-ledger.js?v=2.9.20';
 
 export const DEFAULT_CATEGORIES = [
   'Salário','Alimentação','Transporte','Moradia','Saúde','Lazer','Educação','Assinaturas','Dívidas','Investimento','Outros'
@@ -116,7 +117,8 @@ export async function listTransactions() {
 export async function createTransaction(input) {
   const user = await getCurrentUser();
   const count = input.recurring ? Math.max(2, Math.min(60, Number(input.recurringCount) || 12)) : 1;
-  const groupId = count > 1 ? crypto.randomUUID() : null;
+  const requestIds = operationIds(input, count);
+  const groupId = count > 1 ? requestIds[0] : null;
   const rows = Array.from({ length: count }, (_, index) => ({
     user_id: user.id,
     type: input.direction > 0 ? 'income' : 'expense',
@@ -128,14 +130,12 @@ export async function createTransaction(input) {
     affects_month_result: true,
     source: count > 1 ? 'recurring' : 'manual',
     recurring_group_id: groupId,
-    client_request_id: newRequestId(),
+    client_request_id: requestIds[index],
     notes: input.notes?.trim() || null,
     financial_nature: input.financialNature || (input.direction>0?'income':'consumption'),
-    goal_id: input.financialNature==='allocation' && input.direction<0 ? (input.goalId || null) : null
+    goal_id: ((input.financialNature==='allocation' && input.direction<0)||(input.financialNature==='resgate' && input.direction>0)) ? (input.goalId || null) : null
   }));
-  const { data, error } = await supabase.from('ff2_transactions').insert(rows).select('*');
-  if (error) throw error;
-  return data || [];
+  return insertOnce(supabase, 'ff2_transactions', rows, user.id);
 }
 
 export async function updateTransaction(id, input) {
@@ -151,7 +151,8 @@ export async function updateTransaction(id, input) {
       category: input.category || 'Outros',
       notes: input.notes?.trim() || null,
       financial_nature: input.financialNature || (input.direction>0?'income':'consumption'),
-      goal_id: input.financialNature==='allocation' && input.direction<0 ? (input.goalId || null) : null,
+      goal_id: ((input.financialNature==='allocation' && input.direction<0)||(input.financialNature==='resgate' && input.direction>0)) ? (input.goalId || null) : null,
+      ...(input.resetReserveReconciliation ? { reserve_reconciliation: null } : {}),
       updated_at: new Date().toISOString()
     })
     .eq('id', id).eq('user_id', user.id)
@@ -181,7 +182,7 @@ export async function applyBalanceAdjustment(input) {
     p_amount: Number(input.amount),
     p_reason: input.reason,
     p_occurred_on: input.date,
-    p_client_request_id: newRequestId()
+    p_client_request_id: operationIds(input)[0]
   });
   if (error) throw error;
   return data;

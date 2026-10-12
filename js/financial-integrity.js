@@ -1,6 +1,6 @@
 // Revisão assistida: nenhuma destas funções altera dados ou cria transferências.
-import { classifyTransaction, isBalanceAdjustment, isCardInvoicePayment } from './financial-ledger.js';
-import { suggestNature } from './transaction-nature.js';
+import { classifyTransaction, isBalanceAdjustment, isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund } from './financial-ledger.js?v=2.9.20';
+import { suggestNature } from './transaction-nature.js?v=2.9.20';
 const validDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value||''));
 const cash = row => Math.round(Math.abs(Number(row?.amount)||0)*100);
 const utcDay = value => Date.parse(String(value)+'T12:00:00Z')/86400000;
@@ -16,7 +16,7 @@ export function legacyReview(rows=[]){
   }));
 }
 export function ownTransferReview(rows=[],{daysApart=1}={}){
-  const movements=(rows||[]).filter(row=>row.financial_nature==='transfer' && !isBalanceAdjustment(row) && validDate(row.occurred_on) && Number(row.amount)>0 && [1,-1].includes(Number(row.direction)));
+  const movements=(rows||[]).filter(row=>row.financial_nature==='transfer' && !isCardInvoicePayment(row) && !isCardInvoiceReversal(row) && !isCardPurchaseRefund(row) && !isBalanceAdjustment(row) && validDate(row.occurred_on) && Number(row.amount)>0 && [1,-1].includes(Number(row.direction)));
   const outs=movements.filter(row=>Number(row.direction)===-1).sort((a,b)=>String(a.occurred_on).localeCompare(String(b.occurred_on))||String(a.id).localeCompare(String(b.id)));
   const ins=movements.filter(row=>Number(row.direction)===1);
   const used=new Set(),pairs=[],unmatched=[],ambiguous=[];

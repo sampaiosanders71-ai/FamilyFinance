@@ -1,31 +1,17 @@
-import { supabase } from './supabase.js';
-import { getCurrentUser } from './database.js';
-import { budgetSummary } from './budget.js';
-import { cardInvoiceSummaries } from './cards.js';
+import { listAllRows } from './pagination.js?v=2.9.20';
+import { supabase } from './supabase.js?v=2.9.20';
+import { getCurrentUser } from './database.js?v=2.9.20';
+import { budgetSummary } from './budget.js?v=2.9.20';
+import { buildCardInvoices } from './card-domain.js?v=2.9.20';
+import { goalProgress } from './goal-integration.js?v=2.9.20';
+import { canonicalCategoryName } from './category-alias.js?v=2.9.20';
 
 function monthKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`}
 function sameMonth(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()}
 
-const NOTIFICATION_PAGE_SIZE=500;
-
 export async function listNotifications(){
   const user=await getCurrentUser();
-  const rows=[];
-  for(let from=0;;from+=NOTIFICATION_PAGE_SIZE){
-    const to=from+NOTIFICATION_PAGE_SIZE-1;
-    const {data,error}=await supabase
-      .from('ff2_notifications')
-      .select('*')
-      .eq('user_id',user.id)
-      .order('created_at',{ascending:false})
-      .order('id',{ascending:false})
-      .range(from,to);
-    if(error)throw error;
-    const page=data||[];
-    rows.push(...page);
-    if(page.length<NOTIFICATION_PAGE_SIZE)break;
-  }
-  return rows;
+  return listAllRows(options=>supabase.from('ff2_notifications').select('*',options).eq('user_id',user.id).order('created_at',{ascending:false}).order('id',{ascending:false}),'Notificações');
 }
 
 export async function markNotificationRead(id){
@@ -47,7 +33,7 @@ export async function markNotificationsForTarget(target,targetId){
   if(error)throw error;
 }
 
-export async function syncFinancialNotifications({budget,transactions,installments,cards,invoiceStatuses,goals}){
+export async function syncFinancialNotifications({budget,transactions,installments,cards,invoiceStatuses,goals,categories=[]}){
   const user=await getCurrentUser();
   const now=new Date();
   const rows=[];
@@ -55,10 +41,10 @@ export async function syncFinancialNotifications({budget,transactions,installmen
   if(budget?.plan){
     const budgetMonth=new Date(`${String(budget.plan.month).slice(0,10)}T12:00:00`);
     if(!Number.isNaN(budgetMonth.getTime())&&sameMonth(budgetMonth,now)){
-      const summary=budgetSummary(budget,transactions||[],installments||[],now);
+      const summary=budgetSummary(budget,transactions||[],installments||[],now,now,categories);
       for(const item of budget.items||[]){
         const limit=Number(item.limit_amount||0);
-        const spent=Number(summary.spentMap[item.category]||0);
+        const spent=Number(summary.spentMap[canonicalCategoryName(item.category,categories)]||0);
         if(limit<=0||spent<=0)continue;
         const ratio=spent/limit;
         if(ratio>=1){
@@ -71,21 +57,21 @@ export async function syncFinancialNotifications({budget,transactions,installmen
   }
 
   for(const goal of goals||[]){
-    const target=Number(goal.target_amount||0),saved=Number(goal.saved_amount||0);
+    const progress=goalProgress(goal,transactions||[],now);const target=progress.target,saved=progress.saved;
     if(target>0&&saved>=target&&goal.status!=='archived'){
       rows.push({user_id:user.id,type:'goal_reached',title:'Meta atingida',body:`Você alcançou a meta “${goal.name}”.`,target:'goals',target_id:goal.id,event_key:`goal-reached:${goal.id}`});
     }
   }
 
   const today=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);
-  const summaries=cardInvoiceSummaries(cards||[],installments||[],invoiceStatuses||[],now);
+  const summaries=(cards||[]).flatMap(card=>buildCardInvoices(card,installments||[],invoiceStatuses||[]));
   for(const summary of summaries){
-    if(summary.total<=0||summary.status==='paid')continue;
+    if(summary.balanceDue<=0||summary.status==='paid')continue;
     const due=new Date(summary.dueDate.getFullYear(),summary.dueDate.getMonth(),summary.dueDate.getDate(),12);
     const days=Math.ceil((due-today)/86400000);
     if(days<0||days>5)continue;
     const when=days===0?'vence hoje':days===1?'vence amanhã':`vence em ${days} dias`;
-    rows.push({user_id:user.id,type:'invoice_due',title:`Fatura ${when}`,body:`A fatura de ${summary.card.name} ${when}. Confira o valor e o pagamento.`,target:'cards',target_id:summary.card.id,event_key:`invoice-due:${summary.card.id}:${summary.invoiceMonth}`});
+    rows.push({user_id:user.id,type:'invoice_due',title:`Fatura ${when}`,body:`A fatura de ${summary.card.name} ${when}. Confira o valor e o pagamento.`,target:'cards',target_id:summary.id||summary.card.id,event_key:`invoice-due:${summary.card.id}:${summary.invoiceMonth}`});
   }
 
   if(!rows.length)return 0;
