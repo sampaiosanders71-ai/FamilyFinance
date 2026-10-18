@@ -1,7 +1,7 @@
-import { operationIds, insertOnce } from './request-operation.js?v=2.9.20';
-import { supabase } from './supabase.js?v=2.9.20';
-import { getCurrentUser } from './database.js?v=2.9.20';
-import { calculateCashLedgerStats } from './financial-ledger.js?v=2.9.20';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.24';
+import { supabase } from './supabase.js?v=2.9.24';
+import { getCurrentUser } from './database.js?v=2.9.24';
+import { calculateCashLedgerStats } from './financial-ledger.js?v=2.9.24';
 
 export const DEFAULT_CATEGORIES = [
   'Salário','Alimentação','Transporte','Moradia','Saúde','Lazer','Educação','Assinaturas','Dívidas','Investimento','Outros'

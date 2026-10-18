@@ -28,12 +28,12 @@
     analises: {
       title: 'Sobre Análises',
       intro: 'Análises compara períodos e mostra como seu comportamento financeiro mudou.',
-      bullets: ['Compare meses ou anos.', 'Veja evolução, categorias, planejamento, limites e cartões.', 'Cores, nomes e ícones das categorias seguem o gerenciador de Categorias.']
+      bullets: ['Compare meses ou anos.', 'Veja evolução, categorias, planejamento, limites e cartões.', 'Cores, nomes e ícones das categorias seguem o gerenciador de Categorias.', 'Ao comparar um mês ou ano em andamento, os dois períodos usam o mesmo dia de corte.', 'Aumentos de despesas aparecem em vermelho; reduções, em verde. Sem base anterior significa que o período comparado tinha valor zero.', 'A evolução mensal permite escolher 3, 6 ou 12 meses. Gráficos mais largos podem ser percorridos horizontalmente.', 'Em Limites, laranja representa o limite e azul representa o gasto real. As explicações detalhadas podem ser expandidas na própria tela.']
     },
     familia: {
       title: 'Sobre Família',
-      intro: 'Família permite compartilhar informações financeiras apenas com pessoas autorizadas.',
-      bullets: ['Você decide quais dados cada pessoa pode visualizar.', 'Quem recebeu autorização pode acompanhar os períodos liberados.', 'Permissões podem ser alteradas ou removidas a qualquer momento.']
+      intro: 'Acompanhe somente os grupos de dados que cada pessoa autorizou compartilhar.',
+      bullets: ['Quem acompanha meus dados mostra quem tem acesso ao seu financeiro. Pessoas que acompanho mostra os titulares que compartilharam dados com você.', 'Convites ficam reunidos em Recebidos e Enviados.', 'Visualizar abre uma tela de consulta com abas conforme as permissões. Voltar mantém o contexto da lista.', 'O titular controla os grupos liberados. Remover ou deixar de acompanhar encerra o vínculo.', 'As listas extensas mostram páginas no computador e Carregar mais no celular. Totais e gráficos continuam completos.', 'Metas compartilhadas mostram o saldo atual autorizado, independentemente do mês escolhido para lançamentos, cartões e limites.']
     },
     configuracoes: {
       title: 'Sobre Configurações',
@@ -69,6 +69,26 @@
       title: 'Como funcionam os limites?',
       intro: 'Limites definem quanto você aceita gastar em cada categoria durante o mês.',
       bullets: ['O limite é o teto da categoria.', 'Gasto realizado mostra o que já virou lançamento real.', 'Planejado mostra valores pendentes que ainda não foram realizados.', 'Disponível considera o limite menos o que já foi gasto e o que ainda está planejado.']
+    },
+    'planning-summary': {
+      title: 'Resumo do planejamento',
+      intro: 'Os indicadores usam os planos ativos do mês selecionado.',
+      bullets: ['Receitas incluem os recebimentos previstos e já concluídos.', 'Despesas incluem consumo; reservas e transferências ficam separadas.', 'Saldo planejado é receitas menos despesas planejadas, não o saldo da conta.', 'Conclusão compara itens pagos ou recebidos com os concluídos, pendentes e adiados. Cancelados ficam fora dessa proporção.']
+    },
+    'planning-reserves': {
+      title: 'Reservas do mês',
+      intro: 'Reservado mostra lançamentos de reserva já realizados na competência. Reservas futuras mostra lançamentos futuros já cadastrados nessa competência.',
+      note: 'Reservas somente planejadas continuam em Meus planos e não viram movimento de caixa antes da realização.'
+    },
+    'planning-cash-projection': {
+      title: 'Projeção do saldo livre',
+      intro: 'No mês atual, usa o saldo atual e os lançamentos futuros registrados, incluindo reservas.',
+      bullets: ['Meus planos não são somados novamente, evitando duplicação.', 'Em outras competências aparece um traço, para não sugerir um saldo histórico incorreto.']
+    },
+    'planning-overview-limits': {
+      title: 'Limites por categoria',
+      intro: 'Na visão geral, o valor e a barra mostram o gasto realizado em relação ao limite do mês selecionado.',
+      bullets: ['Selecione uma categoria para ver também o planejamento pendente e o disponível na aba Limites.', 'Planos pendentes continuam comprometendo o disponível, conforme as regras atuais.', 'As categorias com maior proporção realizada ou comprometida aparecem primeiro.']
     },
     'planning-layered-limits': {
       title: 'Como ler a barra em camadas?',

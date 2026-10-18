@@ -1,6 +1,6 @@
 // Revisão assistida: nenhuma destas funções altera dados ou cria transferências.
-import { classifyTransaction, isBalanceAdjustment, isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund } from './financial-ledger.js?v=2.9.20';
-import { suggestNature } from './transaction-nature.js?v=2.9.20';
+import { classifyTransaction, isBalanceAdjustment, isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund } from './financial-ledger.js?v=2.9.24';
+import { suggestNature } from './transaction-nature.js?v=2.9.24';
 const validDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value||''));
 const cash = row => Math.round(Math.abs(Number(row?.amount)||0)*100);
 const utcDay = value => Date.parse(String(value)+'T12:00:00Z')/86400000;

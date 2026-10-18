@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js?v=2.9.20';
+import { supabase } from './supabase.js?v=2.9.24';
 // A conciliação é persistida em um RPC com autorização e verificação de saldo independente.
 export async function saveReserveReconciliation(transactionId,treatment){
   if(!transactionId || (treatment!==null&&!['separate','included'].includes(treatment)))throw new Error('Conciliação inválida.');

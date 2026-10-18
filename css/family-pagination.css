@@ -1,0 +1,126 @@
+/* Shared list navigation; financial models always retain the complete dataset. */
+.paged-list{display:grid;gap:14px;min-width:0;scroll-margin-top:90px}
+.paged-rows{display:grid;gap:10px;min-width:0}
+.list-pagination{border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:.7rem;min-width:0}
+.list-pagination-desktop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.list-pagination-desktop>label{display:flex;align-items:center;gap:6px;font-size:.66rem}
+.list-pagination select{border:1px solid var(--line);border-radius:8px;background:var(--surface2);color:var(--text);padding:7px;font:inherit}
+.list-page-buttons{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.list-page-buttons button{min-width:32px;min-height:34px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--surface2);color:var(--text);cursor:pointer;font:inherit}
+.list-page-buttons button[aria-current="page"]{background:var(--orange);color:#17110a;border-color:var(--orange);font-weight:700}
+.list-page-buttons button:disabled{opacity:.35;cursor:default}
+.list-page-gap{padding:4px}
+.list-pagination-mobile{display:none}
+.list-pagination button:focus-visible,.list-pagination select:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.paged-list[aria-busy="true"] .list-pagination{opacity:.6;pointer-events:none}
+.goal-history-total{display:grid;gap:5px;padding:16px;border:1px solid var(--line);background:var(--surface2);border-radius:12px;margin-bottom:16px}
+.goal-history-total>span,.goal-history-total>small{font-size:.72rem;color:var(--muted)}
+.goal-history-total>strong{font-size:1.4rem}
+.goal-history-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);min-width:0}
+.goal-history-row>div{display:grid;gap:4px;min-width:0}.goal-history-row strong{font-size:.8rem;overflow-wrap:anywhere}.goal-history-row small{font-size:.68rem;color:var(--muted)}
+.goal-history-value{white-space:nowrap}
+#module-family,#module-family-profile{max-width:1240px;margin-inline:auto;min-width:0}
+.family-page-toolbar{display:flex;justify-content:flex-end;margin-bottom:18px}
+.family-members-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start;margin-bottom:18px}
+.family-members-panel,.family-invites-panel{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:18px;min-width:0}
+.family-members-panel>h3,.family-invites-panel>h3{margin:0 0 16px;font-size:1rem}
+#module-family .family-person{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--surface2);align-items:start}
+#module-family .family-avatar{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--orange) 15%,var(--surface));color:var(--orange);font-size:1.15rem;display:grid;place-items:center;flex-shrink:0}
+#module-family .family-person-main{min-width:0;display:grid;gap:5px}
+#module-family .family-person-main>strong{font-size:.92rem;overflow-wrap:anywhere}
+#module-family .family-person-main>small{font-size:.7rem;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+#module-family .family-actions{grid-column:2;display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+#module-family .family-actions button{min-height:35px;font-size:.69rem;padding:7px 10px}
+#module-family .family-person-access{font-size:.67rem;color:var(--muted);margin-top:3px}
+#module-family .family-person-access>summary{cursor:pointer;color:var(--orange);min-height:27px;line-height:27px}
+#module-family .family-person-access .permission-tags{margin-top:7px}
+.family-invites-tabs,.family-profile-tabs{display:flex;gap:12px;border-bottom:1px solid var(--line);margin-bottom:15px;overflow-x:auto;min-width:0;scrollbar-width:thin}
+.family-invites-tabs button,.family-profile-tabs button{position:relative;min-height:44px;padding:10px 15px;border:0;background:transparent;color:var(--muted);font:600 .78rem Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.family-invites-tabs button.active,.family-profile-tabs button.active{color:var(--orange)}
+.family-invites-tabs button.active:after,.family-profile-tabs button.active:after{position:absolute;content:'';left:0;right:0;bottom:0;height:3px;background:var(--orange);border-radius:3px}
+#module-family .empty-state{min-height:0;padding:18px;font-size:.78rem;border:1px dashed var(--line);border-radius:12px;background:transparent;box-shadow:none;line-height:1.5}
+#module-family-profile .family-monitor{padding:0;border:0;background:transparent;box-shadow:none;border-radius:0;overflow:visible;transform:none;zoom:1}
+#module-family-profile .family-monitor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:17px}
+#module-family-profile .family-monitor-head h2{margin:5px 0;font-size:1.45rem;overflow-wrap:anywhere}
+#module-family-profile .family-monitor-head p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.5}
+#module-family-profile .family-monitor-head .eyebrow{font-size:.63rem}
+#module-family-profile .family-monitor-period{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;align-items:center;margin-bottom:12px}
+#module-family-profile .family-monitor-month-switch{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--surface);border-radius:11px;overflow:hidden;min-width:0}
+#module-family-profile .family-monitor-month-switch>button{width:36px;min-height:42px;border:0;border-radius:0;background:var(--surface2);color:var(--text);font-size:1.2rem}
+#module-family-profile .family-monitor-month-picker{min-width:160px;background:transparent;padding:10px;position:relative;font-size:.77rem;font-weight:600;display:grid;place-items:center}
+#module-family-profile .family-monitor-month-picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#module-family-profile .family-monitor-sync{color:var(--muted);font-size:.69rem;line-height:1.5;margin-bottom:17px}
+#module-family-profile .family-monitor-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+#module-family-profile .family-monitor-summary-card{display:grid;gap:7px;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:17px;min-width:0}
+#module-family-profile .family-monitor-summary-card>span{font-size:.76rem;color:var(--muted)}
+#module-family-profile .family-monitor-summary-card>strong{font:700 1.35rem 'Space Grotesk',system-ui,sans-serif;overflow-wrap:anywhere}
+#module-family-profile .family-monitor-summary-card small{font-size:.64rem;line-height:1.4;color:var(--muted)}
+#module-family-profile .family-monitor-summary-card.income>strong{color:var(--green)}
+#module-family-profile .family-monitor-summary-card.expense>strong{color:var(--red)}
+#module-family-profile .family-monitor-main-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+#module-family-profile .family-monitor-section,.family-read-panel{border:1px solid var(--line);border-radius:15px;background:var(--surface);padding:17px;min-width:0;overflow:visible}
+#module-family-profile .family-monitor-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#module-family-profile .family-monitor-section-head h4{margin:0;font-size:.92rem}
+#module-family-profile .family-monitor-section-head p{margin:5px 0 0;font-size:.68rem;color:var(--muted);line-height:1.5}
+#module-family-profile .family-monitor-transaction-list,#module-family-profile .family-category-list{max-height:none;height:auto;overflow:visible;display:grid;gap:9px}
+#module-family-profile .family-monitor-transaction{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);padding:11px;min-width:0}
+#module-family-profile .family-monitor-transaction-main{min-width:0}
+#module-family-profile .family-monitor-transaction-title{font-size:.76rem;line-height:1.4;overflow-wrap:anywhere}
+#module-family-profile .family-monitor-transaction-meta{display:flex;flex-wrap:wrap;gap:7px;font-size:.62rem;color:var(--muted);margin-top:5px}
+#module-family-profile .family-monitor-transaction-value{font-size:.76rem;white-space:nowrap;flex-shrink:0}
+#module-family-profile .family-monitor-filters{display:flex;gap:4px;flex-wrap:wrap}
+#module-family-profile .family-monitor-filter{border:1px solid var(--line);background:var(--surface2);color:var(--muted);padding:6px 9px;min-height:32px;font:500 .66rem Inter,system-ui,sans-serif;border-radius:9px}
+#module-family-profile .family-monitor-filter.active{border-color:var(--orange);color:var(--orange);background:color-mix(in srgb,var(--orange) 10%,var(--surface))}
+#module-family-profile .family-category-row{padding:9px 0}
+#module-family-profile .family-category-row-top{display:flex;justify-content:space-between;gap:9px;font-size:.74rem;margin-bottom:7px}
+#module-family-profile .family-category-row-top>span{overflow-wrap:anywhere}
+#module-family-profile .family-category-track,.family-read-card .family-category-track{height:6px;background:var(--surface3);border-radius:8px;overflow:hidden}
+#module-family-profile .family-category-track>span,.family-read-card .family-category-track>span{display:block;height:100%;background:var(--orange);border-radius:inherit}
+#module-family-profile .family-monitor-extras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+#module-family-profile .family-monitor-extra{display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px;min-width:0}
+#module-family-profile .family-monitor-extra>span{font-size:.7rem;color:var(--muted)}
+#module-family-profile .family-monitor-extra>strong{font-size:1.1rem;overflow-wrap:anywhere}
+#module-family-profile .family-monitor-note{font-size:.68rem;line-height:1.5;color:var(--muted);padding:11px;border:1px solid var(--line);border-radius:10px;margin-top:14px;background:var(--surface)}
+.family-profile-error{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface);font-size:.8rem;color:var(--muted);line-height:1.5;margin:14px 0}
+.family-read-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:16px}
+.family-read-card{display:grid;gap:9px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0}
+.family-read-card h3,.family-read-panel h3{font-size:.92rem;margin:0 0 4px;overflow-wrap:anywhere}
+.family-read-card>span,.family-read-card>small{font-size:.73rem;color:var(--muted);line-height:1.5}
+.family-read-card>strong{font:700 1.35rem 'Space Grotesk',system-ui,sans-serif;overflow-wrap:anywhere}
+.family-read-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);min-width:0}
+.family-read-row>div{display:grid;gap:5px;min-width:0}.family-read-row strong{font-size:.8rem;overflow-wrap:anywhere}.family-read-row small{font-size:.65rem;color:var(--muted)}
+.family-read-total{display:grid;gap:8px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:16px}
+.family-read-total>span{font-size:.76rem;color:var(--muted)}.family-read-total>strong{font-size:1.4rem}
+#module-family button:focus-visible,#module-family-profile button:focus-visible,#module-family summary:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+/* Each dialog has one scrolling surface; inner history lists grow naturally. */
+#card-invoice-history-list{max-height:none;overflow:visible}
+.analytics-category-list .paged-rows{gap:0}
+@media(max-width:1100px){#module-family-profile .family-monitor-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#module-family-profile .family-monitor-main-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .list-pagination-desktop{display:none}.list-pagination-mobile{display:grid;gap:10px;justify-items:center;font-size:.68rem}.list-pagination-mobile button{width:100%;min-height:42px}
+ .paged-list{gap:11px}.list-pagination{padding-top:10px}
+ .family-members-grid{grid-template-columns:1fr;gap:14px;margin-bottom:14px}
+ .family-page-toolbar{margin-bottom:14px}.family-members-panel,.family-invites-panel{padding:14px;border-radius:14px}
+ .family-members-panel>h3,.family-invites-panel>h3{font-size:.92rem}
+ #module-family .family-person{grid-template-columns:35px minmax(0,1fr);gap:10px;padding:12px}
+ #module-family .family-avatar{width:35px;height:35px;border-radius:11px;font-size:1rem}
+ #module-family .family-person-main>strong{font-size:.86rem}#module-family .family-person-main>small{font-size:.65rem}
+ #module-family .family-actions{grid-column:1/-1;justify-content:flex-end}.family-actions button{min-height:38px}
+ .family-invites-tabs button,.family-profile-tabs button{font-size:.71rem;padding:10px 12px;min-height:43px}
+ #module-family-profile .family-monitor-head h2{font-size:1.2rem}#module-family-profile .family-monitor-head p{font-size:.66rem}
+ #module-family-profile .family-monitor-head .secondary-btn{font-size:.71rem;min-height:39px;white-space:nowrap}
+ #module-family-profile .family-monitor-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+ #module-family-profile .family-monitor-summary-card{padding:13px;gap:6px;border-radius:12px}
+ #module-family-profile .family-monitor-summary-card>span{font-size:.69rem}#module-family-profile .family-monitor-summary-card>strong{font-size:1.12rem}#module-family-profile .family-monitor-summary-card small{font-size:.59rem}
+ #module-family-profile .family-monitor-section{padding:14px;border-radius:13px}#module-family-profile .family-monitor-section-head h4{font-size:.86rem}
+ #module-family-profile .family-monitor-main-grid{gap:14px}
+ #module-family-profile .family-monitor-transaction{padding:10px;gap:8px}#module-family-profile .family-monitor-transaction-title{font-size:.72rem}#module-family-profile .family-monitor-transaction-meta{font-size:.58rem}#module-family-profile .family-monitor-transaction-value{font-size:.69rem}
+ #module-family-profile .family-monitor-extras{grid-template-columns:1fr;gap:9px;margin-top:14px}
+ #module-family-profile .family-monitor-extra{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px}
+ #module-family-profile .family-monitor-extra>strong{font-size:.95rem}
+ .family-read-grid{grid-template-columns:1fr}.family-read-card{padding:14px}.family-read-row{gap:9px}.family-read-row strong{font-size:.74rem}
+}
+
+#module-family-profile .family-monitor-transaction-value,#module-family-profile .family-monitor-extra>strong{font-family:'Space Grotesk',system-ui,sans-serif}
+
+#notification-history-list{max-height:none;overflow:visible}

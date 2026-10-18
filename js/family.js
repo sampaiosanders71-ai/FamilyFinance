@@ -1,8 +1,8 @@
-import {adjustmentsAsInstallments} from './card-domain.js?v=2.9.20';
-import { listAllRows } from './pagination.js?v=2.9.20';
-import { supabase } from './supabase.js?v=2.9.20';
-import { getCurrentUser } from './database.js?v=2.9.20';
-import { monthISO } from './finance.js?v=2.9.20';
+import {adjustmentsAsInstallments} from './card-domain.js?v=2.9.24';
+import { listAllRows } from './pagination.js?v=2.9.24';
+import { supabase } from './supabase.js?v=2.9.24';
+import { getCurrentUser } from './database.js?v=2.9.24';
+import { monthISO } from './finance.js?v=2.9.24';
 
 export async function listFamilyData() {
   const user = await getCurrentUser();
@@ -72,37 +72,31 @@ function nextMonthISO(refDate) {
   return monthISO(new Date(refDate.getFullYear(), refDate.getMonth() + 1, 1, 12));
 }
 
+export async function getFamilyAccess(ownerId){
+  const user=await getCurrentUser();
+  const {data,error}=await supabase.from('ff2_family_links').select('*').eq('owner_user_id',ownerId).eq('viewer_user_id',user.id).eq('active',true).maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error('FAMILY_ACCESS_REVOKED');
+  return data;
+}
+export function familyAccessSignature(link){return ['can_view_transactions','can_view_cards','can_view_goals','can_view_budget'].map(key=>link?.[key]?'1':'0').join('');}
 export async function loadFamilyOverview(ownerId, refDate = new Date()) {
-  const month = monthISO(refDate);
-  const nextMonth = nextMonthISO(refDate);
-  const [transactions,cards,installments,goals,planRes,cardAdjustments] = await Promise.all([
-    listAllRows(options=>supabase.from('ff2_transactions').select('*',options).eq('user_id',ownerId).gte('occurred_on',month).lt('occurred_on',nextMonth).order('created_at',{ascending:false}).order('id',{ascending:false}),'Lançamentos familiares'),
-    listAllRows(options=>supabase.from('ff2_cards').select('*',options).eq('user_id',ownerId).eq('active',true).order('id'),'Cartões familiares'),
-    listAllRows(options=>supabase.from('ff2_card_installments').select('*, ff2_card_purchases(description,category,installment_count,purchase_date,record_kind,cancelled_at)',options).eq('user_id',ownerId).eq('invoice_month',month).order('id'),'Parcelas familiares'),
-    listAllRows(options=>supabase.from('ff2_goals').select('*',options).eq('user_id',ownerId).order('created_at').order('id'),'Metas familiares'),
-    supabase.from('ff2_budget_plans').select('*').eq('user_id',ownerId).eq('month',month).maybeSingle(),
-    listAllRows(options=>supabase.from('ff2_card_adjustments').select('*, ff2_cards(name)',options).eq('user_id',ownerId).eq('invoice_month',month).order('id'),'Ajustes familiares')
+  const link=await getFamilyAccess(ownerId),month=monthISO(refDate),nextMonth=nextMonthISO(refDate);
+  const [transactions,cards,installments,goals,planRes,cardAdjustments]=await Promise.all([
+    link.can_view_transactions?listAllRows(options=>supabase.from('ff2_transactions').select('*',options).eq('user_id',ownerId).gte('occurred_on',month).lt('occurred_on',nextMonth).order('occurred_on',{ascending:false}).order('id',{ascending:false}),'Lançamentos familiares'):[],
+    link.can_view_cards?listAllRows(options=>supabase.from('ff2_cards').select('*',options).eq('user_id',ownerId).eq('active',true).order('id'),'Cartões familiares'):[],
+    link.can_view_cards?listAllRows(options=>supabase.from('ff2_card_installments').select('*, ff2_card_purchases(description,category,installment_count,purchase_date,record_kind,cancelled_at)',options).eq('user_id',ownerId).eq('invoice_month',month).order('id'),'Parcelas familiares'):[],
+    link.can_view_goals?listAllRows(options=>supabase.from('ff2_goals').select('*',options).eq('user_id',ownerId).order('created_at').order('id'),'Metas familiares'):[],
+    link.can_view_budget?supabase.from('ff2_budget_plans').select('*').eq('user_id',ownerId).eq('month',month).maybeSingle():{data:null,error:null},
+    link.can_view_cards?listAllRows(options=>supabase.from('ff2_card_adjustments').select('*, ff2_cards(name)',options).eq('user_id',ownerId).eq('invoice_month',month).order('id'),'Ajustes familiares'):[]
   ]);
   if(planRes.error)throw planRes.error;
-  let budgetItems=[];
-  if(planRes.data)budgetItems=await listAllRows(options=>supabase.from('ff2_budget_items').select('*',options).eq('user_id',ownerId).eq('plan_id',planRes.data.id).order('category').order('id'),'Limites familiares');
-  // O progresso das metas é calculado no servidor, respeitando a permissão específica
-  // de Metas, mesmo quando o titular não compartilha seu histórico de lançamentos.
-  let goalStatus = [];
-  if (goals.length) {
-    const { data: statusData, error: statusError } = await supabase.rpc('ff2_family_goal_progress_297', {p_owner_id:ownerId});
-    if (statusError) throw statusError;
-    goalStatus = statusData || [];
-  }
-  return {
-    month,
-    goalStatus,
-    transactions,
-    cards,
-    installments:[...installments,...adjustmentsAsInstallments(cardAdjustments,cards)],
-    goals,
-    budget: { plan: planRes.data || null, items: budgetItems }
-  };
+  const budgetItems=planRes.data?await listAllRows(options=>supabase.from('ff2_budget_items').select('*',options).eq('user_id',ownerId).eq('plan_id',planRes.data.id).order('category').order('id'),'Limites familiares'):[];
+  let goalStatus=[];
+  if(link.can_view_goals&&goals.length){const {data,error}=await supabase.rpc('ff2_family_goal_progress_297',{p_owner_id:ownerId});if(error)throw error;goalStatus=data||[];}
+  const latest=await getFamilyAccess(ownerId);
+  if(familyAccessSignature(latest)!==familyAccessSignature(link))throw new Error('FAMILY_ACCESS_CHANGED');
+  return {month,link:latest,goalStatus,transactions,cards,installments:[...installments,...adjustmentsAsInstallments(cardAdjustments,cards)],goals,budget:{plan:planRes.data||null,items:budgetItems}};
 }
 
 export async function subscribeFamilyOverview(ownerId, onChange) {

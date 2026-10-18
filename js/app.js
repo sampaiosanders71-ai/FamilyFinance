@@ -1,36 +1,37 @@
-import { initCardsWorkspace,cardErrorMessage } from './cards-workspace.js?v=2.9.20';
-import { adjustmentsAsInstallments,buildCardInvoices,cardToday,cardMonth,invoiceStatusLabel } from './card-domain.js?v=2.9.20';
-import { formOperation, clearFormOperation } from './request-operation.js?v=2.9.20';
-import { canonicalCategoryName, canonicalCategoryAmounts, canonicalCategoryLimits } from './category-alias.js?v=2.9.20';
-import { spendingInPastMonths } from './budget-suggestion.js?v=2.9.20';
-import { signIn,signUp,signOut,getSession,onAuthChange } from './auth.js?v=2.9.20';
-import { ensureProfile,foundationHealthCheck } from './database.js?v=2.9.20';
-import { listFamilyData,sendFamilyInvite,respondFamilyInvite,cancelFamilyInvite,updateFamilyPermissions,removeFamilyLink,loadFamilyOverview,subscribeFamilyOverview } from './family.js?v=2.9.20';
-import { getLegacyMigrationStatus,claimLegacyAccount } from './migration.js?v=2.9.20';
-import { updateProfileSettings } from './settings.js?v=2.9.20';
-import { initPWA, activateAppUpdate } from './pwa.js?v=2.9.20';
-import { localISO,listTransactions,createTransaction,updateTransaction,deleteTransaction,applyBalanceAdjustment,calculateCashStats,filterTransactions } from './finance.js?v=2.9.20';
-import { listCards,createCard,updateCard,deleteCard,createPurchase,updatePurchase,deletePurchase,listPurchases,listInstallments,listInvoiceStatuses,setInvoicePaid,listCardPayments,listCardAdjustments,listCardReconciliations,cardInvoiceSummaries } from './cards.js?v=2.9.20';
-import { listGoals,createGoal,updateGoal,deleteGoal } from './goals.js?v=2.9.20';
-import { getBudget,listBudgetsByMonths,saveBudget,budgetSummary } from './budget.js?v=2.9.20';
-import { listCategories,activeCategories,createCategory,updateCategory,setCategoryActive,deleteCustomCategory,categoryIconSVG,normalizeCategoryIconKey,CATEGORY_ICON_OPTIONS,CATEGORY_COLOR_OPTIONS } from './categories.js?v=2.9.20';
-import { planningMonthKey,planningMonthDate,shiftPlanningMonth,planningMonthInput,planningLocalISO,listPlanningMonth,listPlanningByMonths,createPlanningItem,updatePlanningItem,cancelPlanningItem,completePlanningItem,movePlanningItem,movePendingPlanningMonth,planningNextMonthDate,planningStatusLabel,planningNature,summarizePlanning,summarizePlanningPeriod } from './planning-v18.js?v=2.9.20';
-import { listNotifications,markNotificationRead,markAllNotificationsRead,markNotificationsForTarget,syncFinancialNotifications,subscribeNotifications } from './notifications.js?v=2.9.20';
-import { setAuthMode,showAuth,showApp,showModule,setAuthError,setAuthBusy,setAppBusy,toast,setLoading,formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,emptyState,applyTheme,captureDashboardMoneyState,prepareDashboardMoneyChange,playDashboardMoneyChange,settleDashboardMoneyChange } from './ui.js?v=2.9.20';
-import { getMonthlyDRE,getReportMonthOptions,downloadFinancialReportPDF } from './reports.js?v=2.9.20';
-import { beginDownloadMotion } from './download-motion-v16.js?v=2.9.20';
-import { familyMonthKey,familyDateFromMonth,shiftFamilyMonth,buildFamilyMonitorModel,filterFamilyTransactions,captureFamilyMetricState,animateFamilyMetricChange } from './family-monitor-v17.js?v=2.9.20';
-import { buildFinancialMonthLedger,isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund,classifyTransaction } from './financial-ledger.js?v=2.9.20';
-import { needsLegacyReview, legacyReview, ownTransferReview } from './financial-integrity.js?v=2.9.20';
-import { downloadFinancialRowsCSV } from './report-export.js?v=2.9.20';
-import { suggestNature,natureLabel } from './transaction-nature.js?v=2.9.20';
-import { goalProgress, financialViewSummary } from './goal-integration.js?v=2.9.20';
-import { buildReservePosition } from './reserve-position.js?v=2.9.20';
-import { saveReserveReconciliation } from './reserve-reconciliation.js?v=2.9.20';
-import { analysisMonthKey,analysisMonthDate,shiftAnalysisMonth,yearMonthKeys,equivalentComparisonSpec,availableAnalysisYears,buildAnalysisPeriod,comparePeriodTotals,compareCategories,compareCards,aggregateBudgetComparison,strongestCategoryChanges,buildMonthlyInsights,buildYearInsights,groupCategoryRowsWithRemainder } from './analytics.js?v=2.9.20';
-import { buildDashboardOverview } from './dashboard-overview.js?v=2.9.20';
-import { buildDashboardCashView, paidInvoiceMonthsForPurchase } from './dashboard-cash.js?v=2.9.20';
-import { initUpdateCenter, promptAppUpdateIfNeeded } from './update-center.js?v=2.9.20';
+import { pagedList, recentRecords, clearListPages } from './list-pagination.js?v=2.9.24';
+import { initCardsWorkspace,cardErrorMessage } from './cards-workspace.js?v=2.9.24';
+import { adjustmentsAsInstallments,buildCardInvoices,cardToday,cardMonth,invoiceStatusLabel } from './card-domain.js?v=2.9.24';
+import { formOperation, clearFormOperation } from './request-operation.js?v=2.9.24';
+import { canonicalCategoryName, canonicalCategoryAmounts, canonicalCategoryLimits } from './category-alias.js?v=2.9.24';
+import { spendingInPastMonths } from './budget-suggestion.js?v=2.9.24';
+import { signIn,signUp,signOut,getSession,onAuthChange } from './auth.js?v=2.9.24';
+import { ensureProfile,foundationHealthCheck } from './database.js?v=2.9.24';
+import { listFamilyData,sendFamilyInvite,respondFamilyInvite,cancelFamilyInvite,updateFamilyPermissions,removeFamilyLink,loadFamilyOverview,subscribeFamilyOverview,getFamilyAccess,familyAccessSignature } from './family.js?v=2.9.24';
+import { getLegacyMigrationStatus,claimLegacyAccount } from './migration.js?v=2.9.24';
+import { updateProfileSettings } from './settings.js?v=2.9.24';
+import { initPWA, activateAppUpdate } from './pwa.js?v=2.9.24';
+import { localISO,listTransactions,createTransaction,updateTransaction,deleteTransaction,applyBalanceAdjustment,calculateCashStats,filterTransactions } from './finance.js?v=2.9.24';
+import { listCards,createCard,updateCard,deleteCard,createPurchase,updatePurchase,deletePurchase,listPurchases,listInstallments,listInvoiceStatuses,setInvoicePaid,listCardPayments,listCardAdjustments,listCardReconciliations,cardInvoiceSummaries } from './cards.js?v=2.9.24';
+import { listGoals,createGoal,updateGoal,deleteGoal } from './goals.js?v=2.9.24';
+import { getBudget,listBudgetsByMonths,saveBudget,budgetSummary } from './budget.js?v=2.9.24';
+import { listCategories,activeCategories,createCategory,updateCategory,setCategoryActive,deleteCustomCategory,categoryIconSVG,normalizeCategoryIconKey,CATEGORY_ICON_OPTIONS,CATEGORY_COLOR_OPTIONS } from './categories.js?v=2.9.24';
+import { planningMonthKey,planningMonthDate,shiftPlanningMonth,planningMonthInput,planningLocalISO,listPlanningMonth,listPlanningByMonths,createPlanningItem,updatePlanningItem,cancelPlanningItem,completePlanningItem,movePlanningItem,movePendingPlanningMonth,planningNextMonthDate,planningStatusLabel,planningNature,summarizePlanning,summarizePlanningPeriod } from './planning-v18.js?v=2.9.24';
+import { listNotifications,markNotificationRead,markAllNotificationsRead,markNotificationsForTarget,syncFinancialNotifications,subscribeNotifications } from './notifications.js?v=2.9.24';
+import { setAuthMode,showAuth,showApp,showModule,setAuthError,setAuthBusy,setAppBusy,toast,setLoading,formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,emptyState,applyTheme,captureDashboardMoneyState,prepareDashboardMoneyChange,playDashboardMoneyChange,settleDashboardMoneyChange } from './ui.js?v=2.9.24';
+import { getMonthlyDRE,getReportMonthOptions,downloadFinancialReportPDF } from './reports.js?v=2.9.24';
+import { beginDownloadMotion } from './download-motion-v16.js?v=2.9.24';
+import { familyMonthKey,familyDateFromMonth,shiftFamilyMonth,buildFamilyMonitorModel,filterFamilyTransactions,captureFamilyMetricState,animateFamilyMetricChange } from './family-monitor-v17.js?v=2.9.24';
+import { buildFinancialMonthLedger,isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund,classifyTransaction } from './financial-ledger.js?v=2.9.24';
+import { needsLegacyReview, legacyReview, ownTransferReview } from './financial-integrity.js?v=2.9.24';
+import { downloadFinancialRowsCSV } from './report-export.js?v=2.9.24';
+import { suggestNature,natureLabel } from './transaction-nature.js?v=2.9.24';
+import { goalProgress, financialViewSummary } from './goal-integration.js?v=2.9.24';
+import { buildReservePosition } from './reserve-position.js?v=2.9.24';
+import { saveReserveReconciliation } from './reserve-reconciliation.js?v=2.9.24';
+import { analysisMonthKey,analysisMonthDate,shiftAnalysisMonth,yearMonthKeys,equivalentComparisonSpec,availableAnalysisYears,buildAnalysisPeriod,comparePeriodTotals,compareCategories,compareCards,aggregateBudgetComparison,strongestCategoryChanges,buildMonthlyInsights,buildYearInsights,groupCategoryRowsWithRemainder } from './analytics.js?v=2.9.24';
+import { buildDashboardOverview } from './dashboard-overview.js?v=2.9.24';
+import { buildDashboardCashView, paidInvoiceMonthsForPurchase } from './dashboard-cash.js?v=2.9.24';
+import { initUpdateCenter, promptAppUpdateIfNeeded } from './update-center.js?v=2.9.24';
 
 let authMode='login', authBusy=false, appActionBusy=false, reportDownloadBusy=false, enterAppPromise=null, refreshBusy=false, bootstrapGeneration=0, notificationChannel=null, familyMonitorChannel=null;
 let currentUser=null, currentProfile=null;
@@ -160,7 +161,7 @@ async function enterApp(session){
 
 async function refreshAll({throwOnError=false}={}){if(refreshBusy)return;refreshBusy=true;setLoading(true);try{const [transactions,cards,purchases,installments,invoiceStatuses,cardPayments,cardAdjustments,cardReconciliations,goals,budget,planning,categories,family,migration]=await Promise.all([listTransactions(),listCards(),listPurchases(),listInstallments(),listInvoiceStatuses(),listCardPayments(),listCardAdjustments(),listCardReconciliations(),listGoals(),getBudget(budgetDate),listPlanningMonth(dashboardDate),listCategories(),listFamilyData(),getLegacyMigrationStatus()]);state={transactions,cards,purchases,installments:[...installments.map(i=>({...i,legacy_covered_amount:cardReconciliations.filter(r=>r.installment_id===i.id).reduce((sum,r)=>sum+Number(r.amount),0)})),...adjustmentsAsInstallments(cardAdjustments,cards)],invoiceStatuses,cardPayments,cardAdjustments,cardReconciliations,goals,budget,planning,categories,family,migration,notifications:state.notifications||[]};if(planningSameMonth(budgetDate,dashboardDate))dashboardBudget=budget;if(planningMonthKey(planningDate)===planningMonthKey(dashboardDate))planningItems=planning;await syncFinancialNotifications({budget:dashboardBudget,transactions:state.transactions,installments:state.installments,cards:state.cards,invoiceStatuses:state.invoiceStatuses,goals:state.goals,categories:state.categories});state.notifications=await listNotifications();renderAll()}catch(error){console.error(error);toast(error?.message||'Falha ao sincronizar dados.','error');if(throwOnError)throw error;}finally{setLoading(false);refreshBusy=false}}
 
-function renderAll(){renderHome();if(document.getElementById('reserve-dialog')?.open)renderReserveDetails();renderTransactionPeriodOptions();renderTransactions();renderCards();renderGoals();renderBudget();renderPlanningHome();renderPlanning();renderFamily();renderSettings();renderCategoriesManager();renderNotifications();if(!document.getElementById('module-analytics')?.classList.contains('hidden'))void renderAnalytics()}
+function renderAll(){renderHome();if(document.getElementById('goal-history-dialog')?.open)renderGoalHistory();if(document.getElementById('reserve-dialog')?.open)renderReserveDetails();renderTransactionPeriodOptions();renderTransactions();renderCards();renderGoals();renderBudget();renderPlanningHome();renderPlanning();renderFamily();renderSettings();renderCategoriesManager();renderNotifications();if(!document.getElementById('module-analytics')?.classList.contains('hidden'))void renderAnalytics()}
 
 function renderHome(){
   document.getElementById('home-month-label').textContent=monthLabel(dashboardDate);document.getElementById('home-period').textContent=`Referência: ${monthLabel(dashboardDate)}`;
@@ -285,9 +286,9 @@ function renderTransactions(){
     const legacyCount=legacyReview(state.transactions).length;
     const transferAudit=ownTransferReview(state.transactions);
     const notice=`${legacyCount?` · ${legacyCount} antigo(s) para revisar`:''}${transferAudit.ambiguous.length?` · ${transferAudit.ambiguous.length} transferências ambíguas`:''}`;
-    status.textContent=filtered?`Histórico sincronizado · ${state.transactions.length} no banco · ${rows.length} exibido(s)${notice}`:`Histórico sincronizado · ${state.transactions.length} lançamento(s) · Todos os períodos${notice}`;
+    status.textContent=filtered?`Histórico sincronizado · ${state.transactions.length} no banco · ${rows.length} encontrado(s)${notice}`:`Histórico sincronizado · ${state.transactions.length} lançamento(s) · Todos os períodos${notice}`;
   }
-  document.getElementById('transactions-list').innerHTML=rows.length?rows.map(transactionRowHTML).join(''):emptyState('Nenhum lançamento encontrado.');
+  document.getElementById('transactions-list').innerHTML=pagedList('transactions',recentRecords(rows),transactionRowHTML,{context:JSON.stringify([search.trim(),type,month]),label:'lançamentos',empty:emptyState('Nenhum lançamento encontrado.')});
 }
 
 function purchasePaidInvoiceMonths(purchaseId){return paidInvoiceMonthsForPurchase(state.installments,state.invoiceStatuses,purchaseId)}
@@ -297,7 +298,7 @@ function explainPaidPurchaseLock(){toast('Corrija os pagamentos vinculados antes
 function renderCards(){cardsWorkspace?.render()}
 
 function goalMiniHTML(g){const progress=goalProgress(g,state.transactions);const pct=progress.percent;return `<div class="list-row"><div class="list-row-main"><div class="list-row-title">${escapeHTML(g.name)}</div><div class="progress"><span style="width:${pct}%"></span></div><div class="list-row-meta"><span>${pct.toFixed(0)}%</span><span>${formatBRL(progress.saved)} de ${formatBRL(g.target_amount)}</span></div></div></div>`}
-function renderGoals(){document.getElementById('goals-list').innerHTML=state.goals.length?state.goals.map(g=>{const progress=goalProgress(g,state.transactions);const pct=progress.percent;return `<article class="goal-card"><div class="goal-card-head"><div><span class="eyebrow">${progress.completed?'CONCLUÍDA':'META'}</span><h3>${escapeHTML(g.name)}</h3></div>${g.due_date?`<span>${formatDate(g.due_date)}</span>`:''}</div><div class="goal-amounts"><strong>${formatBRL(progress.saved)}</strong><span>de ${formatBRL(g.target_amount)}</span></div><div class="progress"><span style="width:${pct}%"></span></div><div class="progress-meta"><span>${pct.toFixed(0)}%</span><span>Faltam ${formatBRL(progress.remaining)}</span></div>${progress.linked||progress.pending?`<p class="goal-progress-details">${formatBRL(progress.linked)} em aportes vinculados${progress.pending?` · ${formatBRL(progress.pending)} futuros`:''}</p>`:''}<div class="card-actions"><button class="mini-btn" data-edit-goal="${g.id}">Editar</button><button class="mini-btn danger" data-delete-goal="${g.id}">Excluir</button></div></article>`}).join(''):emptyState('Nenhuma meta cadastrada.')}
+function renderGoals(){document.getElementById('goals-list').innerHTML=state.goals.length?state.goals.map(g=>{const progress=goalProgress(g,state.transactions);const pct=progress.percent;return `<article class="goal-card"><div class="goal-card-head"><div><span class="eyebrow">${progress.completed?'CONCLUÍDA':'META'}</span><h3>${escapeHTML(g.name)}</h3></div>${g.due_date?`<span>${formatDate(g.due_date)}</span>`:''}</div><div class="goal-amounts"><strong>${formatBRL(progress.saved)}</strong><span>de ${formatBRL(g.target_amount)}</span></div><div class="progress"><span style="width:${pct}%"></span></div><div class="progress-meta"><span>${pct.toFixed(0)}%</span><span>Faltam ${formatBRL(progress.remaining)}</span></div>${progress.linked||progress.pending?`<p class="goal-progress-details">${formatBRL(progress.linked)} em aportes vinculados${progress.pending?` · ${formatBRL(progress.pending)} futuros`:''}</p>`:''}<div class="card-actions"><button type="button" class="mini-btn" data-goal-history="${escapeHTML(g.id)}">Histórico</button><button class="mini-btn" data-edit-goal="${g.id}">Editar</button><button class="mini-btn danger" data-delete-goal="${g.id}">Excluir</button></div></article>`}).join(''):emptyState('Nenhuma meta cadastrada.')}
 
 let budgetDraft={income:0,limits:{}};
 let budgetDraftDirty=false;
@@ -352,7 +353,7 @@ function budgetCategoryRow(cat,bs){
     <div class="budget-mobile-values"><div><span>Gasto</span><strong>${formatBRL(spent)}</strong></div><div><span>Planejado</span><strong>${formatBRL(pending)}</strong></div></div>
     ${record?.is_active!==false?`<button type="button" class="budget-mobile-define" data-budget-edit="${escapeHTML(cat)}">＋ Definir limite</button>`:''}
   </div>`;
-  return `<article class="budget-category-row layered-budget-card ${limit>0&&remaining<0?'over':''}">${desktop}${mobile}</article>`;
+  return `<article data-budget-category="${escapeHTML(cat)}" tabindex="-1" class="budget-category-row layered-budget-card ${limit>0&&remaining<0?'over':''}">${desktop}${mobile}</article>`;
 }
 function openBudgetMobileActions(category){
   budgetActionCategory=category||'';
@@ -402,7 +403,7 @@ async function persistBudgetDraft(successMessage='Limites atualizados.'){
   state.budget=await saveBudget(budgetDate,Math.max(0,Number(budgetDraft.income||0)),budgetDraft.limits||{});
   if(planningSameMonth(budgetDate,dashboardDate))dashboardBudget=state.budget;
   resetBudgetDraftFromState();
-  renderBudgetDraft();if(planningSameMonth(budgetDate,dashboardDate))renderHome();
+  renderBudgetDraft();if(planningSameMonth(budgetDate,planningDate))renderPlanningOverview();if(planningSameMonth(budgetDate,dashboardDate))renderHome();
   toast(successMessage,'success');
 }
 function budgetSelectableCategories(original=''){
@@ -608,36 +609,21 @@ function layeredLimitBarHTML({limit=0,spent=0,pending=0,compact=false}={}){
   return `<div class="layered-limit ${compact?'compact':''}" aria-label="${spentPct.toFixed(0)}% realizado e ${pendingPct.toFixed(0)}% comprometido sobre limite de ${formatBRL(safeLimit)}"><span class="layered-limit-base"></span><span class="layered-limit-fill committed ${pendingLayer}" style="width:${pendingWidth}%"></span><span class="layered-limit-fill realized ${spentLayer}" style="width:${spentWidth}%"></span></div>`;
 }
 function planningOverviewItemHTML(item){
-  const income=Number(item.direction)>0;
-  const status=planningStatusLabel(item);
-  return `<article class="planning-overview-item"><span class="planning-overview-check ${item.status==='pending'?'pending':'done'}" aria-hidden="true">${['paid','received'].includes(item.status)?'✓':''}</span><div class="planning-overview-item-main"><div><span class="planning-type ${income?'income':'expense'}">${income?'A receber':'A pagar'}</span><strong>${escapeHTML(item.description)}</strong></div><small class="planning-overview-meta"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"></use></svg>${formatDate(item.planned_on)}</span><span><svg class="ui-icon" aria-hidden="true"><use href="#i-wallet"></use></svg>${escapeHTML(item.category||'Outros')}</span></small></div><div class="planning-overview-item-side"><strong class="${income?'positive':'negative'}">${income?'+':'-'} ${formatBRL(item.amount)}</strong><span>${escapeHTML(status)}</span></div></article>`;
+  const income=Number(item.direction)>0,overdue=item.planned_on<planningLocalISO(new Date());
+  const canonical=canonicalCategoryName(item.category||'Outros',state.categories||[]);
+  const record=(state.categories||[]).find(c=>!c.is_deleted&&String(c.name).toLocaleLowerCase('pt-BR')===canonical.toLocaleLowerCase('pt-BR'));
+  return `<button type="button" class="planning-preview-row" data-edit-planning="${escapeHTML(item.id)}" aria-label="Editar plano ${escapeHTML(item.description)}">${categoryIconMarkup(record,item.category)}<span class="planning-preview-copy"><strong>${escapeHTML(item.description)}</strong><small><span class="planning-preview-date"><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"/></svg>${formatDate(item.planned_on)}</span>${overdue?'<span class="planning-overdue">Atrasado</span>':`<span class="planning-preview-category">${escapeHTML(item.category||'Outros')}</span>`}</small></span><strong class="planning-preview-amount ${income?'positive':'negative'}">${income?'+':'−'} ${formatBRL(item.amount)}</strong><span class="planning-preview-arrow" aria-hidden="true">›</span></button>`;
 }
 function planningOverviewLimitHTML(row){
-  const record=row.record;
-  const availableText=row.limit>0?(row.available>=0?`${formatBRL(row.available)} disponíveis`:`${formatBRL(Math.abs(row.available))} acima do limite`):'Sem limite definido';
-  const availableValue=row.limit>0?formatBRL(Math.abs(row.available)):formatBRL(0);
-  const availableLabel=row.available>=0?'Disponível':'Acima do limite';
-  return `<article class="planning-overview-limit ${row.available<0?'over':''}">
-    <div class="planning-overview-limit-desktop">
-      <div class="planning-overview-limit-head"><div class="planning-overview-limit-title">${categoryIconMarkup(record,row.category)}<div><strong>${escapeHTML(row.category)}</strong><small>Limite: ${formatBRL(row.limit)}</small></div></div><span class="planning-overview-limit-arrow" aria-hidden="true">›</span></div>
-      ${layeredLimitBarHTML({limit:row.limit,spent:row.spent,pending:row.pending,compact:true})}
-      <div class="planning-layered-meta"><span class="realized"><b>${Math.round(row.spentPercent)}%</b> realizado · ${formatBRL(row.spent)}</span><span class="committed"><b>${Math.round(row.committedPercent)}%</b> planejado · ${formatBRL(row.pending)}</span></div>
-      <small class="planning-limit-available ${row.available>=0?'positive':'negative'}">${availableText}</small>
-    </div>
-    <div class="planning-overview-limit-mobile">
-      <div class="planning-overview-mobile-head"><div class="planning-overview-mobile-identity">${categoryIconMarkup(record,row.category)}<div><strong>${escapeHTML(row.category)}</strong><small>Limite mensal: ${formatBRL(row.limit)}</small></div></div><span class="planning-overview-limit-arrow" aria-hidden="true">›</span></div>
-      <div class="planning-overview-mobile-available"><span>${availableLabel}</span><strong class="${row.available>=0?'positive':'negative'}">${availableValue}</strong></div>
-      ${layeredLimitBarHTML({limit:row.limit,spent:row.spent,pending:row.pending,compact:true})}
-      <div class="planning-overview-mobile-legend"><span class="realized"><i></i>Gasto <b>${Math.round(row.spentPercent)}%</b></span><span class="planned"><i></i>Planejado <b>${Math.round(row.committedPercent)}%</b></span></div>
-      <div class="planning-overview-mobile-values"><div><span>Gasto</span><strong>${formatBRL(row.spent)}</strong></div><div><span>Planejado</span><strong>${formatBRL(row.pending)}</strong></div></div>
-    </div>
-  </article>`;
+  const percentage=Math.round(row.spentPercent),width=Math.min(100,Math.max(0,row.spentPercent));
+  const hint=`Realizado ${formatBRL(row.spent)} de ${formatBRL(row.limit)}. Planejado pendente ${formatBRL(row.pending)}. Disponível ${formatBRL(row.available)}. Abrir detalhes do limite.`;
+  return `<button type="button" class="planning-preview-limit ${row.spent>row.limit?'over':''}" data-planning-limit="${escapeHTML(row.category)}" aria-label="${escapeHTML(row.category+'. '+hint)}" title="${escapeHTML(hint)}">${categoryIconMarkup(row.record,row.category)}<span class="planning-preview-limit-body"><span class="planning-preview-limit-title"><strong>${escapeHTML(row.category)}</strong><span>${percentage}%</span></span><small>${formatBRL(row.spent)} / ${formatBRL(row.limit)}</small><span class="planning-preview-limit-bar" role="meter" aria-label="Gasto realizado de ${escapeHTML(row.category)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,percentage)}" aria-valuetext="${percentage}% do limite realizado"><span style="width:${width}%"></span></span></span><span class="planning-preview-arrow" aria-hidden="true">›</span></button>`;
 }
 function renderPlanningOverview(){
   const hostItems=document.getElementById('planning-overview-items'),hostLimits=document.getElementById('planning-overview-limits');
   if(!hostItems||!hostLimits)return;
   const model=planningUnifiedModel();
-  const next=(planningItems||[]).filter(item=>item.status==='pending').slice(0,3);
+  const next=(planningItems||[]).filter(item=>item.status==='pending').sort((a,b)=>String(a.planned_on).localeCompare(String(b.planned_on))||String(a.id).localeCompare(String(b.id))).slice(0,3);
   hostItems.innerHTML=next.length?next.map(planningOverviewItemHTML).join(''):emptyState('Nenhum plano pendente neste mês.');
   const limitRows=model.limitRows.filter(row=>row.limit>0).sort((a,b)=>Math.max(b.spentPercent,b.committedPercent)-Math.max(a.spentPercent,a.committedPercent)||b.spent+b.pending-a.spent-a.pending).slice(0,3);
   hostLimits.innerHTML=limitRows.length?limitRows.map(planningOverviewLimitHTML).join(''):emptyState('Nenhum limite definido para este mês.');
@@ -645,7 +631,7 @@ function renderPlanningOverview(){
 function setPlanningSection(section='overview'){
   planningSection=['overview','plans','limits'].includes(section)?section:'overview';
   closeBudgetSuggestionPage({clear:false,scroll:false});
-  document.querySelectorAll('[data-planning-section]').forEach(btn=>btn.classList.toggle('active',btn.dataset.planningSection===planningSection));
+  document.querySelectorAll('[data-planning-section]').forEach(btn=>{const active=btn.dataset.planningSection===planningSection;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',String(active));btn.tabIndex=active?0:-1;});
   document.querySelectorAll('[data-planning-view]').forEach(view=>view.classList.toggle('hidden',view.dataset.planningView!==planningSection));
   document.getElementById('new-planning-btn')?.classList.toggle('hidden',planningSection==='limits');
   if(planningSection==='limits')renderBudget();
@@ -673,6 +659,7 @@ function renderPlanningCardObligations(){
  const month=planningMonthKey(planningDate),rows=state.cards.flatMap(card=>buildCardInvoices(card,state.installments,state.invoiceStatuses)).filter(inv=>inv.invoiceMonth===month&&inv.balanceDue>0);
  document.getElementById('planning-card-obligations').innerHTML=rows.length?rows.map(inv=>`<button type="button" class="planning-card-obligation" data-open-invoice="${escapeHTML(inv.card.id)}" data-invoice-month="${inv.invoiceMonth}"><span><strong>${escapeHTML(inv.card.name)}</strong><small>Fatura ${monthLabel(planningDate)} · Vence ${formatDate(inv.dueOn)}</small></span><strong>${formatBRL(inv.balanceDue)}</strong></button>`).join(''):emptyState('Nenhuma fatura pendente nesta competência.');
  document.getElementById('planning-card-total').textContent=formatBRL(rows.reduce((sum,inv)=>sum+inv.balanceDue,0));
+ const invoiceTotal=rows.reduce((sum,inv)=>sum+inv.balanceDue,0);document.getElementById('planning-invoice-shortcut-total').textContent=formatBRL(invoiceTotal);document.querySelector('[data-planning-invoices]').classList.toggle('hidden',!rows.length);document.getElementById('planning-invoice-panel').classList.toggle('hidden',!rows.length);
 }
 function renderPlanning(){renderPlanningCardObligations();
   const label=document.getElementById('planning-month-label');if(!label)return;
@@ -686,14 +673,20 @@ function renderPlanning(){renderPlanningCardObligations();
   label.textContent=monthLabel(planningDate);
   const period=document.getElementById('planning-plans-period');if(period)period.textContent=monthLabel(planningDate);
   document.getElementById('planning-current')?.classList.toggle('hidden',planningSameMonth(planningDate,planningCurrentMonth()));
+  const pendingItems=planningItems.filter(item=>item.status==='pending');
+  for(const [kind,amount,nature] of [['income',summary.pendingIncome,'income'],['expense',summary.pendingExpense,'consumption']]){
+    const count=pendingItems.filter(item=>planningNature(item)===nature).length;
+    document.getElementById(`planning-pending-${kind}`).textContent=formatBRL(amount);
+    document.getElementById(`planning-pending-${kind}-count`).textContent=`${count} ${count===1?'item pendente':'itens pendentes'}`;
+  }
   document.getElementById('planning-income').textContent=formatBRL(model.plannedIncome);
   document.getElementById('planning-expense').textContent=formatBRL(model.plannedExpense);
   document.getElementById('planning-result').textContent=formatBRL(model.plannedResult);document.getElementById('planning-result').className=model.plannedResult>=0?'positive':'negative';
   document.getElementById('planning-income-detail').textContent=`${formatBRL(summary.pendingIncome)} ainda a receber`;
   document.getElementById('planning-expense-detail').textContent=summary.pendingExpense>0?`${formatBRL(summary.pendingExpense)} ainda pendente`:'Todos os planos de despesa concluídos';
-  document.getElementById('planning-completion').textContent=`${Math.round(summary.completionRate)}%`;document.getElementById('planning-completion-detail').textContent=`${summary.completedCount} de ${summary.completedCount+summary.pendingCount+summary.deferredCount} itens concluídos`;
+  const completion=Math.min(100,Math.max(0,Math.round(summary.completionRate)));const ring=document.getElementById('planning-completion-ring');ring.style.setProperty('--planning-progress',`${completion}%`);ring.setAttribute('aria-valuenow',String(completion));document.getElementById('planning-completion').textContent=`${Math.round(summary.completionRate)}%`;document.getElementById('planning-completion-detail').textContent=`${summary.completedCount} de ${summary.completedCount+summary.pendingCount+summary.deferredCount} itens`;
   document.querySelectorAll('[data-planning-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.planningFilter===planningTypeFilter));const status=document.getElementById('planning-status-filter');if(status)status.value=planningStatusFilter;
-  const rows=planningFilteredItems();const list=document.getElementById('planning-list');if(list)list.innerHTML=rows.length?rows.map(planningRowHTML).join(''):emptyState('Nenhum item encontrado neste mês.');
+  const rows=planningFilteredItems();const list=document.getElementById('planning-list');if(list)list.innerHTML=pagedList('planning-items',rows,planningRowHTML,{context:JSON.stringify([planningMonthKey(planningDate),planningTypeFilter,planningStatusFilter]),label:'planos',empty:emptyState('Nenhum item encontrado neste mês.')});
   const footer=document.getElementById('planning-footer');footer?.classList.toggle('hidden',summary.pendingCount===0);if(summary.pendingCount){document.getElementById('planning-footer-text').textContent=`${summary.pendingCount} ${summary.pendingCount===1?'item ainda está':'itens ainda estão'} pendente${summary.pendingCount===1?'':'s'} em ${monthLabel(planningDate)}.`;document.getElementById('planning-move-all').textContent=`Mover pendentes para ${monthLabel(shiftPlanningMonth(planningDate,1))}`}
   renderPlanningOverview();
   setPlanningSection(planningSection);
@@ -710,27 +703,56 @@ async function completePlanningAction(id){const item=planningItems.find(row=>row
 async function movePlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;const target=planningNextMonthDate(item.planned_on);if(!confirm(`Mover este item para ${monthLabel(planningMonthDate(target))}? O mês atual ficará registrado como adiado.`))return;await runAppOperation('Movendo planejamento…','Mantendo o histórico do mês original e criando o item pendente no mês seguinte.',async()=>{await movePlanningItem(id,target,planningNature(item));await loadPlanningMonth(planningDate,{quiet:true});toast('Item movido para o próximo mês.','success')})}
 async function cancelPlanningAction(id){const item=planningItems.find(row=>row.id===id);if(!item||item.status!=='pending')return;if(!confirm('Cancelar este item do planejamento?'))return;await runAppOperation('Cancelando item…','Mantendo o registro no histórico como cancelado.',async()=>{await cancelPlanningItem(id);await loadPlanningMonth(planningDate,{quiet:true});toast('Item cancelado.','success')})}
 async function moveAllPlanningPending(){const summary=summarizePlanning(planningItems);if(!summary.pendingCount)return;const next=shiftPlanningMonth(planningDate,1);if(!confirm(`Mover ${summary.pendingCount} ${summary.pendingCount===1?'item pendente':'itens pendentes'} para ${monthLabel(next)}?`))return;await runAppOperation('Movendo pendências…','Transferindo os itens pendentes e preservando o histórico deste mês.',async()=>{const count=await movePendingPlanningMonth(planningDate,next);await loadPlanningMonth(planningDate,{quiet:true});toast(`${count} ${count===1?'item movido':'itens movidos'} para ${monthLabel(next)}.`,'success')})}
-function planningAnalysisPanel(summary,label,actual){const statusTotal=summary.completedCount+summary.pendingCount+summary.deferredCount;return `<article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>${escapeHTML(label)}</h3><p>Planejado x realizado no período.</p></div></div>${analysisComparisonBars([{label:'Receitas',a:summary.plannedIncome,b:actual.income},{label:'Despesas',a:summary.plannedExpense,b:actual.totalExpense},{label:'Resultado',a:summary.plannedResult,b:actual.result}],'Planejado','Real')}<div class="planning-analysis-status"><article><span>Concluídos</span><strong>${summary.completedCount}</strong></article><article><span>Pendentes</span><strong>${summary.pendingCount}</strong></article><article><span>Adiados</span><strong>${summary.deferredCount}</strong></article><article><span>Execução</span><strong>${statusTotal?Math.round(summary.completionRate):0}%</strong></article></div></article>`}
+function planningAnalysisPanel(summary,label,actual){
+  const statusTotal=summary.completedCount+summary.pendingCount+summary.deferredCount;
+  const statuses=[['Concluídos',summary.completedCount,'check','green'],['Pendentes',summary.pendingCount,'clock','orange'],['Adiados',summary.deferredCount,'calendar','orange'],['Execução',`${statusTotal?Math.round(summary.completionRate):0}%`,'analytics','purple']];
+  const statusHTML=`<div class="planning-analysis-status">${statuses.map(([name,value,icon,color])=>`<article><span class="analytics-status-icon accent-${color}" aria-hidden="true">${analysisIcon(icon)}</span><div><span>${name}</span><strong>${value}</strong></div></article>`).join('')}</div>`;
+  return analysisPanel(label,analysisComparisonBars([{label:'Receitas',a:summary.plannedIncome,b:actual.income},{label:'Despesas',a:summary.plannedExpense,b:actual.totalExpense},{label:'Resultado',a:summary.plannedResult,b:actual.result}],'Planejado','Real')+statusHTML,{icon:'calendar',extraClass:'analytics-planning-panel'});
+}
+
+
 
 
 let financialView='general';
 let analysisMode='months';
 let analysisTab='overview';
 let analysisRenderSeq=0;
+let analysisTrendMonths=6;
+let analysisDistribution='chart';
+function analysisIcon(name='analytics'){
+  return `<svg class="ui-icon" aria-hidden="true"><use href="#i-${escapeHTML(name==='tag'?'receipt':name)}"/></svg>`;
+}
+function analysisStaticMetric(label,value,caption='',{icon='analytics',accent='orange',captionClass='',valueClass=''}={}){
+  return `<article class="analytics-metric analytics-summary" data-analysis-metric="${escapeHTML(label)}"><span class="analytics-summary-icon accent-${escapeHTML(accent)}" aria-hidden="true">${analysisIcon(icon)}</span><div class="analytics-summary-copy"><span>${escapeHTML(label)}</span><strong class="${escapeHTML(valueClass)}">${value}</strong><small class="${escapeHTML(captionClass)}">${caption||'—'}</small></div></article>`;
+}
+function analysisPanel(title,body,{icon='analytics',controls='',extraClass=''}={}){
+  return `<article class="panel-card analytics-chart-card ${extraClass}"><div class="section-title"><h3>${analysisIcon(icon)}${escapeHTML(title)}</h3>${controls}</div>${body}</article>`;
+}
+function analysisTrendControl(){
+  return analysisMode==='years'?'<span class="analytics-control-note">Meses do ano selecionado</span>':`<select class="analytics-trend-select" data-analysis-trend aria-label="Intervalo do gráfico de evolução">${[3,6,12].map(n=>`<option value="${n}" ${analysisTrendMonths===n?'selected':''}>Últimos ${n} meses</option>`).join('')}</select>`;
+}
+function analysisExplanation(title,items){
+  return `<details class="analytics-explanation"><summary>${analysisIcon('analytics')}<span>${escapeHTML(title)}</span></summary>${analysisInsightsHTML(items)}</details>`;
+}
+function analysisVariations(periodA,periodB){
+  const rows=compareCategories(periodA,periodB,100);
+  const sides=[{title:'Maiores aumentos',cls:'negative',items:rows.filter(r=>r.delta>0.005).sort((a,b)=>b.delta-a.delta).slice(0,3)},{title:'Maiores reduções',cls:'positive',items:rows.filter(r=>r.delta<-.005).sort((a,b)=>a.delta-b.delta).slice(0,3)}];
+  return `<div class="analytics-variations">${sides.map(side=>`<section><h4 class="${side.cls}">${analysisIcon(side.cls==='negative'?'trending-up':'trending-down')}${side.title}</h4>${side.items.length?side.items.map(row=>{const record=analysisCategoryRecord(row.category);return `<div class="analytics-variation-row"><span class="analytics-category-icon category-color-${escapeHTML(record?.color_key||'slate')}" aria-hidden="true">${categoryIconSVG(record?.icon_key||'tag')}</span><span>${escapeHTML(row.category)}</span><strong class="${side.cls}">${row.delta>0?'+':'−'} ${formatBRL(Math.abs(row.delta))}</strong></div>`}).join(''):'<p class="analytics-muted">Nenhuma variação neste sentido.</p>'}</section>`).join('')}</div>`;
+}
 
 function analysisInputMonth(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`}
 function analysisInputDate(value){const [year,month]=String(value||'').split('-').map(Number);return new Date(year||new Date().getFullYear(),(month||1)-1,1,12)}
 function analysisKeyFromInput(value){return `${String(value||'').slice(0,7)}-01`}
 function analysisShortMoney(value){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',notation:'compact',maximumFractionDigits:1}).format(Number(value)||0)}
-function analysisPercent(change){if(change?.percent===null)return 'novo';const value=Number(change?.percent||0);return `${value>0?'+':''}${value.toFixed(1)}%`}
-function analysisMetric(label,change,{goodUp=true}={}){
-  const delta=Number(change?.delta||0),percent=change?.percent;
-  const neutral=Math.abs(delta)<0.005;
-  const good=neutral?null:(goodUp?delta>0:delta<0);
-  const cls=neutral?'neutral':(good?'positive':'negative');
-  const caption=percent===null?(Number(change?.previous||0)===0&&Number(change?.current||0)>0?'Sem base anterior':'Sem variação'):`${analysisPercent(change)} vs comparação`;
-  return `<article class="analytics-metric"><span>${escapeHTML(label)}</span><strong>${formatBRL(change?.current||0)}</strong><small class="${cls}">${escapeHTML(caption)}</small></article>`;
+function analysisPercent(change){if(change?.percent===null)return 'novo';const value=Number(change?.percent||0);return `${value>0?'+':''}${value.toFixed(1).replace('.',',')}%`}
+function analysisMetric(label,change,{goodUp=true,icon='',accent=''}={}){
+  const delta=Number(change?.delta||0),neutral=Math.abs(delta)<0.005;
+  const cls=neutral?'neutral':((goodUp?delta>0:delta<0)?'positive':'negative');
+  const caption=change?.percent===null?(Number(change?.previous||0)===0&&Number(change?.current||0)>0?'Sem base anterior':'Sem variação'):`${analysisPercent(change)} vs comparação`;
+  const defaults=label.includes('Receita')?['trending-up','green']:label.includes('Despesa')||label.includes('Gasto')?['trending-down','red']:label.includes('Cart')?['card','orange']:['wallet','orange'];
+  return analysisStaticMetric(label,formatBRL(change?.current||0),escapeHTML(caption),{icon:icon||defaults[0],accent:accent||defaults[1],captionClass:cls});
 }
+
 function analysisEmpty(title='Sem dados suficientes',text='Registre movimentações em mais períodos para visualizar esta comparação.'){
   return `<div class="analytics-empty"><svg class="ui-icon" aria-hidden="true"><use href="#i-analytics"></use></svg><strong>${escapeHTML(title)}</strong><span>${escapeHTML(text)}</span></div>`;
 }
@@ -739,14 +761,15 @@ function analysisComparisonBars(rows,labelA,labelB,labelKey='label'){
   if(!rows.length)return analysisEmpty('Nada para comparar','Não há valores nos períodos selecionados.');
   const max=Math.max(1,...rows.flatMap(row=>[Math.abs(Number(row.a||0)),Math.abs(Number(row.b||0))]));
   return `${analysisLegend(labelA,labelB)}<div class="analytics-hbars">${rows.map(row=>{
-    const wa=Math.max(0,Math.min(100,Math.abs(Number(row.a||0))/max*100));
-    const wb=Math.max(0,Math.min(100,Math.abs(Number(row.b||0))/max*100));
-    return `<div class="analytics-hbar-row"><div class="analytics-hbar-label"><strong>${escapeHTML(row[labelKey]||'')}</strong><span>${formatBRL(row.a||0)} · ${formatBRL(row.b||0)}</span></div><div class="analytics-hbar-pair"><div><span class="bar-a" style="width:${wa}%"></span></div><div><span class="bar-b" style="width:${wb}%"></span></div></div></div>`;
+    const a=Number(row.a||0),b=Number(row.b||0),record=analysisCategoryRecord(row[labelKey]);
+    const icon=record?categoryIconSVG(record.icon_key||'tag'):analysisIcon(row.label==='Receitas'?'trending-up':row.label==='Despesas'?'trending-down':row.label==='Resultado'?'wallet':'card');
+    return `<div class="analytics-hbar-row" data-analysis-pair="${escapeHTML(row[labelKey]||'')}" data-value-a="${a}" data-value-b="${b}"><span class="analytics-pair-icon category-color-${escapeHTML(record?.color_key||'orange')}" aria-hidden="true">${icon}</span><div class="analytics-hbar-label"><strong>${escapeHTML(row[labelKey]||'')}</strong></div><div class="analytics-hbar-pair"><div><span class="bar-a" style="width:${Math.abs(a)/max*100}%"></span></div><div><span class="bar-b" style="width:${Math.abs(b)/max*100}%"></span></div></div><div class="analytics-pair-values"><span>${formatBRL(a)}</span><span>${formatBRL(b)}</span></div></div>`;
   }).join('')}</div>`;
 }
+
 function analysisLineChart(months,series){
   if(!months?.length||!series?.length)return analysisEmpty();
-  const width=900,height=300,left=54,right=18,top=18,bottom=50,plotW=width-left-right,plotH=height-top-bottom;
+  const width=Math.max(600,months.length*60),height=300,left=54,right=18,top=18,bottom=50,plotW=width-left-right,plotH=height-top-bottom;
   const values=series.flatMap(item=>months.map(month=>Math.max(0,Number(item.value(month)||0))));
   const max=Math.max(1,...values);
   const x=index=>months.length===1?left+plotW/2:left+(index/(months.length-1))*plotW;
@@ -755,11 +778,11 @@ function analysisLineChart(months,series){
   const labels=months.map((month,i)=>`<text x="${x(i)}" y="${height-18}" text-anchor="middle" class="chart-axis chart-month">${escapeHTML(month.date.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''))}</text>`).join('');
   const paths=series.map((item,sidx)=>{
     const points=months.map((month,i)=>`${x(i)},${y(item.value(month))}`);
-    const circles=months.map((month,i)=>`<circle cx="${x(i)}" cy="${y(item.value(month))}" r="4" class="chart-point series-${sidx}"/>`).join('');
+    const circles=months.map((month,i)=>`<circle cx="${x(i)}" cy="${y(item.value(month))}" r="4" class="chart-point series-${sidx}"><title>${escapeHTML(item.label)} · ${escapeHTML(monthLabel(month.date))}: ${formatBRL(item.value(month))}</title></circle>`).join('');
     return `<polyline points="${points.join(' ')}" class="chart-line series-${sidx}"/>${circles}`;
   }).join('');
   const legend=`<div class="analytics-chart-legend">${series.map((item,i)=>`<span><i class="series-dot series-${i}"></i>${escapeHTML(item.label)}</span>`).join('')}</div>`;
-  return `${legend}<div class="analytics-svg-wrap"><svg class="analytics-line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolução financeira">${grid}${paths}${labels}</svg></div>`;
+  return `${legend}<div class="analytics-svg-wrap"><svg class="analytics-line-chart" data-points="${months.length}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolução financeira">${grid}${paths}${labels}</svg></div>`;
 }
 function analysisDonut(items,title='Distribuição'){
   const source=(items||[]).filter(item=>Number(item.total||0)>0);
@@ -792,13 +815,14 @@ function analysisCategoryRows(period){
   });
 }
 function analysisCategoryMetricCard({title,value,caption='',icon='',accent='orange',strongClass=''}){
-  return `<article class="analytics-metric analytics-metric-rich"><div class="analytics-metric-top"><span>${escapeHTML(title)}</span>${icon?`<span class="analytics-chip-icon category-color-${escapeHTML(accent)}" aria-hidden="true">${icon}</span>`:''}</div><strong class="${escapeHTML(strongClass)}">${value}</strong>${caption?`<small>${caption}</small>`:''}</article>`;
+  return analysisStaticMetric(title,value,caption,{icon:title.includes('maior')?'trending-up':title.includes('menor')?'trending-down':title.includes('categorias')?'tag':'wallet',accent});
 }
+
 function analysisDetailedDonut(items,title='Distribuição por categoria',periodLabel=''){
   const source=(items||[]).filter(item=>Number(item.value||item.total||0)>0);
   const total=source.reduce((sum,item)=>sum+Number(item.value||item.total||0),0);
   const grouped=groupCategoryRowsWithRemainder(source.map(item=>({...item,total:Number(item.value||item.total||0),value:Number(item.value||item.total||0)})),8);
-  const rows=grouped.map(item=>{
+  const rows=(analysisDistribution==='list'?source:grouped).map(item=>{
     if(!item.isRemainder)return item;
     const value=Number(item.value||item.total||0);
     return {...item,category:'Demais',value,total:value,pct:total>0?value/total*100:0,record:null,colorHex:'#94a3b8'};
@@ -810,9 +834,9 @@ function analysisDetailedDonut(items,title='Distribuição por categoria',period
     const el=`<circle cx="110" cy="110" r="${r}" fill="none" stroke="${item.colorHex||'#94a3b8'}" stroke-width="28" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="-${offset}"/>`;
     offset+=dash;return el;
   }).join('');
-  const legend=rows.map(item=>`<div class="analytics-category-row"><div class="analytics-category-main"><span class="analytics-category-icon category-color-${escapeHTML(item.record?.color_key||'slate')}" aria-hidden="true">${categoryIconSVG(item.record?.icon_key||'tag')}</span><strong>${escapeHTML(item.category||item.name||'Outros')}</strong></div><div class="analytics-category-values"><strong>${formatBRL(item.value||item.total||0)}</strong><span>${(Number(item.pct||0)).toFixed(1).replace('.',',')}%</span></div></div>`).join('');
+  const legend=analysisDistribution==='list'?pagedList('analysis-category-details',rows,item=>`<div class="analytics-category-row"><div class="analytics-category-main"><span class="analytics-category-icon category-color-${escapeHTML(item.record?.color_key||'slate')}" aria-hidden="true">${categoryIconSVG(item.record?.icon_key||'tag')}</span><strong>${escapeHTML(item.category||item.name||'Outros')}</strong></div><div class="analytics-category-values"><strong>${formatBRL(item.value||item.total||0)}</strong><span>${(Number(item.pct||0)).toFixed(1).replace('.',',')}%</span></div></div>`,{context:JSON.stringify([analysisMode,periodLabel,financialView]),label:'categorias'}):rows.map(item=>`<div class="analytics-category-row"><div class="analytics-category-main"><span class="analytics-category-icon category-color-${escapeHTML(item.record?.color_key||'slate')}" aria-hidden="true">${categoryIconSVG(item.record?.icon_key||'tag')}</span><strong>${escapeHTML(item.category||item.name||'Outros')}</strong></div><div class="analytics-category-values"><strong>${formatBRL(item.value||item.total||0)}</strong><span>${(Number(item.pct||0)).toFixed(1).replace('.',',')}%</span></div></div>`).join('');
   const note='Os nomes, ícones e cores das categorias seguem o seu gerenciador de categorias, mantendo a mesma configuração utilizada em lançamentos, limites e relatórios.';
-  return `<div class="analytics-category-split"><div><div class="analytics-donut analytics-donut-large"><svg viewBox="0 0 220 220" role="img" aria-label="${escapeHTML(title)}"><g transform="rotate(-90 110 110)">${circles}</g><circle cx="110" cy="110" r="49" fill="var(--surface)"/><text x="110" y="100" text-anchor="middle" class="donut-caption">${escapeHTML(periodLabel||'Total')}</text><text x="110" y="124" text-anchor="middle" class="donut-value">${escapeHTML(formatBRL(total))}</text><text x="110" y="144" text-anchor="middle" class="donut-caption">em despesas</text></svg></div></div><div class="analytics-category-list">${legend}<div class="analytics-category-note"><svg class="ui-icon" aria-hidden="true"><use href="#i-analytics"></use></svg><span>${escapeHTML(note)}</span></div></div></div>`;
+  return `<div class="analytics-category-split ${analysisDistribution==='list'?'list-only':''}"><div class="analytics-distribution-donut"><div class="analytics-donut analytics-donut-large"><svg viewBox="0 0 220 220" role="img" aria-label="${escapeHTML(title)}"><g transform="rotate(-90 110 110)">${circles}</g><circle cx="110" cy="110" r="49" fill="var(--surface)"/><text x="110" y="110" text-anchor="middle" class="donut-value">${escapeHTML(formatBRL(total))}</text><text x="110" y="132" text-anchor="middle" class="donut-caption">em despesas</text></svg></div></div><div class="analytics-category-list">${legend}</div></div>`;
 }
 function analysisGroupedBarChart(rows,labelA,labelB){
   if(!rows.length)return analysisEmpty('Nada para comparar','Não há valores nos períodos selecionados.');
@@ -837,8 +861,12 @@ function analysisBudgetBars(summary,label){
   const rows=(summary?.categories||[]).filter(item=>item.limitDefined===true||item.limit>0||item.spent>0).slice(0,10);
   if(!rows.length)return analysisEmpty(`Sem limites em ${label}`,'Não há limites salvos nem gastos para comparar neste período.');
   const max=Math.max(1,...rows.flatMap(item=>[item.limit,item.spent]));
-  return `<div class="analytics-budget-chart"><div class="analytics-chart-subtitle"><strong>${escapeHTML(label)}</strong><span>Limite x gasto real</span></div>${rows.map(item=>{const hasLimit=item.limitDefined===true||Number(item.limit||0)>0;const limitLabel=hasLimit?formatBRL(item.limit):'Sem limite';return `<div class="analytics-budget-row"><div><strong>${escapeHTML(item.category)}</strong><span>${formatBRL(item.spent)} · ${limitLabel}</span></div><div class="analytics-budget-track">${hasLimit?`<span class="budget-limit" style="width:${Math.min(100,item.limit/max*100)}%"></span>`:''}<span class="budget-spent ${hasLimit&&item.spent>item.limit?'over':''}" style="width:${Math.min(100,item.spent/max*100)}%"></span></div></div>`}).join('')}</div>`;
+  return `<div class="analytics-budget-chart"><div class="analytics-budget-heading"><h4>${escapeHTML(label)}</h4>${analysisLegend('Limite','Gasto real')}</div>${rows.map(item=>{
+    const hasLimit=item.limitDefined===true||Number(item.limit||0)>0,record=analysisCategoryRecord(item.category);
+    return `<div class="analytics-budget-row" data-analysis-budget="${escapeHTML(item.category)}" data-limit="${item.limit}" data-spent="${item.spent}"><span class="analytics-category-icon category-color-${escapeHTML(record?.color_key||'orange')}" aria-hidden="true">${categoryIconSVG(record?.icon_key||'tag')}</span><div class="analytics-budget-label"><strong>${escapeHTML(item.category)}</strong><small class="${hasLimit&&item.spent>item.limit?'negative':''}">${hasLimit?(item.spent>item.limit?'Acima do limite':'Limite definido'):'Sem limite'}</small></div><div class="analytics-budget-track">${hasLimit?`<span class="budget-limit" style="width:${item.limit/max*100}%"></span>`:'<span class="budget-limit missing"></span>'}<span class="budget-spent" style="width:${item.spent/max*100}%"></span></div><div class="analytics-pair-values"><span>${hasLimit?formatBRL(item.limit):'—'}</span><span>${formatBRL(item.spent)}</span></div></div>`;
+  }).join('')}</div>`;
 }
+
 function analysisMonthKeysAround(endDate,count=6){return Array.from({length:count},(_,index)=>analysisMonthKey(shiftAnalysisMonth(endDate,index-count+1)))}
 function analysisLabelForPeriod(mode,a,b){if(mode==='years')return {a:String(a),b:String(b)};return {a:monthLabel(analysisMonthDate(a)),b:monthLabel(analysisMonthDate(b))}}
 function analysisEquivalentLabels(spec,mode,yearA,yearB,keyA,keyB){
@@ -879,7 +907,7 @@ async function renderAnalytics(){
   const spec=equivalentComparisonSpec({mode:analysisMode,monthA:analysisKeyFromInput(monthA),monthB:analysisKeyFromInput(monthB),yearA,yearB,today:new Date()});
   const keysA=spec.keysA,keysB=spec.keysB;
   const labels=analysisEquivalentLabels(spec,analysisMode,yearA,yearB,keysA[0],keysB[0]);
-  host.innerHTML='<div class="analytics-loading"><span class="auth-spinner" aria-hidden="true"></span><span>Montando a análise…</span></div>';
+  host.setAttribute('aria-busy','true');host.innerHTML='<div class="analytics-loading"><span class="auth-spinner" aria-hidden="true"></span><span>Montando a análise…</span></div>';
   try{
     let budgets={},planningByMonth={};
     if(financialView==='general'&&analysisTab==='budget')budgets=await listBudgetsByMonths([...keysA,...keysB]);
@@ -891,7 +919,7 @@ async function renderAnalytics(){
     if(financialView!=='general'){
       host.innerHTML=financialFocusHTML(periodA,periodB,labels,financialView);
     }else if(analysisTab==='overview'){
-      const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),6);
+      const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),analysisTrendMonths);
       const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel,categories:state.categories});
       const direct=[{label:'Receitas',a:periodA.totals.income,b:periodB.totals.income},{label:'Despesas',a:periodA.totals.totalExpense,b:periodB.totals.totalExpense},{label:'Cartões',a:periodA.totals.cardExpense,b:periodB.totals.cardExpense}];
       let insights;
@@ -900,28 +928,29 @@ async function renderAnalytics(){
         const change=comparison.totalExpense;
         if(change.percent!==null)insights.unshift(`Os gastos de ${labels.a} estão ${Math.abs(change.percent).toFixed(1)}% ${change.delta>=0?'acima':'abaixo'} de ${labels.b}.`);
       }else insights=buildMonthlyInsights(periodA,periodB,labels.a,labels.b,formatBRL);
-      host.innerHTML=`<div class="analytics-metrics">${analysisMetric('Receitas',comparison.income,{goodUp:true})}${analysisMetric('Despesas',comparison.totalExpense,{goodUp:false})}${analysisMetric('Resultado',comparison.result,{goodUp:true})}${analysisMetric('Cartão',comparison.cardExpense,{goodUp:false})}</div><div class="analytics-grid two"><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Evolução</h3><p>${analysisMode==='years'?`Movimentação mensal de ${escapeHTML(labels.a)}.`:'Últimos 6 meses até o período atual.'}</p></div></div>${analysisLineChart(context.months,[{label:'Receitas',value:m=>m.income},{label:'Despesas',value:m=>m.totalExpense}])}</article><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Comparação direta</h3><p>${escapeHTML(labels.a)} × ${escapeHTML(labels.b)}</p></div></div>${analysisComparisonBars(direct,labels.a,labels.b)}</article></div><article class="panel-card analytics-insights-card"><div class="section-title"><div><h3>O que mudou</h3><p>Leitura automática baseada somente nos dados registrados.</p></div></div>${analysisInsightsHTML(insights)}</article>`;
+      host.innerHTML=`<div class="analytics-metrics">${analysisMetric('Receitas',comparison.income,{goodUp:true})}${analysisMetric('Despesas',comparison.totalExpense,{goodUp:false})}${analysisMetric('Resultado',comparison.result,{goodUp:true})}${analysisMetric('Cartão',comparison.cardExpense,{goodUp:false})}</div><div class="analytics-grid two">${analysisPanel('Evolução',analysisLineChart(context.months,[{label:'Receitas',value:m=>m.income},{label:'Despesas',value:m=>m.totalExpense}]),{controls:analysisTrendControl()})}${analysisPanel('Comparação direta',analysisComparisonBars(direct,labels.a,labels.b),{icon:'card'})}</div>${analysisPanel('Principais variações',analysisVariations(periodA,periodB),{icon:'trending-up',controls:'<button class="text-btn" data-analysis-go="categories" type="button">Ver categorias →</button>'})}${analysisExplanation('O que mudou',insights)}`;
     }else if(analysisTab==='categories'){
       const rows=compareCategories(periodA,periodB,6).map(item=>({...item,label:item.category}));
       const detailedRows=analysisCategoryRows(periodA);
-      host.innerHTML=`${analysisCategoryHighlights(periodA,periodB,comparison.totalExpense,labels.a,labels.b)}<div class="analytics-grid two analytics-grid-categories"><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Gastos por categoria</h3><p>Veja como suas despesas estão distribuídas por categoria no período selecionado.</p></div></div>${analysisDetailedDonut(detailedRows,'Distribuição por categoria',labels.a)}</article><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Comparação entre meses</h3><p>Compare os gastos por categoria entre os períodos selecionados.</p></div></div>${analysisGroupedBarChart(rows,labels.a,labels.b)}</article></div>`;
+      const displayControls=`<div class="analytics-distribution-controls" role="group" aria-label="Apresentação das categorias"><button type="button" data-analysis-distribution="chart" aria-pressed="${analysisDistribution==='chart'}" aria-label="Mostrar gráfico e lista">${analysisIcon('analytics')}</button><button type="button" data-analysis-distribution="list" aria-pressed="${analysisDistribution==='list'}" aria-label="Mostrar lista">${analysisIcon('receipt')}</button></div>`;
+      host.innerHTML=`${analysisCategoryHighlights(periodA,periodB,comparison.totalExpense,labels.a,labels.b)}<div class="analytics-grid two analytics-grid-categories">${analysisPanel('Gastos por categoria',analysisDetailedDonut(detailedRows,'Distribuição por categoria',labels.a),{icon:'analytics',controls:displayControls})}${analysisPanel(analysisMode==='years'?'Comparação entre anos':'Comparação entre meses',analysisGroupedBarChart(rows,labels.a,labels.b),{icon:'analytics'})}</div>`;
     }else if(analysisTab==='budget'){
       const budgetA=aggregateBudgetComparison(periodA),budgetB=aggregateBudgetComparison(periodB);
       const limitChange={current:budgetA.totalLimit,previous:budgetB.totalLimit,delta:budgetA.totalLimit-budgetB.totalLimit,percent:budgetB.totalLimit?((budgetA.totalLimit-budgetB.totalLimit)/Math.abs(budgetB.totalLimit))*100:(budgetA.totalLimit?null:0)};
       const spentChange={current:budgetA.totalSpent,previous:budgetB.totalSpent,delta:budgetA.totalSpent-budgetB.totalSpent,percent:budgetB.totalSpent?((budgetA.totalSpent-budgetB.totalSpent)/Math.abs(budgetB.totalSpent))*100:(budgetA.totalSpent?null:0)};
-      host.innerHTML=`<div class="analytics-metrics budget-analytics-metrics">${analysisMetric('Limites planejados',limitChange,{goodUp:false})}${analysisMetric('Gasto realizado',spentChange,{goodUp:false})}<article class="analytics-metric"><span>Saldo dos limites · ${escapeHTML(labels.a)}</span><strong class="${budgetA.totalLimit-budgetA.totalSpent>=0?'positive':'negative'}">${formatBRL(budgetA.totalLimit-budgetA.totalSpent)}</strong><small>${budgetA.totalLimit?`${Math.round(budgetA.totalSpent/budgetA.totalLimit*100)}% utilizado`:'Sem limites salvos'}</small></article></div><div class="analytics-grid two"><article class="panel-card analytics-chart-card">${analysisBudgetBars(budgetA,labels.a)}</article><article class="panel-card analytics-chart-card">${analysisBudgetBars(budgetB,labels.b)}</article></div>`;
+      host.innerHTML=`<div class="analytics-metrics budget-analytics-metrics">${analysisMetric('Limites planejados',limitChange,{goodUp:false,icon:'target',accent:'orange'})}${analysisMetric('Gasto realizado',spentChange,{goodUp:false,icon:'wallet',accent:'orange'})}${analysisStaticMetric('Saldo dos limites',formatBRL(budgetA.totalLimit-budgetA.totalSpent),budgetA.totalLimit?`${Math.round(budgetA.totalSpent/budgetA.totalLimit*100)}% utilizado`:'Sem limites salvos',{icon:'analytics',accent:budgetA.totalLimit-budgetA.totalSpent>=0?'green':'red',valueClass:budgetA.totalLimit-budgetA.totalSpent<0?'negative':''})}</div><div class="analytics-grid two analytics-equal-grid">${analysisPanel('Período atual',analysisBudgetBars(budgetA,labels.a),{icon:'wallet',extraClass:'analytics-budget-panel'})}${analysisPanel('Comparação',analysisBudgetBars(budgetB,labels.b),{icon:'wallet',extraClass:'analytics-budget-panel'})}</div>`;
     }else if(analysisTab==='planning'){
       const planA=summarizePlanningPeriod(planningByMonth,keysA),planB=summarizePlanningPeriod(planningByMonth,keysB);
       const resultChange={current:planA.plannedResult,previous:planB.plannedResult,delta:planA.plannedResult-planB.plannedResult,percent:Math.abs(planB.plannedResult)>0.005?((planA.plannedResult-planB.plannedResult)/Math.abs(planB.plannedResult))*100:(Math.abs(planA.plannedResult)>0.005?null:0)};
       const pendingTotal=planA.pendingIncome+planA.pendingExpense;
-      host.innerHTML=`<div class="analytics-metrics"><article class="analytics-metric"><span>Receitas planejadas</span><strong>${formatBRL(planA.plannedIncome)}</strong><small>${formatBRL(planA.pendingIncome)} ainda a receber</small></article><article class="analytics-metric"><span>Despesas planejadas</span><strong>${formatBRL(planA.plannedExpense)}</strong><small>${formatBRL(planA.pendingExpense)} ainda a pagar</small></article>${analysisMetric('Saldo planejado',resultChange,{goodUp:true})}<article class="analytics-metric"><span>Pendente</span><strong>${formatBRL(pendingTotal)}</strong><small>${planA.pendingCount} ${planA.pendingCount===1?'item':'itens'}</small></article></div><div class="analytics-grid two">${planningAnalysisPanel(planA,labels.a,periodA.totals)}${planningAnalysisPanel(planB,labels.b,periodB.totals)}</div><article class="panel-card analytics-insights-card"><div class="section-title"><div><h3>Leitura do planejamento</h3><p>Previsões não são contabilizadas como movimentação até serem concluídas.</p></div></div>${analysisInsightsHTML([`Em ${labels.a}, foram planejados ${formatBRL(planA.plannedIncome)} em entradas e ${formatBRL(planA.plannedExpense)} em saídas.`,`${planA.completedCount} ${planA.completedCount===1?'item foi concluído':'itens foram concluídos'}, ${planA.pendingCount} permanecem pendentes e ${planA.deferredCount} foram adiados.`,planA.deferred?`${formatBRL(planA.deferred)} foi transferido para outro mês.`:'Nenhum valor foi adiado neste período.'])}</article>`;
+      host.innerHTML=`<div class="analytics-metrics">${analysisStaticMetric('Receitas planejadas',formatBRL(planA.plannedIncome),`${formatBRL(planA.pendingIncome)} a receber`,{icon:'trending-up',accent:'green'})}${analysisStaticMetric('Despesas planejadas',formatBRL(planA.plannedExpense),`${formatBRL(planA.pendingExpense)} a pagar`,{icon:'trending-down',accent:'red'})}${analysisMetric('Saldo planejado',resultChange,{goodUp:true})}${analysisStaticMetric('Pendentes',formatBRL(pendingTotal),`${planA.pendingCount} ${planA.pendingCount===1?'item':'itens'}`,{icon:'clock',accent:'orange'})}</div><div class="analytics-grid two analytics-equal-grid">${planningAnalysisPanel(planA,labels.a,periodA.totals)}${planningAnalysisPanel(planB,labels.b,periodB.totals)}</div><div class="analytics-plan-summary">${analysisStaticMetric('Entradas planejadas',formatBRL(planA.plannedIncome),`${formatBRL(planA.plannedExpense)} em despesas`,{icon:'trending-up',accent:'green'})}${analysisStaticMetric('Andamento',`${planA.completedCount} concluídos`,`${planA.pendingCount} pendentes · ${planA.deferredCount} adiados`,{icon:'clock',accent:'orange'})}${analysisStaticMetric('Valor adiado',formatBRL(planA.deferred),'Para outro mês',{icon:'calendar',accent:'orange'})}</div>${analysisExplanation('Leitura do planejamento',[`Em ${labels.a}, foram planejados ${formatBRL(planA.plannedIncome)} em entradas e ${formatBRL(planA.plannedExpense)} em saídas.`,`${planA.completedCount} ${planA.completedCount===1?'item foi concluído':'itens foram concluídos'}, ${planA.pendingCount} permanecem pendentes e ${planA.deferredCount} foram adiados.`,planA.deferred?`${formatBRL(planA.deferred)} foi transferido para outro mês.`:'Nenhum valor foi adiado neste período.'])}`;
     }else if(analysisTab==='cards'){
       const rows=compareCards(periodA,periodB,8).map(item=>({...item,label:item.name}));
-      const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),6);
+      const contextKeys=analysisMode==='years'?keysA:analysisMonthKeysAround(analysisInputDate(monthA),analysisTrendMonths);
       const context=buildAnalysisPeriod({transactions:state.transactions,installments:state.installments,invoiceStatuses:state.invoiceStatuses,monthKeys:contextKeys,monthLabel,categories:state.categories});
-      host.innerHTML=`<div class="analytics-metrics cards-analytics-metrics">${analysisMetric('Gasto no cartão',comparison.cardExpense,{goodUp:false})}<article class="analytics-metric"><span>Participação no gasto · ${escapeHTML(labels.a)}</span><strong>${periodA.totals.totalExpense?`${(periodA.totals.cardExpense/periodA.totals.totalExpense*100).toFixed(1)}%`:'0%'}</strong><small>Do total de despesas</small></article></div><div class="analytics-grid two"><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Por cartão</h3><p>${escapeHTML(labels.a)} × ${escapeHTML(labels.b)}</p></div></div>${analysisComparisonBars(rows,labels.a,labels.b)}</article><article class="panel-card analytics-chart-card"><div class="section-title"><div><h3>Evolução no crédito</h3><p>${analysisMode==='years'?`Compras no cartão em ${yearA}.`:'Últimos 6 meses.'}</p></div></div>${analysisLineChart(context.months,[{label:'Cartão',value:m=>m.cardExpense}])}</article></div>`;
+      host.innerHTML=`<div class="analytics-metrics cards-analytics-metrics">${analysisMetric('Gasto no cartão',comparison.cardExpense,{goodUp:false})}${analysisStaticMetric('Participação no gasto',periodA.totals.totalExpense?`${(periodA.totals.cardExpense/periodA.totals.totalExpense*100).toFixed(1).replace('.',',')}%`:'0%','Do total de despesas',{icon:'analytics',accent:'orange'})}</div><div class="analytics-grid two analytics-equal-grid">${analysisPanel('Por cartão',analysisComparisonBars(rows,labels.a,labels.b),{icon:'card'})}${analysisPanel('Evolução no crédito',analysisLineChart(context.months,[{label:'Cartão',value:m=>m.cardExpense}]),{icon:'trending-up',controls:analysisTrendControl()})}</div>`;
     }
-  }catch(error){console.error('Análises:',error);host.innerHTML=analysisEmpty('Não foi possível montar a análise',error?.message||'Tente novamente em alguns instantes.')}
+  }catch(error){console.error('Análises:',error);host.innerHTML=analysisEmpty('Não foi possível montar a análise',error?.message||'Tente novamente em alguns instantes.')}finally{if(seq===analysisRenderSeq)host.setAttribute('aria-busy','false')}
 }
 function openAnalytics(){showModule('analytics');void renderAnalytics()}
 function financialFocusHTML(periodA,periodB,labels,view){
@@ -937,28 +966,34 @@ function financialFocusHTML(periodA,periodB,labels,view){
 }
 function setFinancialView(view){financialView=['general','consumption','allocation'].includes(view)?view:'general';document.querySelectorAll('[data-financial-view]').forEach(btn=>{const active=btn.dataset.financialView===financialView;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active))});document.querySelector('.analytics-tabs')?.classList.toggle('hidden',financialView!=='general');void renderAnalytics();}
 function setAnalysisMode(mode){analysisMode=mode==='years'?'years':'months';document.querySelectorAll('[data-analysis-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.analysisMode===analysisMode));document.getElementById('analytics-month-filters')?.classList.toggle('hidden',analysisMode!=='months');document.getElementById('analytics-year-filters')?.classList.toggle('hidden',analysisMode!=='years');void renderAnalytics()}
-function setAnalysisTab(tab){analysisTab=['overview','categories','budget','planning','cards'].includes(tab)?tab:'overview';document.querySelectorAll('[data-analysis-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.analysisTab===analysisTab));void renderAnalytics()}
+function setAnalysisTab(tab){analysisTab=['overview','categories','budget','planning','cards'].includes(tab)?tab:'overview';document.querySelectorAll('[data-analysis-tab]').forEach(btn=>{const active=btn.dataset.analysisTab===analysisTab;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',String(active));btn.tabIndex=active?0:-1;});document.getElementById('analytics-content').setAttribute('aria-labelledby',`analytics-tab-${analysisTab}`);void renderAnalytics()}
 
 
 function notificationIcon(type){if(String(type||'').startsWith('family_'))return 'i-users';if(type==='budget_near'||type==='budget_over')return 'i-wallet';if(type==='goal_reached')return 'i-target';if(type==='invoice_due')return 'i-card';return 'i-bell'}
 function notificationActionLabel(n){if(n.type==='family_invite')return 'Ver convite';if(n.target==='family')return 'Ver Família';if(n.target==='budget')return 'Ver limites';if(n.target==='goals')return 'Ver meta';if(n.target==='cards')return 'Ver fatura';return 'Abrir'}
 function notificationTime(value){const date=new Date(value);if(Number.isNaN(date.getTime()))return '';const diff=Math.max(0,Date.now()-date.getTime());const minutes=Math.floor(diff/60000);if(minutes<1)return 'Agora';if(minutes<60)return `Há ${minutes} min`;const hours=Math.floor(minutes/60);if(hours<24)return `Há ${hours} h`;const days=Math.floor(hours/24);if(days<7)return `Há ${days} dia${days===1?'':'s'}`;return date.toLocaleDateString('pt-BR')}
 function notificationItemHTML(n){const unread=!n.read_at;return `<article class="notification-item ${unread?'unread':''}"><span class="notification-item-icon"><svg class="ui-icon" aria-hidden="true"><use href="#${notificationIcon(n.type)}"></use></svg></span><div class="notification-item-main"><div class="notification-item-title">${unread?'<span class="notification-dot" aria-hidden="true"></span>':''}<span>${escapeHTML(n.title||'Notificação')}</span></div>${n.body?`<div class="notification-item-body">${escapeHTML(n.body)}</div>`:''}<div class="notification-item-meta">${escapeHTML(notificationTime(n.created_at))}</div></div><button class="notification-item-action" type="button" data-notification-open="${n.id}">${escapeHTML(notificationActionLabel(n))}</button></article>`}
-function renderNotifications(){const rows=state.notifications||[];const unread=rows.filter(n=>!n.read_at).length;const badge=document.getElementById('notification-badge');if(badge){badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('hidden',unread===0)}const caption=document.getElementById('notification-popover-caption');if(caption)caption.textContent=unread?`${unread} não lida${unread===1?'':'s'}`:'Nenhuma não lida';const preview=document.getElementById('notification-preview-list');if(preview)preview.innerHTML=rows.length?rows.slice(0,6).map(notificationItemHTML).join(''):'<div class="notification-empty">Nenhuma notificação por enquanto.</div>';const history=document.getElementById('notification-history-list');if(history)history.innerHTML=rows.length?rows.map(notificationItemHTML).join(''):'<div class="notification-empty">Seu histórico de notificações está vazio.</div>';const center=document.getElementById('notification-center-caption');if(center)center.textContent=`${rows.length} notificação${rows.length===1?'':'ões'} · ${unread} não lida${unread===1?'':'s'}`;document.getElementById('notification-mark-all')?.toggleAttribute('disabled',unread===0);document.getElementById('notification-center-mark-all')?.toggleAttribute('disabled',unread===0)}
+function renderNotifications(){const rows=state.notifications||[];const unread=rows.filter(n=>!n.read_at).length;const badge=document.getElementById('notification-badge');if(badge){badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('hidden',unread===0)}const caption=document.getElementById('notification-popover-caption');if(caption)caption.textContent=unread?`${unread} não lida${unread===1?'':'s'}`:'Nenhuma não lida';const preview=document.getElementById('notification-preview-list');if(preview)preview.innerHTML=rows.length?rows.slice(0,6).map(notificationItemHTML).join(''):'<div class="notification-empty">Nenhuma notificação por enquanto.</div>';const history=document.getElementById('notification-history-list');if(history)history.innerHTML=pagedList('notifications',recentRecords(rows,'created_at'),notificationItemHTML,{label:'notificações',empty:'<div class="notification-empty">Seu histórico de notificações está vazio.</div>'});const center=document.getElementById('notification-center-caption');if(center)center.textContent=`${rows.length} notificação${rows.length===1?'':'ões'} · ${unread} não lida${unread===1?'':'s'}`;document.getElementById('notification-mark-all')?.toggleAttribute('disabled',unread===0);document.getElementById('notification-center-mark-all')?.toggleAttribute('disabled',unread===0)}
 function setNotificationPopover(open){const pop=document.getElementById('notification-popover'),bell=document.getElementById('notification-bell');if(!pop||!bell)return;pop.classList.toggle('hidden',!open);bell.setAttribute('aria-expanded',open?'true':'false')}
-async function openNotification(id){const item=(state.notifications||[]).find(n=>n.id===id);if(!item)return;if(!item.read_at){await markNotificationRead(item.id);item.read_at=new Date().toISOString();renderNotifications()}setNotificationPopover(false);closeDialog('notification-center-dialog');if(item.target==='family'){showModule('family');setTimeout(()=>document.getElementById('family-incoming')?.scrollIntoView({behavior:'smooth',block:'center'}),60);return}if(item.target==='budget'){showModule('planning');planningSection='limits';setPlanningSection('limits');void loadPlanningMonth(planningDate,{quiet:true});return}if(item.target==='goals'){showModule('goals');return}if(item.target==='cards'){showModule('cards');if(['invoice_due','invoice_overdue'].includes(item.type)&&item.target_id)setTimeout(()=>cardsWorkspace?.openInvoiceById(item.target_id),60);return}}
+async function openNotification(id){const item=(state.notifications||[]).find(n=>n.id===id);if(!item)return;if(!item.read_at){await markNotificationRead(item.id);item.read_at=new Date().toISOString();renderNotifications()}setNotificationPopover(false);closeDialog('notification-center-dialog');if(item.target==='family'){showModule('family');setFamilyInvites('received');setTimeout(()=>document.getElementById('family-incoming')?.scrollIntoView({behavior:'smooth',block:'center'}),60);return}if(item.target==='budget'){showModule('planning');planningSection='limits';setPlanningSection('limits');void loadPlanningMonth(planningDate,{quiet:true});return}if(item.target==='goals'){showModule('goals');return}if(item.target==='cards'){showModule('cards');if(['invoice_due','invoice_overdue'].includes(item.type)&&item.target_id)setTimeout(()=>cardsWorkspace?.openInvoiceById(item.target_id),60);return}}
 async function markAllNotifications(){if(!(state.notifications||[]).some(n=>!n.read_at))return;await markAllNotificationsRead();const now=new Date().toISOString();state.notifications.forEach(n=>{if(!n.read_at)n.read_at=now});renderNotifications()}
 
 function familyProfile(id){return state.family?.profiles?.find(x=>x.user_id===id)||null}
 function familyProfileName(id){const p=familyProfile(id);return p?.display_name||p?.username||'Membro da família'}
 function familyProfileUsername(id){return familyProfile(id)?.username||''}
 function permissionTags(link){const items=[['transactions','Lançamentos',link.can_view_transactions],['cards','Cartões',link.can_view_cards],['goals','Metas',link.can_view_goals],['budget','Limites',link.can_view_budget]];return `<div class="permission-tags">${items.map(([,label,on])=>`<span class="permission-tag ${on?'on':''}">${label}</span>`).join('')}</div>`}
-function familyPersonHTML({name,subtitle='',actions='',tags=''}){const initial=escapeHTML(String(name||'F').trim().charAt(0).toUpperCase()||'F');return `<div class="family-person"><div class="family-avatar">${initial}</div><div class="family-person-main"><strong>${escapeHTML(name||'Família')}</strong><small>${escapeHTML(subtitle)}</small>${tags}</div><div class="family-actions">${actions}</div></div>`}
+function familyPersonHTML({name,subtitle='',actions='',tags=''}){
+ const initial=escapeHTML(String(name||'F').trim().charAt(0).toUpperCase()||'F');
+ return `<div class="family-person"><div class="family-avatar" aria-hidden="true">${initial}</div><div class="family-person-main"><strong>${escapeHTML(name||'Família')}</strong><small>${escapeHTML(subtitle)}</small>${tags?`<details class="family-person-access"><summary>Ver acesso</summary>${tags}</details>`:''}</div><div class="family-actions">${actions}</div></div>`;
+}
+
 function renderFamily(){const data=state.family;if(!data)return;const me=data.user.id;const incoming=data.invites.filter(i=>i.status==='pending'&&i.inviter_user_id!==me);const outgoing=data.invites.filter(i=>i.status==='pending'&&i.inviter_user_id===me);const viewing=data.links.filter(l=>l.active&&l.viewer_user_id===me);const viewers=data.links.filter(l=>l.active&&l.owner_user_id===me);
   document.getElementById('family-incoming').innerHTML=incoming.length?incoming.map(i=>familyPersonHTML({name:familyProfileName(i.inviter_user_id),subtitle:`@${familyProfileUsername(i.inviter_user_id)} quer compartilhar o financeiro com você`,actions:`<button class="mini-btn" data-family-respond="${i.id}" data-accept="1">Aceitar</button><button class="mini-btn danger" data-family-respond="${i.id}" data-accept="0">Recusar</button>`})).join(''):emptyState('Nenhum convite pendente.');
-  document.getElementById('family-viewing').innerHTML=viewing.length?viewing.map(l=>familyPersonHTML({name:familyProfileName(l.owner_user_id),subtitle:`@${familyProfileUsername(l.owner_user_id)} · acesso autorizado`,tags:permissionTags(l),actions:`<button class="mini-btn" data-family-monitor="${l.owner_user_id}">Visualizar</button><button class="mini-btn danger" data-family-remove="${l.id}">Sair</button>`})).join(''):emptyState('Você ainda não acompanha ninguém.');
+  document.getElementById('family-viewing').innerHTML=viewing.length?viewing.map(l=>familyPersonHTML({name:familyProfileName(l.owner_user_id),subtitle:`@${familyProfileUsername(l.owner_user_id)} · acesso autorizado`,tags:permissionTags(l),actions:`<button class="mini-btn" data-family-monitor="${l.owner_user_id}">Visualizar</button><button class="mini-btn danger" data-family-remove="${l.id}">Deixar de acompanhar</button>`})).join(''):emptyState('Você ainda não acompanha ninguém.');
   document.getElementById('family-viewers').innerHTML=viewers.length?viewers.map(l=>familyPersonHTML({name:familyProfileName(l.viewer_user_id),subtitle:`@${familyProfileUsername(l.viewer_user_id)} · pode acompanhar os grupos autorizados`,tags:permissionTags(l),actions:`<button class="mini-btn" data-family-permissions="${l.id}">Permissões</button><button class="mini-btn danger" data-family-remove="${l.id}">Remover</button>`})).join(''):emptyState('Ninguém acompanha seus dados atualmente.');
   document.getElementById('family-outgoing').innerHTML=outgoing.length?outgoing.map(i=>familyPersonHTML({name:familyProfileName(i.invitee_user_id),subtitle:`@${familyProfileUsername(i.invitee_user_id)} · convite enviado`,actions:`<button class="mini-btn danger" data-family-cancel-invite="${i.id}">Cancelar</button>`})).join(''):emptyState('Nenhum convite enviado aguardando resposta.');
+  setFamilyInvites(familyInviteTab);
+  if(familyMonitorOwnerId){const link=familyMonitorLink();if(!link){familyProfileAccessError('O titular encerrou o acesso a estes dados.',{revoked:true});void stopFamilyMonitorRealtime();}else if(familyMonitorData&&familyAccessSignature(link)!==familyAccessSignature(familyMonitorData.link)){void loadFamilyMonitor({reason:'Atualizando permissões…'});}}
 }
 
 function categoryOriginLabel(origin){return origin==='default'?'Padrão':origin==='system'?'Sistema':'Personalizada'}
@@ -1124,23 +1159,125 @@ function renderSettings(){
   }
 }
 
+let familyInviteTab='received',familyMonitorTab='overview',familyListScroll=0,familyReturnOwner=null;
+const familyProfileContexts=new Map();
+function familyProfileVisible(){return !document.getElementById('module-family-profile')?.classList.contains('hidden')&&!!familyMonitorOwnerId;}
+function setFamilyInvites(tab){
+ familyInviteTab=tab==='sent'?'sent':'received';
+ document.querySelectorAll('[data-family-invites]').forEach(button=>{const active=button.dataset.familyInvites===familyInviteTab;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;});
+ document.getElementById('family-incoming').classList.toggle('hidden',familyInviteTab!=='received');document.getElementById('family-outgoing').classList.toggle('hidden',familyInviteTab!=='sent');
+}
+
+function clearFamilyProfileDOM(){
+ for(const id of ['family-monitor-metrics','family-monitor-transactions','family-monitor-categories','family-monitor-extras','family-profile-cards','family-profile-goals','family-profile-budget'])document.getElementById(id).innerHTML='';
+ document.getElementById('family-monitor-overview').classList.add('hidden');
+ document.querySelectorAll('[data-family-profile-view]').forEach(el=>el.classList.add('hidden'));
+ document.getElementById('family-profile-tabs').classList.add('hidden');
+ document.getElementById('family-monitor-permission-note').classList.add('hidden');
+}
+function familyProfileAccessError(message,{revoked=false}={}){
+ familyMonitorRequest++;clearFamilyProfileDOM();familyMonitorData=null;familyMonitorModel=null;
+ if(revoked&&familyMonitorOwnerId){if(state.family)state.family.links=state.family.links.filter(link=>!(link.owner_user_id===familyMonitorOwnerId&&link.viewer_user_id===currentUser?.id));clearListPages(`family:${familyMonitorOwnerId}:`);familyProfileContexts.delete(familyMonitorOwnerId);familyMonitorMonths.delete(familyMonitorOwnerId);}
+ document.getElementById('family-profile-error').classList.remove('hidden');document.getElementById('family-profile-error-text').textContent=message;
+ document.getElementById('family-profile-retry').classList.toggle('hidden',revoked);familyMonitorSetBusy(false,revoked?'Acesso encerrado.':'Falha ao atualizar.');
+}
+async function verifyFamilyPageAccess(){
+ const owner=familyMonitorOwnerId;if(!owner)return false;
+ try{const link=await getFamilyAccess(owner);if(owner!==familyMonitorOwnerId)return false;
+  if(familyAccessSignature(link)!==familyAccessSignature(familyMonitorData?.link)){await loadFamilyMonitor({reason:'Conferindo permissões…'});return false;}
+  return true;
+ }catch(error){if(owner===familyMonitorOwnerId)familyProfileAccessError(String(error?.message).includes('FAMILY_ACCESS_REVOKED')?'O titular encerrou o acesso a estes dados.':'Não foi possível conferir o acesso. Tente novamente.',{revoked:String(error?.message).includes('FAMILY_ACCESS_REVOKED')});return false;}
+}
+function familyMonitorRenderTabs(){
+ const data=familyMonitorData,link=data.link,allowed={overview:link.can_view_transactions||link.can_view_cards,cards:link.can_view_cards,goals:link.can_view_goals,budget:link.can_view_budget};
+ if(!allowed[familyMonitorTab])familyMonitorTab=Object.keys(allowed).find(key=>allowed[key])||'overview';
+ const any=Object.values(allowed).some(Boolean);document.getElementById('family-profile-tabs').classList.toggle('hidden',!any);
+ document.querySelectorAll('[data-family-profile-tab]').forEach(button=>{const key=button.dataset.familyProfileTab,active=allowed[key]&&familyMonitorTab===key;button.classList.toggle('hidden',!allowed[key]);button.classList.toggle('active',!!active);button.setAttribute('aria-selected',String(!!active));button.tabIndex=active?0:-1;});
+ document.getElementById('family-monitor-overview').classList.toggle('hidden',!allowed.overview||familyMonitorTab!=='overview');
+ document.querySelectorAll('[data-family-profile-view]').forEach(el=>el.classList.toggle('hidden',!allowed[el.dataset.familyProfileView]||familyMonitorTab!==el.dataset.familyProfileView));
+ if(!any){document.getElementById('family-profile-error').classList.remove('hidden');document.getElementById('family-profile-error-text').textContent='O titular ainda não compartilhou grupos financeiros.';document.getElementById('family-profile-retry').classList.remove('hidden');}
+ if(link.can_view_cards){
+  const rows=(data.installments||[]).filter(row=>row.ff2_card_purchases?.record_kind!=='invoice_opening'&&!row.ff2_card_purchases?.cancelled_at);
+  const cards=(data.cards||[]).map(card=>{const cardRows=rows.filter(row=>row.card_id===card.id),ledger=buildFinancialMonthLedger({transactions:[],installments:cardRows,monthKey:data.month});return `<article class="family-read-card"><h3>${escapeHTML(card.name)}</h3><span>Compras no mês</span><strong>${formatBRL(ledger.cardExpense)}</strong><small>Fechamento dia ${card.closing_day} · Vencimento dia ${card.due_day}</small></article>`}).join('');
+  document.getElementById('family-profile-cards').innerHTML=`<div class="family-read-grid">${cards||emptyState('Nenhum cartão compartilhado.')}</div><article class="family-read-panel"><h3>Compras e parcelas compartilhadas</h3>${pagedList(`family:${familyMonitorOwnerId}:cards`,recentRecords(rows,'invoice_month'),row=>`<div class="family-read-row"><div><strong>${escapeHTML(row.ff2_card_purchases?.description||row.description||'Lançamento do cartão')}</strong><small>${escapeHTML(row.ff2_card_purchases?.category||row.category||'Outros')} · Parcela ${Number(row.installment_no||1)}</small></div><strong>${formatBRL(row.amount)}</strong></div>`,{context:familyMonthKey(familyMonitorDate),label:'parcelas compartilhadas',empty:emptyState('Nenhuma parcela neste mês.'),beforeChange:verifyFamilyPageAccess})}</article>`;
+ }
+ if(link.can_view_goals){
+  document.getElementById('family-profile-goals').innerHTML=pagedList(`family:${familyMonitorOwnerId}:goals`,data.goals||[],goal=>{const status=(data.goalStatus||[]).find(row=>row.goal_id===goal.id),saved=Number(status?.saved??goal.saved_amount??0),target=Number(goal.target_amount||0),pct=target>0?Math.max(0,Math.min(100,saved/target*100)):0;return `<article class="family-read-card"><h3>${escapeHTML(goal.name)}</h3><strong>${formatBRL(saved)}</strong><small>Saldo atual · Objetivo ${formatBRL(target)}${goal.status==='archived'?' · Arquivada':status?.completed?' · Concluída':''}</small><div class="family-category-track"><span style="width:${pct}%"></span></div>${goal.due_date?`<small>Prazo ${formatDate(goal.due_date)}</small>`:''}</article>`},{context:'goals',label:'metas compartilhadas',empty:emptyState('Nenhuma meta compartilhada.'),beforeChange:verifyFamilyPageAccess});
+ }
+ if(link.can_view_budget){
+  document.getElementById('family-profile-budget').innerHTML=`<div class="family-read-total"><span>Limites definidos neste mês</span><strong>${formatBRL(familyMonitorModel.budgetLimit)}</strong></div>${pagedList(`family:${familyMonitorOwnerId}:budget`,data.budget?.items||[],item=>`<div class="family-read-row"><strong>${escapeHTML(item.category)}</strong><div><small>Limite mensal</small><strong>${formatBRL(item.limit_amount)}</strong></div></div>`,{context:familyMonthKey(familyMonitorDate),label:'limites compartilhados',empty:emptyState('Nenhum limite definido neste mês.'),beforeChange:verifyFamilyPageAccess})}`;
+ }
+}
 function familyMonitorLink(ownerId=familyMonitorOwnerId){return state.family?.links?.find(l=>l.owner_user_id===ownerId&&l.viewer_user_id===currentUser?.id&&l.active)||null}
 function familyMonitorCurrentMonth(){const now=new Date();return new Date(now.getFullYear(),now.getMonth(),1,12)}
 function familyMonitorCanAdvance(){return familyMonthKey(familyMonitorDate)<familyMonthKey(familyMonitorCurrentMonth())}
 function familyMonitorSetBusy(busy,text=''){const panel=document.getElementById('family-monitor-panel');if(panel)panel.setAttribute('aria-busy',busy?'true':'false');const sync=document.getElementById('family-monitor-sync');if(sync&&text)sync.textContent=text}
 function familyMoneyCard(key,label,value,{tone='',note=''}={}){return `<article class="family-monitor-summary-card ${tone}"><span>${escapeHTML(label)}</span><strong data-family-money-key="${escapeHTML(key)}" data-family-money-value="${Number(value)||0}">${formatBRL(value)}</strong>${note?`<small>${escapeHTML(note)}</small>`:''}</article>`}
 function familyCountCard(label,value,note=''){return `<article class="family-monitor-summary-card"><span>${escapeHTML(label)}</span><strong>${escapeHTML(String(value))}</strong>${note?`<small>${escapeHTML(note)}</small>`:''}</article>`}
-function familyMonitorRenderTransactions(){const host=document.getElementById('family-monitor-transactions');const caption=document.getElementById('family-monitor-transaction-caption');const link=familyMonitorLink();if(!host||!link)return;document.querySelectorAll('[data-family-monitor-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.familyMonitorFilter===familyMonitorFilter));if(!link.can_view_transactions){host.innerHTML=emptyState('Lançamentos não foram compartilhados pelo titular.');if(caption)caption.textContent='O titular não liberou o histórico de lançamentos.';return}const rows=filterFamilyTransactions(familyMonitorModel?.transactions||[],familyMonitorFilter);if(caption)caption.textContent=`${rows.length} de ${familyMonitorModel?.transactionCount||0} lançamento(s) em ${monthLabel(familyMonitorDate)}.`;host.innerHTML=rows.length?rows.map(t=>{const signed=Number(t.direction||0)*Number(t.amount||0);return `<div class="family-monitor-transaction"><div class="family-monitor-transaction-main"><div class="family-monitor-transaction-title">${escapeHTML(t.description||'Lançamento')}</div><div class="family-monitor-transaction-meta"><span>${formatDate(t.occurred_on)}</span><span>${escapeHTML(t.category||'Outros')}</span>${t.recurring_group_id?'<span>Recorrente</span>':''}${t.type==='balance_adjustment'?'<span>Ajuste</span>':''}</div></div><div class="family-monitor-transaction-value ${signed>=0?'positive':'negative'}">${signed>=0?'+':'-'} ${formatBRL(Math.abs(signed))}</div></div>`}).join(''):emptyState('Nenhum lançamento encontrado neste filtro.');}
+function familyMonitorRenderTransactions(){
+ const host=document.getElementById('family-monitor-transactions'),caption=document.getElementById('family-monitor-transaction-caption'),link=familyMonitorData?.link;if(!host||!link)return;
+ document.querySelectorAll('[data-family-monitor-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.familyMonitorFilter===familyMonitorFilter));
+ document.getElementById('family-profile-transactions-section').classList.toggle('hidden',!link.can_view_transactions);
+ if(!link.can_view_transactions){host.innerHTML='';return;}
+ const rows=recentRecords(filterFamilyTransactions(familyMonitorModel?.transactions||[],familyMonitorFilter));
+ caption.textContent=`${rows.length} de ${familyMonitorModel?.transactionCount||0} lançamentos compartilhados.`;
+ host.innerHTML=pagedList(`family:${familyMonitorOwnerId}:transactions`,rows,t=>{const signed=Number(t.direction||0)*Number(t.amount||0);return `<div class="family-monitor-transaction" data-family-transaction="${escapeHTML(t.id)}"><div class="family-monitor-transaction-main"><div class="family-monitor-transaction-title">${escapeHTML(t.description||'Lançamento')}</div><div class="family-monitor-transaction-meta"><span>${formatDate(t.occurred_on)}</span><span>${escapeHTML(t.category||'Outros')}</span>${t.recurring_group_id?'<span>Recorrente</span>':''}${t.type==='balance_adjustment'?'<span>Ajuste</span>':''}</div></div><div class="family-monitor-transaction-value ${signed>=0?'positive':'negative'}">${signed>=0?'+':'−'} ${formatBRL(Math.abs(signed))}</div></div>`},{context:`${familyMonthKey(familyMonitorDate)}:${familyMonitorFilter}`,label:'lançamentos compartilhados',empty:emptyState('Nenhum lançamento neste filtro.'),beforeChange:verifyFamilyPageAccess});
+}
+
 function familyMonitorRenderCategories(){const host=document.getElementById('family-monitor-categories');const caption=document.getElementById('family-monitor-category-caption');const link=familyMonitorLink();if(!host||!link)return;if(!link.can_view_transactions&&!link.can_view_cards){host.innerHTML=emptyState('Despesas não compartilhadas.');if(caption)caption.textContent='Nenhum grupo de despesas foi autorizado.';return}const rows=familyMonitorModel?.categoryRows||[];if(caption)caption.textContent=`Distribuição de ${formatBRL(familyMonitorModel?.categoryTotal||0)} em ${monthLabel(familyMonitorDate)}.`;host.innerHTML=rows.length?rows.map(row=>`<div class="family-category-row"><div class="family-category-row-top"><span>${escapeHTML(row.name)}</span><strong>${formatBRL(row.value)}</strong></div><div class="family-category-track"><span style="width:${Math.max(0,Math.min(100,row.percent)).toFixed(2)}%"></span></div></div>`).join(''):emptyState('Nenhuma despesa registrada neste mês.');}
 function familyMonitorRenderExtras(){const host=document.getElementById('family-monitor-extras');const note=document.getElementById('family-monitor-permission-note');const link=familyMonitorLink();if(!host||!link)return;const extras=[];if(link.can_view_cards)extras.push(`<article class="family-monitor-extra"><span>Cartão no mês</span><strong>${formatBRL(familyMonitorModel?.cardExpense||0)}</strong></article>`);if(link.can_view_goals)extras.push(`<article class="family-monitor-extra"><span>Metas ativas</span><strong>${familyMonitorModel?.activeGoals||0}</strong></article>`);if(link.can_view_budget)extras.push(`<article class="family-monitor-extra"><span>Limites do mês</span><strong>${formatBRL(familyMonitorModel?.budgetLimit||0)}</strong></article>`);host.innerHTML=extras.join('');const partial=!(link.can_view_transactions&&link.can_view_cards&&link.can_view_goals&&link.can_view_budget);if(note){note.classList.toggle('hidden',!partial);note.textContent=partial?'Este painel considera somente os grupos financeiros que o titular autorizou compartilhar com você.':''}}
-function renderFamilyMonitorView({animate=false,before=null}={}){const link=familyMonitorLink();const panel=document.getElementById('family-monitor-panel');if(!link||!panel||!familyMonitorData)return;const name=familyProfileName(familyMonitorOwnerId);const username=familyProfileUsername(familyMonitorOwnerId);document.getElementById('family-monitor-name').textContent=name;document.getElementById('family-monitor-caption').textContent=`@${username} · acompanhamento autorizado`;document.getElementById('family-monitor-month-label').textContent=monthLabel(familyMonitorDate);const input=document.getElementById('family-monitor-month-input');if(input){input.value=familyMonthKey(familyMonitorDate);input.max=familyMonthKey(familyMonitorCurrentMonth())}document.getElementById('family-monitor-next').disabled=!familyMonitorCanAdvance();document.getElementById('family-monitor-current').classList.toggle('hidden',familyMonthKey(familyMonitorDate)===familyMonthKey(familyMonitorCurrentMonth()));familyMonitorModel=buildFamilyMonitorModel(familyMonitorData,link);const metrics=[];if(link.can_view_transactions){metrics.push(familyMoneyCard('income','Receitas',familyMonitorModel.income,{tone:'income'}));metrics.push(familyMoneyCard('expense','Despesas',familyMonitorModel.totalExpense,{tone:'expense',note:link.can_view_cards?'Inclui cartão compartilhado':'Somente lançamentos compartilhados'}));metrics.push(familyMoneyCard('result','Resultado',familyMonitorModel.result,{note:link.can_view_cards?'Receitas − despesas totais':'Resultado dos grupos compartilhados'}));metrics.push(familyCountCard('Lançamentos',familyMonitorModel.transactionCount,'Registros no mês'));}else if(link.can_view_cards){metrics.push(familyMoneyCard('card','Cartão no mês',familyMonitorModel.cardExpense,{tone:'expense'}));metrics.push(familyCountCard('Parcelas',(familyMonitorData.installments||[]).length,'Itens compartilhados no período'));}document.getElementById('family-monitor-metrics').innerHTML=metrics.length?metrics.join(''):emptyState('Nenhum dado mensal foi compartilhado.');familyMonitorRenderCategories();familyMonitorRenderTransactions();familyMonitorRenderExtras();panel.classList.remove('hidden');if(animate&&before)requestAnimationFrame(()=>animateFamilyMetricChange(before,panel,620));}
-async function loadFamilyMonitor({animate=false,scroll=false,reason='Carregando dados do mês…'}={}){const ownerId=familyMonitorOwnerId;const link=familyMonitorLink(ownerId);if(!ownerId||!link)return;const request=++familyMonitorRequest;const panel=document.getElementById('family-monitor-panel');const before=animate&&panel&&!panel.classList.contains('hidden')?captureFamilyMetricState(panel):null;familyMonitorSetBusy(true,reason);try{const data=await loadFamilyOverview(ownerId,familyMonitorDate);if(request!==familyMonitorRequest||ownerId!==familyMonitorOwnerId)return;familyMonitorData=data;renderFamilyMonitorView({animate,before});familyMonitorSetBusy(false,`Atualizado agora · ${monthLabel(familyMonitorDate)}`);if(scroll)panel?.scrollIntoView({behavior:'smooth',block:'start'});}catch(error){if(request!==familyMonitorRequest)return;console.error('Monitoramento familiar:',error);familyMonitorSetBusy(false,'Não foi possível atualizar este mês.');toast('Não foi possível carregar os dados familiares.','error')}}
+function renderFamilyMonitorView({animate=false,before=null}={}){
+ const link=familyMonitorData?.link,panel=document.getElementById('family-monitor-panel');if(!link||!panel)return;
+ const name=familyProfileName(familyMonitorOwnerId),username=familyProfileUsername(familyMonitorOwnerId);
+ document.getElementById('family-monitor-name').textContent=name;document.getElementById('family-monitor-caption').textContent=`@${username} · somente consulta`;
+ document.getElementById('family-monitor-month-label').textContent=monthLabel(familyMonitorDate);
+ const input=document.getElementById('family-monitor-month-input');input.value=familyMonthKey(familyMonitorDate);input.max=familyMonthKey(familyMonitorCurrentMonth());
+ document.getElementById('family-monitor-next').disabled=!familyMonitorCanAdvance();document.getElementById('family-monitor-current').classList.toggle('hidden',familyMonthKey(familyMonitorDate)===familyMonthKey(familyMonitorCurrentMonth()));
+ familyMonitorModel=buildFamilyMonitorModel(familyMonitorData,link);const metrics=[];
+ if(link.can_view_transactions){metrics.push(familyMoneyCard('income','Receitas',familyMonitorModel.income,{tone:'income'}),familyMoneyCard('expense','Despesas',familyMonitorModel.totalExpense,{tone:'expense',note:link.can_view_cards?'Inclui cartão compartilhado':'Lançamentos compartilhados'}),familyMoneyCard('result','Resultado',familyMonitorModel.result),familyCountCard('Lançamentos',familyMonitorModel.transactionCount));}
+ else if(link.can_view_cards){metrics.push(familyMoneyCard('card','Cartão no mês',familyMonitorModel.cardExpense,{tone:'expense'}),familyCountCard('Parcelas',(familyMonitorData.installments||[]).length));}
+ document.getElementById('family-monitor-metrics').innerHTML=metrics.join('');
+ familyMonitorRenderCategories();familyMonitorRenderTransactions();familyMonitorRenderExtras();familyMonitorRenderTabs();panel.classList.remove('hidden');
+ if(animate&&before)requestAnimationFrame(()=>animateFamilyMetricChange(before,panel,620));
+}
+
+async function loadFamilyMonitor({animate=false,scroll=false,reason='Carregando dados do mês…',retry=true}={}){
+ const owner=familyMonitorOwnerId;if(!owner)return;const request=++familyMonitorRequest,previousScroll=window.scrollY;
+ const panel=document.getElementById('family-monitor-panel'),before=animate&&familyMonitorData?captureFamilyMetricState(panel):null;
+ clearFamilyProfileDOM();document.getElementById('family-monitor-month-label').textContent=monthLabel(familyMonitorDate);document.getElementById('family-monitor-month-input').value=familyMonthKey(familyMonitorDate);document.getElementById('family-profile-error').classList.add('hidden');familyMonitorSetBusy(true,reason);
+ try{
+  const data=await loadFamilyOverview(owner,familyMonitorDate);if(request!==familyMonitorRequest||owner!==familyMonitorOwnerId)return;
+  familyMonitorData=data;
+  const i=state.family.links.findIndex(link=>link.owner_user_id===owner&&link.viewer_user_id===currentUser.id);if(i>=0)state.family.links[i]=data.link;
+  renderFamilyMonitorView({animate,before});familyMonitorSetBusy(false,`Atualizado agora · ${monthLabel(familyMonitorDate)}`);
+  const context=familyProfileContexts.get(owner);if(scroll&&context)requestAnimationFrame(()=>window.scrollTo({top:context.scroll||0,behavior:'auto'}));else if(!scroll)requestAnimationFrame(()=>window.scrollTo({top:previousScroll,behavior:'auto'}));
+ }catch(error){
+  if(request!==familyMonitorRequest||owner!==familyMonitorOwnerId)return;
+  if(String(error?.message).includes('FAMILY_ACCESS_CHANGED')&&retry)return loadFamilyMonitor({animate:false,reason:'Atualizando permissões…',retry:false});
+  const revoked=String(error?.message).includes('FAMILY_ACCESS_REVOKED');
+  familyProfileAccessError(revoked?'O titular encerrou o acesso a estes dados.':'Não foi possível carregar os dados. Tente novamente.',{revoked});
+ }
+}
+
 async function stopFamilyMonitorRealtime(){if(familyMonitorRefreshTimer){clearTimeout(familyMonitorRefreshTimer);familyMonitorRefreshTimer=null}if(familyMonitorChannel){try{await familyMonitorChannel.unsubscribe()}catch{}familyMonitorChannel=null}}
-function scheduleFamilyMonitorRefresh(){if(!familyMonitorOwnerId||document.getElementById('family-monitor-panel')?.classList.contains('hidden'))return;if(familyMonitorRefreshTimer)clearTimeout(familyMonitorRefreshTimer);familyMonitorRefreshTimer=setTimeout(()=>{familyMonitorRefreshTimer=null;void loadFamilyMonitor({animate:true,reason:'Novo movimento detectado. Atualizando…'})},260)}
-async function startFamilyMonitorRealtime(ownerId){await stopFamilyMonitorRealtime();if(!ownerId)return;try{familyMonitorChannel=await subscribeFamilyOverview(ownerId,async event=>{if(ownerId!==familyMonitorOwnerId)return;if(event?.source==='family_links'){try{state.family=await listFamilyData();renderFamily();if(!familyMonitorLink(ownerId)){toast('O acesso a este acompanhamento foi alterado pelo titular.','error');await closeFamilyMonitor();return}}catch(error){console.warn('Permissões familiares:',error)}}scheduleFamilyMonitorRefresh()})}catch(error){console.warn('Realtime familiar indisponível:',error)}}
-async function closeFamilyMonitor(){familyMonitorRequest++;familyMonitorOwnerId=null;familyMonitorData=null;familyMonitorModel=null;document.getElementById('family-monitor-panel')?.classList.add('hidden');await stopFamilyMonitorRealtime()}
+function scheduleFamilyMonitorRefresh(){if(!familyProfileVisible())return;if(familyMonitorRefreshTimer)clearTimeout(familyMonitorRefreshTimer);familyMonitorRefreshTimer=setTimeout(()=>{familyMonitorRefreshTimer=null;void loadFamilyMonitor({animate:true,reason:'Novo movimento detectado. Atualizando…'})},260)}
+async function startFamilyMonitorRealtime(ownerId){await stopFamilyMonitorRealtime();if(!ownerId)return;try{familyMonitorChannel=await subscribeFamilyOverview(ownerId,async event=>{if(ownerId!==familyMonitorOwnerId)return;if(event?.source==='family_links'){try{state.family=await listFamilyData();renderFamily();if(!familyMonitorLink(ownerId)){familyProfileAccessError('O titular encerrou o acesso a estes dados.',{revoked:true});await stopFamilyMonitorRealtime();return}}catch(error){console.warn('Permissões familiares:',error)}}scheduleFamilyMonitorRefresh()})}catch(error){console.warn('Realtime familiar indisponível:',error)}}
+async function closeFamilyMonitor({navigate=true}={}){
+ const owner=familyMonitorOwnerId;
+ if(owner&&familyMonitorData)familyProfileContexts.set(owner,{month:new Date(familyMonitorDate),filter:familyMonitorFilter,tab:familyMonitorTab,scroll:window.scrollY});
+ familyMonitorRequest++;familyMonitorOwnerId=null;familyMonitorData=null;familyMonitorModel=null;clearFamilyProfileDOM();await stopFamilyMonitorRealtime();
+ if(navigate){renderFamily();showModule('family');requestAnimationFrame(()=>{window.scrollTo({top:familyListScroll,behavior:'auto'});[...document.querySelectorAll('[data-family-monitor]')].find(b=>b.dataset.familyMonitor===owner)?.focus({preventScroll:true});});}
+}
+
 async function setFamilyMonitorMonth(nextDate){if(!familyMonitorOwnerId||!nextDate)return;const current=familyMonitorCurrentMonth();const safe=familyMonthKey(nextDate)>familyMonthKey(current)?current:new Date(nextDate.getFullYear(),nextDate.getMonth(),1,12);if(familyMonthKey(safe)===familyMonthKey(familyMonitorDate))return;familyMonitorDate=safe;familyMonitorMonths.set(familyMonitorOwnerId,new Date(safe));familyMonitorFilter='all';await loadFamilyMonitor({animate:true,reason:`Carregando ${monthLabel(safe)}…`})}
-async function openFamilyMonitor(ownerId){const link=familyMonitorLink(ownerId);if(!link)return;familyMonitorOwnerId=ownerId;familyMonitorDate=familyMonitorMonths.get(ownerId)||familyMonitorCurrentMonth();familyMonitorFilter='all';familyMonitorData=null;familyMonitorModel=null;const panel=document.getElementById('family-monitor-panel');panel?.classList.remove('hidden');familyMonitorSetBusy(true,'Carregando acompanhamento…');await startFamilyMonitorRealtime(ownerId);await loadFamilyMonitor({animate:false,scroll:true,reason:'Carregando acompanhamento…'});}
+async function openFamilyMonitor(ownerId){
+ if(!familyMonitorLink(ownerId))return;
+ familyListScroll=window.scrollY;familyReturnOwner=ownerId;const context=familyProfileContexts.get(ownerId);
+ familyMonitorOwnerId=ownerId;familyMonitorDate=context?.month||familyMonitorMonths.get(ownerId)||familyMonitorCurrentMonth();familyMonitorFilter=context?.filter||'all';familyMonitorTab=context?.tab||'overview';familyMonitorData=null;familyMonitorModel=null;
+ clearFamilyProfileDOM();showModule('family-profile');document.getElementById('family-monitor-panel').classList.remove('hidden');document.getElementById('family-monitor-name').textContent=familyProfileName(ownerId);document.getElementById('family-monitor-caption').textContent=`@${familyProfileUsername(ownerId)} · somente consulta`;
+ await startFamilyMonitorRealtime(ownerId);await loadFamilyMonitor({scroll:true,reason:'Conferindo acesso e carregando acompanhamento…'});
+}
+
 
 function openFamilyPermissions(linkId){const link=state.family?.links?.find(l=>l.id===linkId&&l.owner_user_id===currentUser?.id);if(!link)return;document.getElementById('family-link-id').value=link.id;document.getElementById('family-permissions-title').textContent=familyProfileName(link.viewer_user_id);document.getElementById('perm-transactions').checked=!!link.can_view_transactions;document.getElementById('perm-cards').checked=!!link.can_view_cards;document.getElementById('perm-goals').checked=!!link.can_view_goals;document.getElementById('perm-budget').checked=!!link.can_view_budget;setFormError('family-permissions-error','');openDialog('family-permissions-dialog')}
 
@@ -1373,12 +1510,14 @@ async function handleDynamicClick(event){const target=event.target.closest('butt
   if(target.dataset.familyCancelInvite)return await runAppOperation('Cancelando convite…','Removendo o convite pendente.',async()=>{await cancelFamilyInvite(target.dataset.familyCancelInvite);toast('Convite cancelado.','success');syncOperationMessage('Atualizando a área Família.');await refreshAll()});
   if(target.dataset.familyPermissions)return openFamilyPermissions(target.dataset.familyPermissions);
   if(target.dataset.familyMonitor)return openFamilyMonitor(target.dataset.familyMonitor);
-  if(target.dataset.familyMonitorFilter){familyMonitorFilter=['all','income','expense'].includes(target.dataset.familyMonitorFilter)?target.dataset.familyMonitorFilter:'all';familyMonitorRenderTransactions();return}
-  if(target.dataset.familyRemove){if(!confirm('Remover este vínculo familiar?'))return;return await runAppOperation('Removendo vínculo…','Atualizando o acesso familiar com segurança.',async()=>{await removeFamilyLink(target.dataset.familyRemove);toast('Vínculo removido.','success');await closeFamilyMonitor();syncOperationMessage('Atualizando a área Família.');await refreshAll()})}
+  if(target.dataset.familyMonitorFilter){if(!await verifyFamilyPageAccess())return;familyMonitorFilter=['all','income','expense'].includes(target.dataset.familyMonitorFilter)?target.dataset.familyMonitorFilter:'all';familyMonitorRenderTransactions();return}
+  if(target.dataset.familyRemove){if(!confirm('Remover este vínculo familiar?'))return;return await runAppOperation('Removendo vínculo…','Atualizando o acesso familiar com segurança.',async()=>{await removeFamilyLink(target.dataset.familyRemove);toast('Vínculo removido.','success');if(familyMonitorOwnerId)await closeFamilyMonitor();syncOperationMessage('Atualizando a área Família.');await refreshAll()})}
 
   if(target.dataset.planningFilter){planningTypeFilter=['all','income','expense'].includes(target.dataset.planningFilter)?target.dataset.planningFilter:'all';renderPlanning();return}
   if(target.dataset.planningSection){setPlanningSection(target.dataset.planningSection);return}
   if(target.dataset.planningOpen){setPlanningSection(target.dataset.planningOpen);return}
+  if(target.hasAttribute('data-planning-invoices')){setPlanningSection('plans');const panel=document.getElementById('planning-invoice-panel');panel.open=true;panel.querySelector('summary').focus();panel.scrollIntoView({block:'nearest'});return;}
+  if(target.dataset.planningLimit){setPlanningSection('limits');const row=[...document.querySelectorAll('#budget-items [data-budget-category]')].find(el=>el.dataset.budgetCategory===target.dataset.planningLimit);if(row){row.focus({preventScroll:true});row.scrollIntoView({block:'center'});}return;}
   if(target.dataset.editPlanning)return openEditPlanning(target.dataset.editPlanning);
   if(target.dataset.completePlanning)return await completePlanningAction(target.dataset.completePlanning);
   if(target.dataset.movePlanning)return await movePlanningAction(target.dataset.movePlanning);
@@ -1422,5 +1561,42 @@ document.querySelectorAll('form').forEach(form=>form.addEventListener('reset',()
   document.getElementById('transaction-recurring').addEventListener('change',e=>document.getElementById('recurring-count-wrap').classList.toggle('hidden',!e.target.checked));document.getElementById('transaction-direction')?.addEventListener('change',event=>{fillCategorySelect('transaction-category','',categoryKindFromDirection(event.target.value));updateNatureSuggestion()});document.getElementById('planning-direction')?.addEventListener('change',event=>{fillCategorySelect('planning-category','',categoryKindFromDirection(event.target.value));updatePlanningNatureVisibility();});['transaction-search','transaction-filter-type','transaction-filter-month'].forEach(id=>document.getElementById(id).addEventListener(id==='transaction-search'?'input':'change',renderTransactions));
   document.querySelectorAll('[data-month-action]').forEach(b=>b.addEventListener('click',async()=>{if(appActionBusy)return;const previousDashboard=new Date(dashboardDate);dashboardDate=addMonth(dashboardDate,b.dataset.monthAction==='next'?1:-1);try{await runAppOperation('Carregando mês…',`Buscando os dados de ${monthLabel(dashboardDate)}.`,async()=>{const [budget,planning]=await Promise.all([getBudget(dashboardDate),listPlanningMonth(dashboardDate)]);dashboardBudget=budget;state.planning=planning;if(planningSameMonth(planningDate,dashboardDate))planningItems=planning;renderHome();if(planningSameMonth(planningDate,dashboardDate)){state.budget=budget;budgetDate=new Date(planningDate);renderBudget();renderPlanning()}})}catch(e){dashboardDate=previousDashboard;renderHome();toast('Não foi possível carregar o mês.','error')}}));document.querySelectorAll('[data-budget-month]').forEach(b=>b.addEventListener('click',async()=>{if(appActionBusy)return;const previousBudget=new Date(budgetDate);budgetDate=addMonth(budgetDate,b.dataset.budgetMonth==='next'?1:-1);try{await runAppOperation('Carregando limites…',`Buscando os limites de ${monthLabel(budgetDate)}.`,async()=>{state.budget=await getBudget(budgetDate);renderBudget()})}catch(e){budgetDate=previousBudget;renderBudget();toast('Não foi possível carregar os limites.','error')}}));document.addEventListener('click',handleDynamicClick)}
 
-async function init(){bindUI();initUpdateCenter({onUpdateNow:async()=>{await activateAppUpdate()}});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&familyMonitorOwnerId&&!document.getElementById('family-monitor-panel')?.classList.contains('hidden'))void loadFamilyMonitor({animate:true,reason:'Conferindo atualizações…'})});void initPWA().catch(error=>console.warn('PWA:',error));const session=await getSession().catch(()=>null);if(session){setAuthBusy(true,'login','data');try{await enterApp(session)}finally{setAuthBusy(false,'login')}}else showAuth();onAuthChange(async (next,event)=>{if(next){if(currentUser?.id===next.user.id)return;await enterApp(next);}else{bootstrapGeneration++;currentUser=null;currentProfile=null;if(notificationChannel){try{await notificationChannel.unsubscribe()}catch{}notificationChannel=null}await stopFamilyMonitorRealtime();familyMonitorOwnerId=null;showAuth()}})}
+async function init(){bindUI();initUpdateCenter({onUpdateNow:async()=>{await activateAppUpdate()}});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&familyProfileVisible())void loadFamilyMonitor({animate:true,reason:'Conferindo atualizações…'})});void initPWA().catch(error=>console.warn('PWA:',error));const session=await getSession().catch(()=>null);if(session){setAuthBusy(true,'login','data');try{await enterApp(session)}finally{setAuthBusy(false,'login')}}else showAuth();onAuthChange(async (next,event)=>{if(next){if(currentUser?.id===next.user.id)return;await enterApp(next);}else{bootstrapGeneration++;clearListPages();familyProfileContexts.clear();clearFamilyProfileDOM();currentUser=null;currentProfile=null;if(notificationChannel){try{await notificationChannel.unsubscribe()}catch{}notificationChannel=null}await stopFamilyMonitorRealtime();familyMonitorOwnerId=null;showAuth()}})}
 init();
+
+document.getElementById('module-planning').addEventListener('keydown',event=>{
+ const current=event.target.closest('[data-planning-section]');if(!current||appActionBusy)return;
+ const tabs=[...document.querySelectorAll('[data-planning-section]')],index=tabs.indexOf(current);
+ const next=event.key==='ArrowRight'?(index+1)%tabs.length:event.key==='ArrowLeft'?(index+tabs.length-1)%tabs.length:event.key==='Home'?0:event.key==='End'?tabs.length-1:null;
+ if(next===null)return;event.preventDefault();setPlanningSection(tabs[next].dataset.planningSection);tabs[next].focus();
+});
+
+// Controls are delegated because charts are rendered again after a period change.
+document.getElementById('module-analytics').addEventListener('change',event=>{
+ if(event.target.matches('[data-analysis-trend]')){const value=Number(event.target.value);if([3,6,12].includes(value)){analysisTrendMonths=value;void renderAnalytics();}}
+});
+document.getElementById('module-analytics').addEventListener('click',event=>{
+ const go=event.target.closest('[data-analysis-go]');if(go){setAnalysisTab(go.dataset.analysisGo);document.getElementById(`analytics-tab-${analysisTab}`).focus();return;}
+ const display=event.target.closest('[data-analysis-distribution]');if(display){analysisDistribution=display.dataset.analysisDistribution==='list'?'list':'chart';void renderAnalytics().then(()=>document.querySelector(`[data-analysis-distribution="${analysisDistribution}"]`)?.focus());}
+});
+document.getElementById('module-analytics').addEventListener('keydown',event=>{
+ const current=event.target.closest('[data-analysis-tab]');if(!current||appActionBusy)return;
+ const tabs=[...document.querySelectorAll('[data-analysis-tab]')],index=tabs.indexOf(current);
+ const next=event.key==='ArrowRight'?(index+1)%tabs.length:event.key==='ArrowLeft'?(index+tabs.length-1)%tabs.length:event.key==='Home'?0:event.key==='End'?tabs.length-1:null;
+ if(next===null)return;event.preventDefault();setAnalysisTab(tabs[next].dataset.analysisTab);tabs[next].focus();
+});
+
+document.getElementById('module-family').addEventListener('click',event=>{const tab=event.target.closest('[data-family-invites]');if(tab)setFamilyInvites(tab.dataset.familyInvites);});
+document.getElementById('module-family-profile').addEventListener('click',event=>{const tab=event.target.closest('[data-family-profile-tab]');if(tab&&!tab.classList.contains('hidden')){familyMonitorTab=tab.dataset.familyProfileTab;void loadFamilyMonitor({reason:'Conferindo acesso…'});}});
+document.getElementById('family-profile-retry').addEventListener('click',()=>void loadFamilyMonitor());
+document.addEventListener('ff:module-change',event=>{if(familyMonitorOwnerId&&event.detail.module!=='family-profile')void closeFamilyMonitor({navigate:false});});
+for(const selector of ['[data-family-profile-tab]','[data-family-invites]'])document.addEventListener('keydown',event=>{const current=event.target.closest(selector);if(!current)return;const tabs=[...current.parentElement.querySelectorAll(selector)].filter(el=>!el.classList.contains('hidden')),i=tabs.indexOf(current);const next=event.key==='ArrowRight'?(i+1)%tabs.length:event.key==='ArrowLeft'?(i+tabs.length-1)%tabs.length:event.key==='Home'?0:event.key==='End'?tabs.length-1:null;if(next===null)return;event.preventDefault();tabs[next].click();tabs[next].focus();});
+
+let activeGoalHistory=null;
+function renderGoalHistory(){
+ const goal=state.goals.find(g=>g.id===activeGoalHistory);if(!goal)return;
+ const progress=goalProgress(goal,state.transactions),rows=recentRecords(state.transactions.filter(t=>t.goal_id===goal.id&&((t.financial_nature==='allocation'&&Number(t.direction)===-1)||(t.financial_nature==='resgate'&&Number(t.direction)===1))));
+ document.getElementById('goal-history-title').textContent=goal.name;
+ document.getElementById('goal-history-content').innerHTML=`<div class="goal-history-total"><span>Saldo da meta</span><strong>${formatBRL(progress.saved)}</strong><small>Saldo inicial ${formatBRL(progress.base)} · Aportes líquidos ${formatBRL(progress.linked)}</small></div>${pagedList(`goal-history:${goal.id}`,rows,t=>{const deposit=t.financial_nature==='allocation',future=t.occurred_on>localISO();return `<div class="goal-history-row"><div><strong>${escapeHTML(t.description)}</strong><small>${formatDate(t.occurred_on)} · ${deposit?'Aporte':'Retirada'}${future?' · Futuro':''}</small></div><strong class="goal-history-value ${deposit?'positive':'negative'}">${deposit?'+':'−'} ${formatBRL(t.amount)}</strong></div>`},{label:'aportes e retiradas',empty:emptyState('Nenhum aporte ou retirada vinculado a esta meta.')})}`;
+}
+document.addEventListener('click',event=>{const button=event.target.closest('[data-goal-history]');if(!button)return;activeGoalHistory=button.dataset.goalHistory;renderGoalHistory();openDialog('goal-history-dialog');});

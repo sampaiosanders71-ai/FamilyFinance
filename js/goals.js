@@ -1,7 +1,7 @@
-import { operationIds, insertOnce } from './request-operation.js?v=2.9.20';
-import { listAllRows } from './pagination.js?v=2.9.20';
-import { supabase } from './supabase.js?v=2.9.20';
-import { getCurrentUser } from './database.js?v=2.9.20';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.24';
+import { listAllRows } from './pagination.js?v=2.9.24';
+import { supabase } from './supabase.js?v=2.9.24';
+import { getCurrentUser } from './database.js?v=2.9.24';
 
 export async function listGoals() {
   const user = await getCurrentUser();

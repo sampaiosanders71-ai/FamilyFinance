@@ -1,4 +1,4 @@
-/* Cartões 2.9.20: seleção simples, detalhe por cartão e faturas acessíveis pelo gráfico. */
+/* Cartões 2.9.24: seleção simples, detalhe por cartão e faturas acessíveis pelo gráfico. */
 .cards-workspace{max-width:1100px;margin-inline:auto}
 .cards-workspace .module-header{align-items:center;margin-bottom:22px}
 .cards-workspace .module-header h2{margin:0}
@@ -129,7 +129,7 @@
 
 .card-adjustments-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.card-adjustment-row{display:flex;gap:12px;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line)}.card-adjustment-row>div{display:grid;gap:7px;min-width:0}.card-adjustment-row strong{font-size:.82rem}.card-adjustment-row small,.card-adjustment-row p{font-size:.74rem;line-height:1.5;color:var(--muted);margin:0;overflow-wrap:anywhere}.card-adjustment-row .card-history-link{justify-content:start}.card-payment-row{flex-wrap:wrap}.card-payment-row>span{flex:1}.check-row{color:var(--text);line-height:1.5}.card-invoice-dialog .modal-actions{flex-wrap:wrap}#card-linked-transaction-content .card-lock-note{overflow-wrap:anywhere}@media(max-width:600px){#card-adjustment-dialog .form-grid{grid-template-columns:1fr}.card-adjustments-heading{align-items:start}.card-adjustments-heading h4{min-width:0}.card-adjustments-heading .card-history-link{white-space:nowrap;font-size:.7rem}}
 
-/* Telas aprovadas 2.9.20: resumo, histórico e gráfico de faturas. */
+/* Telas aprovadas 2.9.24: resumo, histórico e gráfico de faturas. */
 .cards-workspace{--card-panel:linear-gradient(135deg,#101b28,#0b121a);--card-edge:#223141;max-width:1200px}
 .cards-workspace .cards-grid{grid-template-columns:1fr;gap:16px}
 .card-overview-header{display:flex;gap:18px;padding-block:12px}
@@ -177,7 +177,7 @@
 [data-theme="light"] .card-history-filters button{border-color:#dbe2ec}[data-theme="light"] .card-history-filters button[aria-pressed="true"]{color:#aa4b00;border-color:var(--orange)}
 [data-theme="light"] .card-edit-invoice-button,[data-theme="light"] .card-edit-shortcut{color:#aa4b00}
 
-/* Consulta aprovada 2.9.20: compras visíveis, gerenciamento sob demanda. */
+/* Consulta aprovada 2.9.24: compras visíveis, gerenciamento sob demanda. */
 .card-consult-purchases{margin-top:22px;padding-top:4px;border-top:1px solid #28333e}
 .card-consult-purchases h4{font-size:1rem!important;margin:18px 0 8px!important}
 .card-consult-purchases .card-purchase-row{padding-block:17px}

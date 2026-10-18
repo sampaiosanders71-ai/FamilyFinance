@@ -16,17 +16,19 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@700;800&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="css/app.css?v=2.9.20" rel="stylesheet"><link href="css/nature.css?v=2.9.20" rel="stylesheet">
-<link href="css/motion-v15.css?v=2.9.20" rel="stylesheet">
-<link href="css/download-motion-v16.css?v=2.9.20" rel="stylesheet">
-<link href="css/family-monitor-v17.css?v=2.9.20" rel="stylesheet"/>
-<link href="css/planning-v18.css?v=2.9.20" rel="stylesheet"/>
-<link href="css/categories-budget.css?v=2.9.20" rel="stylesheet"/>
-<link href="css/context-help.css?v=2.9.20" rel="stylesheet"/>
-<link href="css/dashboard-v29.css?v=2.9.20" rel="stylesheet"/>
-<link rel="stylesheet" href="./css/financial-view-293.css?v=2.9.20"/><link rel="stylesheet" href="./css/reserve-299.css?v=2.9.20"/><link rel="stylesheet" href="./css/ui-295.css?v=2.9.20"/>
-<link href="css/report-export.css?v=2.9.20" rel="stylesheet"/>
-<link href="css/cards-workspace.css?v=2.9.20" rel="stylesheet"/>
+<link href="css/app.css?v=2.9.24" rel="stylesheet"><link href="css/nature.css?v=2.9.24" rel="stylesheet">
+<link href="css/motion-v15.css?v=2.9.24" rel="stylesheet">
+<link href="css/download-motion-v16.css?v=2.9.24" rel="stylesheet">
+<link href="css/family-monitor-v17.css?v=2.9.24" rel="stylesheet"/>
+<link href="css/planning-v18.css?v=2.9.24" rel="stylesheet"/>
+<link href="css/categories-budget.css?v=2.9.24" rel="stylesheet"/>
+<link href="css/context-help.css?v=2.9.24" rel="stylesheet"/>
+<link href="css/dashboard-v29.css?v=2.9.24" rel="stylesheet"/>
+<link rel="stylesheet" href="./css/financial-view-293.css?v=2.9.24"/><link rel="stylesheet" href="./css/reserve-299.css?v=2.9.24"/><link rel="stylesheet" href="./css/ui-295.css?v=2.9.24"/>
+<link href="css/report-export.css?v=2.9.24" rel="stylesheet"/>
+<link href="css/cards-workspace.css?v=2.9.24" rel="stylesheet"/>
+<link rel="stylesheet" href="css/analytics-redesign.css?v=2.9.24"/>
+<link rel="stylesheet" href="css/family-pagination.css?v=2.9.24"/>
 </head>
 <body>
 <svg aria-hidden="true" class="icon-sprite" focusable="false">
@@ -173,46 +175,41 @@
 <div class="module-header"><div><span class="eyebrow">OBJETIVOS</span><h2>Metas</h2></div><button class="primary-compact" id="new-goal-btn">＋ Nova meta</button></div>
 <div class="goals-grid" id="goals-list"></div>
 </section>
-<section class="module-view hidden" id="module-planning">
-<div class="module-header planning-unified-header">
-<div><span class="eyebrow">FAMILY FINANCE</span><h2>Planejamento</h2></div>
-<button class="primary-compact" id="new-planning-btn" type="button">＋ Novo item</button>
+<section class="module-view hidden" id="module-planning" aria-labelledby="planning-page-heading">
+<h2 id="planning-page-heading" class="planning-sr-only">Planejamento</h2>
+<div aria-label="Áreas do planejamento" class="planning-tabs" role="tablist">
+<button class="planning-tab active" id="planning-tab-overview" role="tab" aria-selected="true" aria-controls="planning-view-overview" tabindex="0" data-planning-section="overview" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-analytics"/></svg><span>Visão geral</span></button>
+<button class="planning-tab" id="planning-tab-plans" role="tab" aria-selected="false" aria-controls="planning-view-plans" tabindex="-1" data-planning-section="plans" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-receipt"/></svg><span>Meus planos</span></button>
+<button class="planning-tab" id="planning-tab-limits" role="tab" aria-selected="false" aria-controls="planning-view-limits" tabindex="-1" data-planning-section="limits" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-wallet"/></svg><span>Limites</span></button>
 </div>
-<div aria-label="Áreas do planejamento" class="planning-unified-tabs" role="tablist">
-<button class="planning-unified-tab active" data-planning-section="overview" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-analytics"></use></svg><span>Visão geral</span></button>
-<button class="planning-unified-tab" data-planning-section="plans" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-receipt"></use></svg><span>Meus planos</span></button>
-<button class="planning-unified-tab" data-planning-section="limits" type="button"><svg aria-hidden="true" class="ui-icon"><use href="#i-wallet"></use></svg><span>Limites</span></button>
+<div class="planning-calendar-toolbar"><div class="planning-calendar-controls"><div class="planning-month-picker"><button aria-label="Mês anterior" id="planning-prev" type="button">‹</button><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"/></svg><strong id="planning-month-label">Mês atual</strong><button aria-label="Próximo mês" id="planning-next" type="button">›</button></div><button class="secondary-btn hidden" id="planning-current" type="button">Mês atual</button></div><button class="primary-compact" id="new-planning-btn" type="button">＋ Novo item</button></div>
+<section class="planning-unified-view" id="planning-view-overview" role="tabpanel" aria-labelledby="planning-tab-overview" data-planning-view="overview">
+<div class="planning-metrics" aria-label="Resumo do planejamento">
+<article class="planning-metric metric-income"><span class="planning-metric-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-trending-up"/></svg></span><div class="planning-metric-copy"><span>Receitas planejadas</span><strong id="planning-income">R$ 0,00</strong><small id="planning-income-detail" class="planning-sr-only"></small></div></article>
+<article class="planning-metric metric-expense"><span class="planning-metric-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-trending-down"/></svg></span><div class="planning-metric-copy"><span>Despesas planejadas</span><strong id="planning-expense">R$ 0,00</strong><small id="planning-expense-detail" class="planning-sr-only"></small></div></article>
+<article class="planning-metric metric-result"><span class="planning-metric-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-wallet"/></svg></span><div class="planning-metric-copy"><span>Saldo planejado <button class="context-help-btn planning-inline-help" data-help-key="planning-summary" type="button" aria-label="Entender o resumo planejado">?</button></span><strong id="planning-result">R$ 0,00</strong></div></article>
+<article class="planning-metric metric-completion"><div class="planning-metric-copy"><span>Conclusão</span><strong id="planning-completion">0%</strong><small id="planning-completion-detail">0 de 0 itens</small></div><span class="planning-completion-ring" id="planning-completion-ring" role="progressbar" aria-label="Conclusão dos planos" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></span></article>
 </div>
-<div class="planning-toolbar planning-unified-toolbar">
-<div class="planning-month-switch"><button aria-label="Mês anterior" id="planning-prev" type="button">‹</button><strong id="planning-month-label">Mês atual</strong><button aria-label="Próximo mês" id="planning-next" type="button">›</button></div>
-<button class="secondary-btn hidden" id="planning-current" type="button">Mês atual</button>
-</div>
-<section class="planning-unified-view" data-planning-view="overview">
-<div class="planning-summary planning-unified-summary">
-<article class="income"><span>Receitas planejadas</span><strong id="planning-income">R$ 0,00</strong><small id="planning-income-detail">R$ 0,00 ainda a receber</small></article>
-<article class="expense"><span>Despesas planejadas</span><strong id="planning-expense">R$ 0,00</strong><small id="planning-expense-detail">Somente o que está em Meus planos</small></article>
-<article><span>Saldo planejado</span><strong id="planning-result">R$ 0,00</strong><small>Receitas planejadas − despesas planejadas</small></article>
-<article><span>Conclusão</span><strong id="planning-completion">0%</strong><small id="planning-completion-detail">0 de 0 itens concluídos</small></article>
-</div>
-<div class="planning-reserve-overview" aria-live="polite">
-<div><small>Reservado neste mês</small><strong id="planning-allocation-realized">R$ 0,00</strong></div>
-<div><small>Reservas futuras cadastradas</small><strong id="planning-allocation-future">R$ 0,00</strong><small id="planning-allocation-planned">Reservas programadas: R$ 0,00</small></div>
-<div><small>Projeção do saldo livre (lançamentos)</small><strong id="planning-cash-projected">—</strong></div>
-</div>
-<section class="panel-card planning-card-panel"><div class="section-title"><h3>Faturas previstas</h3><strong id="planning-card-total">R$ 0,00</strong></div><div id="planning-card-obligations"></div><p class="muted card-planning-note">Saldo pendente por competência, separado de Meus planos. O caixa muda ao registrar o pagamento.</p></section>
-<div class="planning-overview-grid">
-<article class="panel-card planning-overview-panel">
-<div class="section-title"><div><h3>Próximos planos</h3></div><button class="text-btn" data-planning-open="plans" type="button">Ver todos →</button></div>
+<div class="planning-reserves" aria-live="polite"><div class="planning-reserve-item"><span class="planning-reserve-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-piggy"/></svg></span><div><span>Reservado neste mês</span><strong id="planning-allocation-realized">R$ 0,00</strong></div></div><div class="planning-reserve-item future"><span class="planning-reserve-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-calendar"/></svg></span><div><span>Reservas futuras <button type="button" class="context-help-btn planning-inline-help" data-help-key="planning-reserves" aria-label="Entender as reservas">?</button></span><strong id="planning-allocation-future">R$ 0,00</strong><small id="planning-allocation-planned" class="planning-sr-only"></small></div></div><div class="planning-reserve-item"><span class="planning-reserve-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-trending-up"/></svg></span><div><span>Projeção do saldo livre <button type="button" class="context-help-btn planning-inline-help" data-help-key="planning-cash-projection" aria-label="Entender a projeção de saldo">?</button></span><strong id="planning-cash-projected">—</strong></div></div></div>
+<button class="planning-invoice-shortcut hidden" data-planning-invoices type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-card"/></svg><span>Faturas pendentes</span><strong id="planning-invoice-shortcut-total">R$ 0,00</strong><span aria-hidden="true">›</span></button>
+<div class="planning-dashboard-grid">
+<article class="panel-card planning-dashboard-panel">
+<div class="section-title"><div><h3><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"/></svg>Pendentes e próximos</h3></div><button class="text-btn" data-planning-open="plans" type="button">Ver todos →</button></div>
 <div class="planning-overview-items" id="planning-overview-items"></div>
 </article>
-<article class="panel-card planning-overview-panel">
-<div class="section-title"><div><div class="help-heading-row"><h3>Limites por categoria</h3><button aria-label="Ajuda sobre Limites por categoria" class="context-help-btn section-help-btn" data-help-key="planning-layered-limits" title="Ajuda sobre Limites por categoria" type="button">?</button></div></div><button class="text-btn" data-planning-open="limits" type="button">Gerenciar limites →</button></div>
+<article class="panel-card planning-dashboard-panel">
+<div class="section-title"><div><div class="help-heading-row"><h3><svg class="ui-icon" aria-hidden="true"><use href="#i-analytics"/></svg>Limites por categoria</h3><button aria-label="Ajuda sobre Limites por categoria" class="context-help-btn section-help-btn" data-help-key="planning-overview-limits" title="Ajuda sobre Limites por categoria" type="button">?</button></div></div><button class="text-btn" data-planning-open="limits" type="button">Ver todos →</button></div>
 <div class="planning-overview-limits" id="planning-overview-limits"></div>
 </article>
 </div>
 </section>
-<section class="planning-unified-view hidden" data-planning-view="plans">
-<div class="planning-section-head"><div><h3>Meus planos</h3><p>Recebimentos e pagamentos previstos para <span id="planning-plans-period"></span>.</p></div><button class="primary-compact" data-new-planning-shortcut="" type="button">＋ Novo item</button></div>
+<section class="planning-unified-view hidden" id="planning-view-plans" role="tabpanel" aria-labelledby="planning-tab-plans" data-planning-view="plans">
+<div class="planning-section-head"><div><h3>Meus planos</h3><p><span id="planning-plans-period"></span></p></div></div>
+<div class="planning-pending-totals" role="status" aria-label="Totais pendentes do mês" aria-atomic="true">
+<article class="planning-metric metric-income"><span class="planning-metric-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-trending-up"/></svg></span><div class="planning-metric-copy"><span>A receber</span><strong id="planning-pending-income">R$ 0,00</strong><small id="planning-pending-income-count">0 itens pendentes</small></div></article>
+<article class="planning-metric metric-expense"><span class="planning-metric-icon" aria-hidden="true"><svg class="ui-icon"><use href="#i-trending-down"/></svg></span><div class="planning-metric-copy"><span>A pagar</span><strong id="planning-pending-expense">R$ 0,00</strong><small id="planning-pending-expense-count">0 itens pendentes</small></div></article>
+</div>
+<details class="planning-invoice-panel" id="planning-invoice-panel"><summary><span><svg class="ui-icon" aria-hidden="true"><use href="#i-card"/></svg>Faturas pendentes</span><strong id="planning-card-total">R$ 0,00</strong></summary><div id="planning-card-obligations"></div></details>
 <div class="planning-controls">
 <div aria-label="Filtrar planejamento" class="planning-filters" role="group">
 <button class="planning-filter active" data-planning-filter="all" type="button">Todos</button>
@@ -224,7 +221,7 @@
 <section class="panel-card"><div class="planning-list" id="planning-list"></div></section>
 <section class="panel-card planning-footer hidden" id="planning-footer"><p id="planning-footer-text"></p><button class="secondary-btn" id="planning-move-all" type="button">Mover pendentes para o próximo mês</button></section>
 </section>
-<section class="planning-unified-view hidden" data-planning-view="limits">
+<section class="planning-unified-view hidden" id="planning-view-limits" role="tabpanel" aria-labelledby="planning-tab-limits" data-planning-view="limits">
 <div id="budget-limits-main">
 <div class="planning-section-head">
 <div><div class="help-heading-row"><h3>Limites do mês</h3><button aria-label="Ajuda sobre Limites do mês" class="context-help-btn section-help-btn" data-help-key="planning-limits" title="Ajuda sobre Limites do mês" type="button">?</button></div></div>
@@ -274,10 +271,8 @@
 </section>
 </section>
 </section>
-<section class="module-view hidden" id="module-analytics">
-<div class="module-header analytics-header">
-<div><span class="eyebrow">COMPARAÇÃO FINANCEIRA</span><h2>Análises</h2></div>
-</div>
+<section class="module-view hidden" id="module-analytics" aria-labelledby="analytics-page-heading">
+<h2 id="analytics-page-heading" class="planning-sr-only">Análises</h2>
 <section class="panel-card analytics-toolbar">
 <div aria-label="Tipo de comparação" class="analytics-mode-switch" role="group">
 <button class="analytics-mode-btn active" data-analysis-mode="months" type="button">Comparar meses</button>
@@ -294,31 +289,26 @@
 <label><span>Comparar com</span><select id="analytics-year-b"></select></label>
 </div>
 </section>
-<div class="financial-view-switch" role="group" aria-label="Visão financeira">
-<span>Visão financeira</span><div class="financial-view-buttons"><button type="button" class="financial-view-btn active" data-financial-view="general" aria-pressed="true">Geral</button><button type="button" class="financial-view-btn" data-financial-view="consumption" aria-pressed="false">Consumo</button><button type="button" class="financial-view-btn" data-financial-view="allocation" aria-pressed="false">Reservas / Investimentos</button></div>
+<div class="analytics-navigation"><div aria-label="Seções da análise" class="analytics-tabs" role="tablist"><button class="analytics-tab active" id="analytics-tab-overview" role="tab" aria-selected="true" aria-controls="analytics-content" tabindex="0" data-analysis-tab="overview" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-analytics"/></svg><span>Visão geral</span></button><button class="analytics-tab " id="analytics-tab-categories" role="tab" aria-selected="false" aria-controls="analytics-content" tabindex="-1" data-analysis-tab="categories" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-receipt"/></svg><span>Categorias</span></button><button class="analytics-tab " id="analytics-tab-budget" role="tab" aria-selected="false" aria-controls="analytics-content" tabindex="-1" data-analysis-tab="budget" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-wallet"/></svg><span>Limites</span></button><button class="analytics-tab " id="analytics-tab-planning" role="tab" aria-selected="false" aria-controls="analytics-content" tabindex="-1" data-analysis-tab="planning" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Planejamento</span></button><button class="analytics-tab " id="analytics-tab-cards" role="tab" aria-selected="false" aria-controls="analytics-content" tabindex="-1" data-analysis-tab="cards" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-card"/></svg><span>Cartões</span></button></div><div class="financial-view-switch" role="group" aria-label="Visão financeira">
+<span class="planning-sr-only">Visão financeira</span><div class="financial-view-buttons"><button type="button" class="financial-view-btn active" data-financial-view="general" aria-pressed="true">Geral</button><button type="button" class="financial-view-btn" data-financial-view="consumption" aria-pressed="false">Consumo</button><button type="button" class="financial-view-btn" data-financial-view="allocation" aria-pressed="false">Reservas / Investimentos</button></div>
 </div>
-<div aria-label="Seções da análise" class="analytics-tabs" role="tablist">
-<button class="analytics-tab active" data-analysis-tab="overview" type="button">Visão geral</button>
-<button class="analytics-tab" data-analysis-tab="categories" type="button">Categorias</button>
-<button class="analytics-tab" data-analysis-tab="budget" type="button">Limites</button>
-<button class="analytics-tab" data-analysis-tab="planning" type="button">Planejamento</button>
-<button class="analytics-tab" data-analysis-tab="cards" type="button">Cartões</button>
 </div>
-<div aria-live="polite" class="analytics-content" id="analytics-content"></div>
+<div aria-live="polite" class="analytics-content" id="analytics-content" role="tabpanel" aria-labelledby="analytics-tab-overview"></div>
 </section>
-<section class="module-view hidden" id="module-family">
-<div class="module-header"><div><span class="eyebrow">MONITORAMENTO</span><h2>Família</h2></div><button class="primary-compact" id="new-family-invite-btn">＋ Convidar</button></div>
-<div class="family-grid">
-<article class="panel-card family-panel"><div class="section-title"><div><h3>Convites recebidos</h3></div></div><div class="list-stack" id="family-incoming"></div></article>
-<article class="panel-card family-panel"><div class="section-title"><div><h3>Pessoas que acompanho</h3></div></div><div class="list-stack" id="family-viewing"></div></article>
-<article class="panel-card family-panel"><div class="section-title"><div><h3>Quem acompanha meus dados</h3></div></div><div class="list-stack" id="family-viewers"></div></article>
-<article class="panel-card family-panel"><div class="section-title"><div><h3>Convites enviados</h3></div></div><div class="list-stack" id="family-outgoing"></div></article>
+<section class="module-view hidden" id="module-family" aria-labelledby="family-page-heading">
+<div class="family-page-toolbar"><h2 id="family-page-heading" class="planning-sr-only">Família</h2><button class="primary-compact" id="new-family-invite-btn" type="button">＋ Convidar</button></div>
+<div class="family-members-grid">
+<article class="family-members-panel"><h3>Quem acompanha meus dados</h3><div class="list-stack" id="family-viewers"></div></article>
+<article class="family-members-panel"><h3>Pessoas que acompanho</h3><div class="list-stack" id="family-viewing"></div></article>
 </div>
-<article aria-busy="false" class="panel-card family-monitor family-monitor-v17 hidden" id="family-monitor-panel">
+<article class="family-invites-panel"><h3>Convites</h3><div class="family-invites-tabs" role="tablist" aria-label="Convites"><button type="button" class="active" id="family-invites-received" data-family-invites="received" role="tab" aria-selected="true" aria-controls="family-incoming">Recebidos</button><button type="button" id="family-invites-sent" data-family-invites="sent" role="tab" aria-selected="false" aria-controls="family-outgoing" tabindex="-1">Enviados</button></div><div class="list-stack" id="family-incoming" role="tabpanel" aria-labelledby="family-invites-received"></div><div class="list-stack hidden" id="family-outgoing" role="tabpanel" aria-labelledby="family-invites-sent"></div></article>
+</section>
+<section class="module-view hidden" id="module-family-profile" aria-labelledby="family-monitor-name"><article aria-busy="false" class="family-monitor family-monitor-v17 hidden" id="family-monitor-panel">
 <div class="family-monitor-head">
-<div><span class="eyebrow">ACOMPANHAMENTO FAMILIAR</span><h3 id="family-monitor-name">Resumo</h3><p id="family-monitor-caption">Dados autorizados pelo titular.</p></div>
-<button class="secondary-btn" id="family-monitor-close" type="button">Fechar</button>
+<div><span class="eyebrow">ACOMPANHAMENTO FAMILIAR</span><h2 id="family-monitor-name">Resumo</h2><p id="family-monitor-caption">Dados autorizados pelo titular.</p></div>
+<button class="secondary-btn" id="family-monitor-close" type="button">‹ Voltar</button>
 </div>
+<div id="family-profile-tabs" class="family-profile-tabs" role="tablist" aria-label="Dados compartilhados"><button type="button" data-family-profile-tab="overview" id="family-profile-tab-overview" role="tab" aria-selected="false" aria-controls="family-monitor-overview" tabindex="-1">Visão geral</button><button type="button" data-family-profile-tab="cards" id="family-profile-tab-cards" role="tab" aria-selected="false" aria-controls="family-profile-cards" tabindex="-1">Cartões</button><button type="button" data-family-profile-tab="goals" id="family-profile-tab-goals" role="tab" aria-selected="false" aria-controls="family-profile-goals" tabindex="-1">Metas</button><button type="button" data-family-profile-tab="budget" id="family-profile-tab-budget" role="tab" aria-selected="false" aria-controls="family-profile-budget" tabindex="-1">Limites</button></div>
 <div class="family-monitor-period">
 <div aria-label="Navegação mensal da pessoa acompanhada" class="family-monitor-month-switch">
 <button aria-label="Mês anterior" id="family-monitor-prev" type="button">‹</button>
@@ -331,13 +321,13 @@
 <button class="secondary-btn family-monitor-current hidden" id="family-monitor-current" type="button">Mês atual</button>
 </div>
 <div class="family-monitor-sync" id="family-monitor-sync">Acompanhamento pronto.</div>
-<div class="family-monitor-summary-grid" id="family-monitor-metrics"></div>
+<div id="family-profile-error" class="family-profile-error hidden" role="alert"><p id="family-profile-error-text"></p><button type="button" class="secondary-btn" id="family-profile-retry">Tentar novamente</button></div><section id="family-monitor-overview" role="tabpanel" aria-labelledby="family-profile-tab-overview"><div class="family-monitor-summary-grid" id="family-monitor-metrics"></div>
 <div class="family-monitor-main-grid">
 <section class="family-monitor-section">
 <div class="family-monitor-section-head"><div><h4>Gastos por categoria</h4><p id="family-monitor-category-caption">Distribuição das despesas do mês.</p></div></div>
 <div class="family-category-list" id="family-monitor-categories"></div>
 </section>
-<section class="family-monitor-section">
+<section class="family-monitor-section" id="family-profile-transactions-section">
 <div class="family-monitor-section-head">
 <div><h4>Lançamentos do mês</h4><p id="family-monitor-transaction-caption">Tudo que foi compartilhado neste período.</p></div>
 <div aria-label="Filtrar lançamentos monitorados" class="family-monitor-filters" role="group">
@@ -351,8 +341,7 @@
 </div>
 <div class="family-monitor-extras" id="family-monitor-extras"></div>
 <div class="family-monitor-note hidden" id="family-monitor-permission-note"></div>
-</article>
-</section>
+</section><section id="family-profile-cards" data-family-profile-view="cards" role="tabpanel" aria-labelledby="family-profile-tab-cards" class="hidden"></section><section id="family-profile-goals" data-family-profile-view="goals" role="tabpanel" aria-labelledby="family-profile-tab-goals" class="hidden"></section><section id="family-profile-budget" data-family-profile-view="budget" role="tabpanel" aria-labelledby="family-profile-tab-budget" class="hidden"></section></article></section>
 <section class="module-view hidden" id="module-settings">
 <div class="settings-hub" id="settings-home-panel">
 <div class="module-header"><div><span class="eyebrow">PREFERÊNCIAS</span><h2>Configurações</h2></div></div>
@@ -727,6 +716,7 @@
 </dialog>
 <dialog class="modal" id="reserve-dialog"><div class="modal-card reserve-dialog-card"><div class="modal-head"><div><span class="eyebrow">RESERVAS E INVESTIMENTOS</span><h3>Saldo guardado</h3></div><button class="modal-close" type="button" data-close-dialog="reserve-dialog" aria-label="Fechar">×</button></div><div id="reserve-detail-body"></div></div></dialog>
 <dialog class="modal" id="dre-dialog"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">DRE</span><h3 id="dre-title">Demonstrativo do mês</h3></div><button class="modal-close" data-close-dialog="dre-dialog" type="button">×</button></div><div id="dre-content"></div></div></dialog>
-<script defer src="js/context-help.js?v=2.9.20"></script><script src="js/app.js?v=2.9.20" type="module"></script>
+<script defer src="js/context-help.js?v=2.9.24"></script><script src="js/app.js?v=2.9.24" type="module"></script>
+<dialog class="modal" id="goal-history-dialog"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">META</span><h3 id="goal-history-title">Histórico</h3></div><button type="button" class="modal-close" data-close-dialog="goal-history-dialog" aria-label="Fechar">×</button></div><div id="goal-history-content"></div></div></dialog>
 </body>
 </html>

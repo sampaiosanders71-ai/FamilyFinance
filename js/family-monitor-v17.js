@@ -1,5 +1,5 @@
-import { buildFinancialMonthLedger, classifyTransaction, ledgerMonthKey } from './financial-ledger.js?v=2.9.20';
-import { goalProgress } from './goal-integration.js?v=2.9.20';
+import { buildFinancialMonthLedger, classifyTransaction, ledgerMonthKey } from './financial-ledger.js?v=2.9.24';
+import { goalProgress } from './goal-integration.js?v=2.9.24';
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export function familyMonthKey(date = new Date()) {

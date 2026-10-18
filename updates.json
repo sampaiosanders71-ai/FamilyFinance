@@ -1,22 +1,26 @@
 {
-  "version": "2.9.20",
-  "publishedAt": "12/10/2026",
-  "improvementCount": 2,
-  "title": "Consulta de faturas simplificada",
-  "summary": "Resumo e compras em destaque; pagamentos e ajustes acessíveis em Gerenciar fatura.",
+  "version": "2.9.24",
+  "publishedAt": "18/10/2026",
+  "improvementCount": 3,
+  "title": "Família e históricos mais organizados",
+  "summary": "Perfil acompanhado em tela própria e navegação por páginas ou carregar mais.",
   "highlights": [
     {
-      "title": "Consulta mais limpa",
-      "text": "Compras e parcelas ficam visíveis junto ao resumo, sem blocos de pagamentos e ajustes na consulta."
+      "title": "Família com menos texto",
+      "text": "Pessoas conectadas em destaque e convites reunidos em Recebidos e Enviados."
     },
     {
-      "title": "Gerenciamento sob demanda",
-      "text": "Acesse pagamentos, correções, encargos e conciliação pelo botão Gerenciar fatura."
+      "title": "Acompanhamento em tela própria",
+      "text": "Abas conforme as permissões, acesso somente para consulta e retorno com contexto preservado."
+    },
+    {
+      "title": "Listas e históricos paginados",
+      "text": "10 ou 20 registros por página no computador e carregar mais no celular, preservando totais e relatórios completos."
     }
   ],
   "details": [
-    "Mantém edição, confirmação com mesmo valor e registro de pagamento.",
-    "Remove o antigo expansor de detalhes e a orientação longa da consulta.",
-    "Preserva os registros e as regras financeiras existentes."
+    "Inclui históricos de metas, compras, parcelas, pagamentos, ajustes, faturas, planos, categorias detalhadas e notificações.",
+    "O acesso familiar é conferido novamente e dados deixam de ser exibidos quando a permissão é revogada.",
+    "Não altera registros financeiros nem exige migração no banco."
   ]
 }

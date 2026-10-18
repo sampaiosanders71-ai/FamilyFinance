@@ -1,4 +1,4 @@
-import { goalProgress } from './goal-integration.js?v=2.9.20';
+import { goalProgress } from './goal-integration.js?v=2.9.24';
 
 // Saldo patrimonial confirmado, nunca o fluxo de aportes de um mês.
 // Movimentos avulsos não confirmados ficam fora do valor para não duplicar a base manual das metas.
