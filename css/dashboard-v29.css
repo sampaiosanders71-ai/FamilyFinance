@@ -25,7 +25,7 @@
 #module-home .balance-bottom span{color:#fff;font-size:.78rem}
 #module-home .balance-bottom strong{display:block;margin-top:3px;font-size:1.18rem;overflow-wrap:anywhere}
 #module-home .balance-divider{margin:14px 0 12px}
-#module-home .quick-actions{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#module-home .quick-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 #module-home .action-card{display:flex;gap:11px;padding:14px 12px;min-width:0;border-radius:var(--home-radius);background:linear-gradient(125deg,var(--surface),var(--surface2))}
 #module-home .action-card>span{flex:0 0 39px;height:44px;width:39px}
 #module-home .action-card>div{min-width:0}
@@ -50,14 +50,12 @@
 #module-home .home-transaction-icon,#module-home .home-transaction .category-icon-tile{display:grid;place-items:center;width:38px;height:38px;border-radius:10px}
 #module-home .home-transaction .category-icon-tile svg{width:22px;height:22px}
 #module-home .home-payment-note{font-size:.65rem;color:var(--muted);max-width:65px;text-align:right}
-#module-home .home-invoice,#module-home .home-goal{font-family:inherit;color:var(--text);text-align:left;cursor:pointer;width:100%;min-width:0}
-#module-home .home-invoice .list-row-title{display:block}
-#module-home .home-invoice .list-row-amount{font-size:1rem}
+#module-home .home-goal{font-family:inherit;color:var(--text);text-align:left;cursor:pointer;width:100%;min-width:0}
 #module-home .home-goal{border:0;padding:0;background:transparent;border-radius:13px}
 #module-home .home-goal .list-row{display:block}
 #module-home .home-goal .list-row-title{white-space:normal;line-height:1.3}
 #module-home .home-goal .progress{height:9px;margin:12px 0 8px}
-#module-home .home-invoice:hover,#module-home .home-goal:hover .list-row{border-color:var(--orange)}
+#module-home .home-goal:hover .list-row{border-color:var(--orange)}
 #module-home button:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 #module-home .icon-soft:focus-visible{outline-color:#fff}
 #module-home .home-budget-note{color:var(--muted);font-size:.69rem;line-height:1.45;margin:9px 0 0}
@@ -72,7 +70,7 @@
 [data-theme="light"] #module-home .home-kpi.allocation .home-kpi-icon{color:#245dbd}
 @media(min-width:1450px){.app-layout{grid-template-columns:260px minmax(0,1fr)}.loading-bar{left:260px}.sidebar{padding:26px 16px}.sidebar-brand{padding-bottom:28px}.content{padding:22px 28px}.nav-item{padding:14px}.topbar{height:78px}#module-home .home-kpi{min-height:87px}#module-home .home-kpi-icon{flex-basis:56px;height:58px}}
 @media(min-width:1001px) and (max-width:1270px){#module-home .home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .home-transaction{grid-template-columns:32px minmax(0,1fr) auto}#module-home .home-transaction .row-actions{grid-column:2/-1;justify-content:flex-end}#module-home .home-transaction-icon,#module-home .home-transaction .category-icon-tile{width:32px;height:32px}}
-@media(max-width:1000px){#module-home .home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .dashboard-grid{grid-template-columns:1fr}#module-home .dashboard-side{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .dashboard-side .budget-summary{grid-column:1/-1}#module-home .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .home-kpi strong{font-size:1.35rem}}
+@media(max-width:1000px){#module-home .home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .dashboard-grid{grid-template-columns:1fr}#module-home .dashboard-side{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .dashboard-side .budget-summary{grid-column:auto}#module-home .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}#module-home .home-kpi strong{font-size:1.35rem}}
 @media(max-width:760px){#module-home .dashboard-head{gap:12px}#module-home .dashboard-head h2{font-size:1.6rem}#module-home .month-switch{width:100%;justify-content:space-between}#module-home .month-switch button{width:38px;height:38px}#module-home .home-kpis{gap:8px;margin-bottom:12px}#module-home .home-kpi{padding:12px;gap:10px;align-items:flex-start}#module-home .home-kpi-icon{flex-basis:34px;height:36px;border-radius:9px}#module-home .home-kpi-icon .ui-icon{width:21px;height:21px}#module-home .home-kpi-label{font-size:.7rem}#module-home .home-kpi strong{font-size:1.13rem}#module-home .home-kpi small{font-size:.63rem}#module-home .balance-card{padding:20px;border-radius:18px}#module-home .money-xl{font-size:clamp(2.4rem,10vw,3.8rem)}#module-home .balance-bottom{grid-template-columns:1fr 1fr;gap:12px}#module-home .balance-bottom strong{font-size:1.1rem}#module-home .balance-bottom span{font-size:.7rem}#module-home .action-card{padding:12px;gap:10px}#module-home .action-card strong{font-size:.78rem}#module-home .action-card small{font-size:.68rem}#module-home .dashboard-side{grid-template-columns:1fr}#module-home .panel-card{padding:14px}#module-home .home-transaction{grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:9px}#module-home .home-transaction .row-actions{grid-column:2/-1;justify-content:flex-end}#module-home .home-transaction .mini-btn{min-width:38px;min-height:36px}#module-home .home-transaction-icon,#module-home .home-transaction .category-icon-tile{width:34px;height:34px}#module-home .home-transaction .list-row-title{font-size:.78rem}#module-home .home-transaction .list-row-amount{font-size:.78rem}#module-home .home-transaction .list-row-meta{font-size:.64rem}#module-home .section-title h3{font-size:.88rem}#module-home .link-btn{font-size:.79rem}}
 @media(max-width:380px){#module-home .home-kpi{flex-direction:column;gap:8px}#module-home .home-kpi-icon{flex-basis:auto;width:32px;height:32px}#module-home .home-kpi strong{font-size:1.1rem}#module-home .action-card{gap:8px;padding:10px}#module-home .action-card>span{flex-basis:30px;width:30px;height:36px}#module-home .action-card strong{font-size:.73rem}#module-home .action-card small{font-size:.63rem}#module-home .home-transaction{grid-template-columns:30px minmax(0,1fr)}#module-home .home-transaction .list-row-amount{grid-column:2;text-align:left}#module-home .home-transaction .row-actions{grid-column:2}#module-home .balance-bottom strong{font-size:1rem}}
 @media(max-width:760px){
@@ -83,3 +81,5 @@
   #module-home .home-kpi strong{grid-column:1/-1;font-size:clamp(1rem,4.4vw,1.2rem);overflow-wrap:normal;word-break:normal}
   #module-home .home-kpi small{grid-column:1/-1;margin:0}
 }
+
+@media(max-width:1270px){#module-home .quick-actions>.action-card:last-child{grid-column:1/-1}}

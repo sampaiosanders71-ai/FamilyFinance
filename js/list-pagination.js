@@ -54,3 +54,14 @@ async function change(root,action,value){
 document.addEventListener('click',event=>{const button=event.target.closest('[data-list-page],[data-list-more]');if(!button||button.disabled)return;event.preventDefault();void change(button.closest('[data-paged-list]'),button.hasAttribute('data-list-more')?'more':'page',button.dataset.listPage)});
 document.addEventListener('change',event=>{if(event.target.matches('[data-list-size]'))void change(event.target.closest('[data-paged-list]'),'size',event.target.value)});
 media.addEventListener('change',()=>{document.querySelectorAll('[data-paged-list]').forEach(root=>void change(root,'media'));});
+
+// Locate a financial source without losing records hidden by the presentation page.
+export async function revealListRecord(key,predicate){
+ const config=configs.get(key),state=states.get(key);if(!config||!state)return false;
+ if(config.beforeChange&&await config.beforeChange()===false)return false;
+ if(configs.get(key)!==config||states.get(key)!==state)return false;
+ const index=config.rows.findIndex(predicate);if(index<0)return false;
+ state.page=Math.floor(index/state.size)+1;state.visible=Math.max(state.visible,Math.ceil((index+1)/10)*10);
+ const root=[...document.querySelectorAll('[data-paged-list]')].find(el=>el.dataset.pagedList===key);
+ if(root)root.outerHTML=markup(key);return true;
+}

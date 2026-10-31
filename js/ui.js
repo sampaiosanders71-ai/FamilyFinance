@@ -1,4 +1,4 @@
-import { playAuthIntro, restartAuthIntro, setLoginButtonMotion, revealDashboard, snapshotDashboardMoney, captureDashboardMoneyState as captureDashboardMoneyStateMotion, prepareDashboardMoneyChange as prepareDashboardMoneyChangeMotion, playDashboardMoneyChange as playDashboardMoneyChangeMotion, settleDashboardMoneyChange as settleDashboardMoneyChangeMotion } from './motion-v15.js?v=2.9.24';
+import { playAuthIntro, restartAuthIntro, setLoginButtonMotion, revealDashboard, snapshotDashboardMoney, captureDashboardMoneyState as captureDashboardMoneyStateMotion, prepareDashboardMoneyChange as prepareDashboardMoneyChangeMotion, playDashboardMoneyChange as playDashboardMoneyChangeMotion, settleDashboardMoneyChange as settleDashboardMoneyChangeMotion } from './motion-v15.js?v=2.9.34';
 
 const MODULE_TITLES={home:'Início',transactions:'Lançamentos',cards:'Cartões',goals:'Metas',budget:'Orçamento',planning:'Planejamento',analytics:'Análises',family:'Família','family-profile':'Família',settings:'Configurações'};
 
@@ -90,6 +90,10 @@ export function applyTheme(theme='system'){
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolvedTheme(value)==='light'?'#f4f1ec':'#0b0c0d';
 }
 
+applyTheme('system');
+window.matchMedia?.('(prefers-color-scheme: light)').addEventListener('change',()=>{
+  if(document.documentElement.dataset.themePreference==='system')applyTheme('system');
+});
 void playAuthIntro();
 
 export function captureDashboardMoneyState(){return captureDashboardMoneyStateMotion()}

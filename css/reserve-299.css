@@ -1,8 +1,4 @@
 /* Indicador acumulado e conciliação de reservas 2.9.9 */
-#module-home .home-kpi.allocation .reserve-kpi-details{display:block;margin-top:3px;padding:2px 0;border:0;background:none;color:var(--orange);font-size:.69rem;font-weight:700;text-align:left;cursor:pointer}
-#module-home .home-kpi.allocation .reserve-kpi-details:hover{text-decoration:underline}
-#module-home .home-kpi.allocation .reserve-kpi-details:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:3px}
-#module-home #stat-allocation-count.reserve-pending{color:#f7c178}
 .reserve-dialog-card{width:min(630px,calc(100vw - 20px))}
 .reserve-detail-total{background:linear-gradient(135deg,#232527,#191e23);border:1px solid var(--line);border-radius:15px;padding:17px;margin-bottom:18px;display:grid;gap:5px}
 .reserve-detail-total small{font-size:.78rem;color:var(--muted)}
@@ -42,14 +38,3 @@
 .reserve-empty-line{padding:8px 0 14px;color:var(--muted);font-size:.92rem}
 .reserve-inline-note{font-size:.78rem;line-height:1.5;color:var(--muted);margin-top:6px}
 @media(max-width:480px){.reserve-summary-card{padding:15px 14px 6px}.reserve-detail-section.reserve-composition-block h4{font-size:1.45rem}.reserve-composition-row{font-size:.94rem}.reserve-grand-total strong{font-size:2.2rem}}
-
-#module-home .home-kpi.allocation{position:relative}
-#module-home .home-kpi.allocation .reserve-kpi-corner-icon{display:none}
-@media(max-width:760px){
-  #module-home .home-kpi.allocation{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}
-  #module-home .home-kpi.allocation:active{transform:scale(.99)}
-  #module-home .home-kpi.allocation .reserve-kpi-corner-icon{display:flex;position:absolute;top:10px;right:10px;align-items:center;justify-content:center;font-size:.9rem;line-height:1;color:rgba(255,255,255,.42);pointer-events:none}
-  #module-home .home-kpi.allocation #stat-allocation-count,
-  #module-home .home-kpi.allocation .reserve-kpi-details{display:none !important}
-  #module-home .home-kpi.allocation:focus-visible{outline:2px solid rgba(255,145,36,.6);outline-offset:2px}
-}

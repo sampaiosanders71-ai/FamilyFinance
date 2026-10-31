@@ -1,9 +1,9 @@
-import { buildCardInvoices, cardMonth,cardCalendarDates,cardDate } from './card-domain.js?v=2.9.24';
-import { operationIds, insertOnce } from './request-operation.js?v=2.9.24';
-import { listAllRows } from './pagination.js?v=2.9.24';
-import { supabase } from './supabase.js?v=2.9.24';
-import { getCurrentUser } from './database.js?v=2.9.24';
-import { monthISO } from './finance.js?v=2.9.24';
+import { buildCardInvoices, cardMonth,cardCalendarDates,cardDate } from './card-domain.js?v=2.9.34';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.34';
+import { listAllRows } from './pagination.js?v=2.9.34';
+import { supabase } from './supabase.js?v=2.9.34';
+import { getCurrentUser } from './database.js?v=2.9.34';
+import { monthISO } from './finance.js?v=2.9.34';
 
 export async function listCards() {
   const user = await getCurrentUser();
@@ -66,6 +66,15 @@ export async function updatePurchase(id, input) {
 export async function deletePurchase(id) {
   const {data,error}=await supabase.rpc('ff2_cancel_card_purchase_2914',{p_purchase_id:id,p_reason:'Compra excluída pelo usuário'});
   if(error)throw error;return data;
+}
+
+// Read the selected purchase independently of deferred startup requests.
+export async function getPurchase(id) {
+  const user=await getCurrentUser();
+  const {data,error}=await supabase.from('ff2_card_purchases').select('*, ff2_cards(name)').eq('id',id).eq('user_id',user.id).is('cancelled_at',null).maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error('PURCHASE_NOT_FOUND');
+  return data;
 }
 
 export async function listPurchases() {

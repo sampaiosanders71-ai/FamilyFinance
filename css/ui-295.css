@@ -92,3 +92,10 @@
 .category-swatch-lavender{--swatch:#c99fe9;}
 .category-swatch-forest{--swatch:#69bd89;}
 .category-swatch-sea{--swatch:#58a5b8;}
+
+/* Shared page headings: the fixed header identifies the page once. */
+.heading-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.module-header.page-actionbar{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:12px;min-height:0;padding:0;margin:0 0 16px}
+.module-header.page-backbar{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;min-height:0;padding:0;margin:0 0 14px}
+.page-backbar .settings-back-link{margin:0}
+@media(max-width:760px){.module-header.page-actionbar>.primary-compact{width:100%}.module-header.page-backbar{margin-bottom:14px}}

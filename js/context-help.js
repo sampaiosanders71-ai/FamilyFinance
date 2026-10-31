@@ -38,7 +38,7 @@
     configuracoes: {
       title: 'Sobre Configurações',
       intro: 'Configurações concentra as preferências e ferramentas administrativas do Family Finance.',
-      bullets: ['Conta e aparência.', 'Instalação do app.', 'Categorias.', 'Backup e migração.', 'Encerramento da sessão.']
+      bullets: ['Conta e aparência.', 'Instalação do app.', 'Categorias.', 'Importação de dados antigos.', 'Encerramento da sessão.']
     },
     conta: {
       title: 'Sobre Conta',
@@ -51,7 +51,7 @@
       bullets: ['A disponibilidade depende do navegador e do dispositivo.', 'A instalação não altera seus dados financeiros.']
     },
     backup: {
-      title: 'Sobre Backup',
+      title: 'Sobre importar dados antigos',
       intro: 'Esta área reúne recuperação e migração dos dados da versão anterior.',
       bullets: ['A migração copia os registros antigos para a conta atual.', 'Os dados atuais não são apagados durante o processo.']
     },
@@ -138,7 +138,7 @@
     'Configurações': 'configuracoes',
     'Conta': 'conta',
     'Instalar o app': 'instalar',
-    'Backup': 'backup',
+    'Importar dados antigos': 'backup',
     'Categorias': 'categorias',
     'Sair': 'sair'
   };

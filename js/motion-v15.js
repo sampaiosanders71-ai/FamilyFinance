@@ -47,11 +47,11 @@ function parseBRL(text = '') {
 }
 
 function visibleDesktopBrandRect() {
-  const target = document.querySelector('#auth-view .auth-brand .brand-lockup');
-  if (!target) return null;
-  const style = getComputedStyle(target);
-  const rect = target.getBoundingClientRect();
-  return style.display !== 'none' && rect.width > 4 && rect.height > 4 ? rect : null;
+  for (const target of document.querySelectorAll('#auth-view .brand-lockup')) {
+    const rect = target.getBoundingClientRect();
+    if (rect.width > 4 && rect.height > 4) return rect;
+  }
+  return null;
 }
 
 function createSplash() {
@@ -63,7 +63,7 @@ function createSplash() {
 
   const brand = document.createElement('div');
   brand.className = 'ff-v15-splash-brand';
-  brand.innerHTML = '<span class="brand-mark">◉</span><span>family <strong>finance</strong></span>';
+  brand.innerHTML = '<img class="brand-mark" src="assets/brand-wallet.png" alt="" width="60" height="60"/><span class="brand-name">family <strong>finance</strong></span>';
 
   splash.appendChild(brand);
   document.body.appendChild(splash);

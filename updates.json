@@ -1,26 +1,21 @@
 {
-  "version": "2.9.24",
-  "publishedAt": "18/10/2026",
-  "improvementCount": 3,
-  "title": "Família e históricos mais organizados",
-  "summary": "Perfil acompanhado em tela própria e navegação por páginas ou carregar mais.",
+  "version": "2.9.34",
+  "publishedAt": "31/10/2026",
+  "improvementCount": 2,
+  "title": "Consultas mais simples no Início",
+  "summary": "Saldo atual fica apenas como valor. A composição de Investido / reservado abre pelo próprio valor.",
   "highlights": [
     {
-      "title": "Família com menos texto",
-      "text": "Pessoas conectadas em destaque e convites reunidos em Recebidos e Enviados."
+      "title": "Saldo atual sem consulta",
+      "text": "O valor deixa de abrir o histórico. O lápis de ajuste, o resultado de caixa e o saldo previsto continuam disponíveis."
     },
     {
-      "title": "Acompanhamento em tela própria",
-      "text": "Abas conforme as permissões, acesso somente para consulta e retorno com contexto preservado."
-    },
-    {
-      "title": "Listas e históricos paginados",
-      "text": "10 ou 20 registros por página no computador e carregar mais no celular, preservando totais e relatórios completos."
+      "title": "Reservas no mesmo padrão dos indicadores",
+      "text": "Toque no valor de Investido / reservado para consultar sua composição. O card fica sem legendas extras, botão ou seta."
     }
   ],
   "details": [
-    "Inclui históricos de metas, compras, parcelas, pagamentos, ajustes, faturas, planos, categorias detalhadas e notificações.",
-    "O acesso familiar é conferido novamente e dados deixam de ser exibidos quando a permissão é revogada.",
-    "Não altera registros financeiros nem exige migração no banco."
+    "Preserva os saldos, os cálculos e a paginação das composições.",
+    "Informações sobre valores pendentes continuam dentro da consulta de reservas."
   ]
 }

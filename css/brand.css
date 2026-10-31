@@ -1,0 +1,53 @@
+/* Carteira FF aprovada: símbolo transparente e nome adaptado ao tema. */
+.brand-lockup,
+.ff-v15-splash-brand {
+  color: var(--text);
+  font-family: Montserrat, Inter, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: 1.2;
+}
+.brand-lockup {
+  gap: 10px;
+  font-size: 1.3rem;
+}
+.brand-lockup .brand-mark,
+.ff-v15-splash-brand .brand-mark {
+  display: block;
+  width: 1.8em;
+  height: 1.8em;
+  flex: 0 0 1.8em;
+  object-fit: contain;
+  font-size: inherit;
+}
+.brand-name {
+  white-space: nowrap;
+  min-width: 0;
+}
+.brand-lockup strong,
+.ff-v15-splash-brand strong {
+  color: var(--orange);
+  font-weight: inherit;
+}
+.sidebar-brand {
+  font-size: .98rem;
+  gap: 8px;
+}
+.ff-v15-splash {
+  background: var(--bg);
+}
+.auth-mobile-brand {
+  display: none;
+}
+@media (max-width: 760px) {
+  .auth-mobile-brand {
+    display: flex;
+    margin: 0 0 26px;
+    font-size: clamp(1rem, 4.5vw, 1.2rem);
+  }
+  .ff-v15-splash-brand {
+    font-size: clamp(1rem, 5.3vw, 1.55rem);
+    max-width: calc(100vw - 32px);
+    gap: 8px;
+  }
+}

@@ -1,8 +1,8 @@
-import {cardAdjustmentLabel} from './card-domain.js?v=2.9.24';
-import { buildFinancialMonthLedger, classifyTransaction } from './financial-ledger.js?v=2.9.24';
-import { canonicalCategoryName, canonicalCategoryAmounts, canonicalCategoryLimits } from './category-alias.js?v=2.9.24';
-import { ownTransferReview, legacyReview, reviewedPeriodRows } from './financial-integrity.js?v=2.9.24';
-import { buildVisualPdf, PDF_PAGE } from './pdf.js?v=2.9.24';
+import {cardAdjustmentLabel} from './card-domain.js?v=2.9.34';
+import { buildFinancialMonthLedger, classifyTransaction } from './financial-ledger.js?v=2.9.34';
+import { canonicalCategoryName, canonicalCategoryAmounts, canonicalCategoryLimits } from './category-alias.js?v=2.9.34';
+import { ownTransferReview, legacyReview, reviewedPeriodRows } from './financial-integrity.js?v=2.9.34';
+import { buildVisualPdf, PDF_PAGE } from './pdf.js?v=2.9.34';
 
 const C = {
   ink:'#171717', muted:'#6f7379', subtle:'#9b9da1', panel:'#f5f2ed', line:'#dedbd5',
@@ -62,26 +62,6 @@ function aggregateCategories(months){const map={};for(const month of months)for(
 function aggregateCards(months){const map={};for(const month of months)for(const item of month.cards||[])addCard(map,item.cardId,item.name,item.total,item.status);return Object.values(map).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name,'pt-BR'))}
 function aggregateBudget(months){const map={};let plannedIncome=0,totalLimit=0;for(const month of months){plannedIncome+=month.budget.plannedIncome;totalLimit+=month.budget.totalLimit;for(const item of month.budget.categories){if(!map[item.category])map[item.category]={category:item.category,limit:0,spent:0,limitDefined:false};map[item.category].limit+=item.limit;map[item.category].spent+=item.spent;map[item.category].limitDefined=map[item.category].limitDefined||item.limitDefined}}return{plannedIncome,totalLimit,categories:Object.values(map).map(item=>({...item,available:item.limit-item.spent})).sort((a,b)=>Math.max(b.limit,b.spent)-Math.max(a.limit,a.spent))}}
 
-export function getMonthlyDRE(transactions,installments,refDate,today=new Date()){
-  const date=requireDate(refDate);
-  const ledger=buildFinancialMonthLedger({transactions:transactions||[],installments:installments||[],monthKey:monthKey(date),today});
-  return {
-    income:ledger.income,
-    cashExpense:ledger.cashExpense,
-    cardExpense:ledger.cardExpense,
-    totalExpense:ledger.totalExpense,
-    allocation:ledger.allocation,
-    transferIn:ledger.transferIn,
-    transferOut:ledger.transferOut,
-    cardPayments:ledger.cardPayments,
-    cashOutflow:ledger.cashOutflow,
-    cashResult:ledger.cashResult,
-    result:ledger.result,
-    futureExpense:ledger.futureExpense,
-    realizedThrough:ledger.cutoff,
-    partial:ledger.partial
-  };
-}
 export function getReportMonthOptions(transactions,installments,referenceDate=new Date()){const reference=requireDate(referenceDate),now=new Date(),todayISO=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,keys=new Set([monthKey(reference)]);for(let offset=0;offset<12;offset++)keys.add(monthKey(new Date(reference.getFullYear(),reference.getMonth()-offset,1,12)));for(const row of transactions||[]){const raw=String(row.occurred_on||'');if(raw<=todayISO&&/^\d{4}-\d{2}/.test(raw))keys.add(`${raw.slice(0,7)}-01`)}for(const row of installments||[]){const raw=String(row.invoice_month||''),purchaseDate=String(row.ff2_card_purchases?.purchase_date||'');if(/^\d{4}-\d{2}-01$/.test(raw)&&(!purchaseDate||purchaseDate<=todayISO))keys.add(raw)}return[...keys].map(key=>({key,date:dateFromMonthKey(key)})).sort((a,b)=>b.key.localeCompare(a.key))}
 export function buildFinancialReportModel({transactions,installments,invoiceStatuses,budgetsByMonth={},monthKeys,monthLabel,today=new Date(),cutoffDaysByMonth={},categories=[]}){
   const keys=sortedMonthKeys(monthKeys||[]);if(!keys.length)throw new Error('Selecione pelo menos um mês para o relatório.');
