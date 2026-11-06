@@ -1,4 +1,4 @@
-import { buildFinancialReportModel } from './reports.js?v=2.9.34';
+import { buildFinancialReportModel } from './reports.js?v=2.9.35';
 
 export function analysisMonthKey(value) {
   const date = value instanceof Date ? value : new Date(`${String(value).slice(0,7)}-01T12:00:00`);

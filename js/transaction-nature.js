@@ -1,4 +1,4 @@
-import { isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund } from './financial-ledger.js?v=2.9.34';
+import { isCardInvoicePayment,isCardInvoiceReversal,isCardPurchaseRefund } from './financial-ledger.js?v=2.9.35';
 // Explicit user classification overrides legacy keyword inference.
 export function normalizeNatureText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
 export function suggestNature(description,category=''){

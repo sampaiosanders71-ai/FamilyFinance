@@ -3,7 +3,7 @@
     inicio: {
       title: 'Sobre o Início',
       intro: 'O Início reúne os principais números do mês e atalhos para as áreas mais usadas do Family Finance.',
-      bullets: ['Acompanhe saldo atual, receitas, despesas pagas e resultado de caixa.', 'Compras no cartão aparecem na fatura, mas só entram nas despesas pagas do Dashboard quando a fatura é quitada.', 'Investido / reservado soma as destinações realizadas no mês; as metas mostram o saldo acumulado informado em cada objetivo.', 'Os limites consideram somente categorias com teto definido; valores sem limite são mostrados à parte.', 'Últimos lançamentos acompanha o mês selecionado. Clique em uma fatura ou meta para abrir seus detalhes.', 'Faturas abertas continuam reduzindo o saldo previsto porque representam compromissos futuros.']
+      bullets: ['Acompanhe saldo atual, receitas, despesas pagas e resultado de caixa.', 'Os pagamentos de fatura entram nas despesas pagas pela data efetiva, inclusive pagamentos parciais, sem duplicar o consumo.', 'Investido / reservado mostra o saldo confirmado acumulado das metas e reservas independentes. Toque no valor para consultar a composição.', 'Os limites consideram somente categorias com teto definido; valores sem limite são mostrados à parte.', 'Faturas a pagar prioriza a fatura pendente mais antiga de cada cartão. Pagamento parcial mantém essa fatura; a quitação libera a próxima. Toque no valor para consultar competência, vencimento e saldo restante.', 'O saldo previsto desconta o restante das faturas vencidas ou com vencimento até o fim do mês selecionado. Faturas com vencimento posterior ficam para a previsão correspondente.']
     },
     lancamentos: {
       title: 'Sobre Lançamentos',

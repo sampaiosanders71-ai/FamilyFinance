@@ -1,21 +1,23 @@
 {
-  "version": "2.9.34",
-  "publishedAt": "31/10/2026",
+  "version": "2.9.35",
+  "publishedAt": "05/11/2026",
   "improvementCount": 2,
-  "title": "Consultas mais simples no Início",
-  "summary": "Saldo atual fica apenas como valor. A composição de Investido / reservado abre pelo próprio valor.",
+  "title": "Faturas pendentes em primeiro lugar",
+  "summary": "O Início acompanha o que falta pagar e calcula a previsão pelos vencimentos.",
   "highlights": [
     {
-      "title": "Saldo atual sem consulta",
-      "text": "O valor deixa de abrir o histórico. O lápis de ajuste, o resultado de caixa e o saldo previsto continuam disponíveis."
+      "title": "Faturas a pagar",
+      "text": "Mantém a fatura pendente mais antiga de cada cartão até sua quitação. Pagamento parcial mostra apenas o restante; depois passa à próxima fatura cadastrada com saldo."
     },
     {
-      "title": "Reservas no mesmo padrão dos indicadores",
-      "text": "Toque no valor de Investido / reservado para consultar sua composição. O card fica sem legendas extras, botão ou seta."
+      "title": "Previsão pelo vencimento",
+      "text": "O saldo previsto considera todas as faturas pendentes vencidas ou com vencimento até o fim do mês selecionado. Faturas de meses seguintes ficam para a previsão correspondente."
     }
   ],
   "details": [
-    "Preserva os saldos, os cálculos e a paginação das composições.",
-    "Informações sobre valores pendentes continuam dentro da consulta de reservas."
+    "A consulta mostra competência, vencimento e situação da fatura, com quatro registros por página.",
+    "Histórico e faturas futuras continuam acessíveis no módulo Cartões.",
+    "Preserva pagamentos, dados e cálculos de consumo.",
+    "Separa o cache offline do teste e do oficial pelo endereço do app."
   ]
 }

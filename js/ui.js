@@ -1,4 +1,4 @@
-import { playAuthIntro, restartAuthIntro, setLoginButtonMotion, revealDashboard, snapshotDashboardMoney, captureDashboardMoneyState as captureDashboardMoneyStateMotion, prepareDashboardMoneyChange as prepareDashboardMoneyChangeMotion, playDashboardMoneyChange as playDashboardMoneyChangeMotion, settleDashboardMoneyChange as settleDashboardMoneyChangeMotion } from './motion-v15.js?v=2.9.34';
+import { playAuthIntro, restartAuthIntro, setLoginButtonMotion, revealDashboard, snapshotDashboardMoney, captureDashboardMoneyState as captureDashboardMoneyStateMotion, prepareDashboardMoneyChange as prepareDashboardMoneyChangeMotion, playDashboardMoneyChange as playDashboardMoneyChangeMotion, settleDashboardMoneyChange as settleDashboardMoneyChangeMotion } from './motion-v15.js?v=2.9.35';
 
 const MODULE_TITLES={home:'Início',transactions:'Lançamentos',cards:'Cartões',goals:'Metas',budget:'Orçamento',planning:'Planejamento',analytics:'Análises',family:'Família','family-profile':'Família',settings:'Configurações'};
 

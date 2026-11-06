@@ -1,5 +1,5 @@
-import { classifyTransaction } from './financial-ledger.js?v=2.9.34';
-import { needsLegacyReview } from './financial-integrity.js?v=2.9.34';
+import { classifyTransaction } from './financial-ledger.js?v=2.9.35';
+import { needsLegacyReview } from './financial-integrity.js?v=2.9.35';
 const escapeCell=value=>'"'+String(value??'').replace(/"/g,'""').replace(/[\r\n]+/g,' ').replace(/^[=+@-]/,'\u0027$&')+'"';
 export function financialRowsCSV({transactions=[],monthKeys=[],today=new Date()}={}){
   const months=new Set(monthKeys.map(k=>String(k).slice(0,7)));
