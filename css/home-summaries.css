@@ -1,0 +1,44 @@
+
+/* Dashboard: resumos de metas e limites, usando os tokens e ícones existentes. */
+#module-home .home-goals-summary,#module-home .home-limits-summary{background:var(--surface);border:1px solid var(--line);box-shadow:none}
+#module-home .home-goals-summary .section-title{margin-bottom:0}
+#module-home .home-goals-summary #home-goals{gap:0;margin-top:7px}
+#module-home .home-goal-row{display:grid;grid-template-columns:27px minmax(0,1fr);gap:13px;padding:17px 0;border:0;border-bottom:1px solid var(--line);width:100%;text-align:left;background:transparent;cursor:pointer;color:var(--text);font:inherit;border-radius:0}
+#module-home .home-goal-row:last-child{border-bottom:0;padding-bottom:4px}
+.home-goal-icon{align-self:center;display:grid;place-items:center;color:var(--goal-color)}
+.home-goal-icon svg{width:24px;height:24px;}
+.home-goal-copy{display:grid;gap:7px;min-width:0}
+.home-goal-name{font-size:.82rem;line-height:1.4;font-weight:650;overflow-wrap:anywhere}
+.home-goal-amounts{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:.76rem;line-height:1.5;font-variant-numeric:tabular-nums}
+.home-goal-money{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 4px}
+.home-goal-money strong{font-weight:650;color:var(--text)}
+.home-goal-money span{color:var(--muted);font-size:.71rem}
+.home-goal-percent{flex:none;font-size:.76rem;font-weight:650}
+#module-home .home-goal-row .progress{height:6px;margin:1px 0 0;background:var(--surface3);border-radius:20px;overflow:hidden}
+#module-home .home-goal-row .progress>span{background:var(--goal-color);height:100%;border-radius:inherit;display:block}
+#module-home .home-goal-row:hover .home-goal-name{color:var(--orange)}
+#module-home .home-limits-summary .section-title{margin-bottom:18px}
+.home-limits-totals{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:13px;font-variant-numeric:tabular-nums}
+.home-limits-money{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.home-limits-money>strong{font:700 1.5rem/1.2 'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-.025em}
+.home-limits-money>span{font-size:.76rem;color:var(--muted)}
+#module-home .home-limits-summary #home-budget-caption{font-size:.65rem;line-height:1.5;border-radius:6px;padding:4px 7px;white-space:nowrap;background:var(--surface3);color:var(--text);margin:0;font-weight:500}
+#module-home .home-limits-summary>.progress{height:8px;background:var(--surface3);margin:0}
+#module-home .home-limits-summary>.progress>span{background:var(--orange);height:100%}
+#module-home .home-limits-summary .home-budget-note{margin:12px 0 0;font-size:.73rem}
+@media(max-width:760px){
+ #module-home .home-goals-summary,#module-home .home-limits-summary{padding:16px}
+ #module-home .home-goal-row{padding:16px 0;gap:12px}
+ .home-goal-name{font-size:.84rem}
+ .home-goal-copy{gap:7px}
+ .home-goal-amounts{font-size:.82rem}.home-goal-money span{font-size:.75rem}
+ .home-goal-percent{font-size:.82rem}
+ #module-home .home-limits-summary .section-title{margin-bottom:20px}
+ .home-limits-money>strong{font-size:1.65rem}
+ .home-limits-money>span{font-size:.81rem}
+ #module-home .home-limits-summary #home-budget-caption{font-size:.68rem}
+}
+@media(max-width:350px){.home-goal-row{gap:9px!important}.home-goal-money span{font-size:.7rem}.home-limits-totals{row-gap:9px}.home-limits-money>strong{font-size:1.5rem}}
+
+#module-home .home-limits-summary.over-budget #home-budget-caption{color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--surface))}
+#module-home .home-limits-summary.over-budget>.progress>span{background:var(--red)}

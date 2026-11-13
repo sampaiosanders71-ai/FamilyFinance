@@ -1,16 +1,16 @@
-import {goalAppearance} from './goal-appearance.js?v=2.9.35';
-import {goalIconSVG} from './goal-icons.js?v=2.9.35';
-import {categoryIconSVG,CATEGORY_COLOR_OPTIONS} from './categories.js?v=2.9.35';
-import {canonicalCategoryName} from './category-alias.js?v=2.9.35';
-import { initTotalDetails } from './total-details.js?v=2.9.35';
-import { composition,compositionRow,periodEntries,monthModel,transactionEntry,planningEntries,goalComposition,invoiceEntry } from './total-composition.js?v=2.9.35';
-import { calculateCashStats,localISO,monthISO } from './finance.js?v=2.9.35';
-import {cardDate,invoiceStatusLabel} from './card-domain.js?v=2.9.35';
-import { buildDashboardCashView,buildDashboardCardView } from './dashboard-cash.js?v=2.9.35';
-import { buildReservePosition } from './reserve-position.js?v=2.9.35';
-import { buildFinancialMonthLedger,classifyTransaction } from './financial-ledger.js?v=2.9.35';
-import { summarizePlanning } from './planning-v18.js?v=2.9.35';
-import { monthLabel,formatDate } from './ui.js?v=2.9.35';
+import {goalAppearance} from './goal-appearance.js?v=2.9.42';
+import {goalIconSVG} from './goal-icons.js?v=2.9.42';
+import {categoryIconSVG,CATEGORY_COLOR_OPTIONS} from './categories.js?v=2.9.42';
+import {canonicalCategoryName} from './category-alias.js?v=2.9.42';
+import { initTotalDetails } from './total-details.js?v=2.9.42';
+import { composition,compositionRow,periodEntries,monthModel,transactionEntry,planningEntries,goalComposition,invoiceEntry } from './total-composition.js?v=2.9.42';
+import { calculateCashStats,localISO,monthISO } from './finance.js?v=2.9.42';
+import {cardDate,invoiceStatusLabel} from './card-domain.js?v=2.9.42';
+import { buildDashboardCashView,buildDashboardCardView } from './dashboard-cash.js?v=2.9.42';
+import { buildReservePosition } from './reserve-position.js?v=2.9.42';
+import { buildFinancialMonthLedger,classifyTransaction } from './financial-ledger.js?v=2.9.42';
+import { summarizePlanning } from './planning-v18.js?v=2.9.42';
+import { monthLabel,formatDate } from './ui.js?v=2.9.42';
 
 export function initTotalWorkspace({getContext,onNavigate,verifyFamily}){
  const details=initTotalDetails({onNavigate,getAppearance:visualAppearance});

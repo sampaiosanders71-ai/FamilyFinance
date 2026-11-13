@@ -1,5 +1,5 @@
-import { formatBRL,escapeHTML,toast } from './ui.js?v=2.9.35';
-import { composition } from './total-composition.js?v=2.9.35';
+import { formatBRL,escapeHTML,toast } from './ui.js?v=2.9.42';
+import { composition } from './total-composition.js?v=2.9.42';
 
 export function initTotalDetails({onNavigate=()=>{},onDenied=()=>{},getAppearance=()=>({})}={}){
  const providers=new Map(),dialog=document.getElementById('total-detail-dialog');

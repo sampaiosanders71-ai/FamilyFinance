@@ -1,7 +1,8 @@
-import {recordCardAdjustment,reconcileCardLegacy,editCardInvoice} from './cards.js?v=2.9.35';
-import {cardAdjustmentLabel,parseCardInvoiceAmount,cardToday,cardMonth,cardDate,buildCardInvoices} from './card-domain.js?v=2.9.35';
-import {formOperation,clearFormOperation} from './request-operation.js?v=2.9.35';
-import {formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,toast} from './ui.js?v=2.9.35';
+import {moneyValue,setMoney} from './money-input.js?v=2.9.42';
+import {recordCardAdjustment,reconcileCardLegacy,editCardInvoice} from './cards.js?v=2.9.42';
+import {cardAdjustmentLabel,cardToday,cardMonth,cardDate,buildCardInvoices} from './card-domain.js?v=2.9.42';
+import {formOperation,clearFormOperation} from './request-operation.js?v=2.9.42';
+import {formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,toast} from './ui.js?v=2.9.42';
 const e=escapeHTML,$=id=>document.getElementById(id);
 export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdited}){
  let context=null,busy=false,negativeApproved=false,reconciliationInvoice=null,invoiceEditor=null;
@@ -34,10 +35,10 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
   $('card-adjustment-category').innerHTML=state().categories.filter(c=>!c.is_deleted&&(c.kind==='expense'||c.kind==='both')).map(c=>`<option value="${e(c.name)}">${e(c.name)}</option>`).join('')||'<option>Outros</option>';
   if(purchase?.category)$('card-adjustment-category').value=purchase.category;
   $('card-adjustment-destination').value=original?.destination||'invoice';
-  $('card-adjustment-limit').value=original?.limit_released||0;
+  setMoney('card-adjustment-limit',original?.limit_released||0);
   $('card-adjustment-amount').removeAttribute('max');
-  if(purchase){const remaining=Math.max(0,Math.round((Number(purchase.total_amount)-refunded(purchase.id))*100)/100);$('card-adjustment-amount').max=remaining;$('card-adjustment-amount').value=remaining;}
-  if(original)$('card-adjustment-amount').value=mode==='limit_release'?remainingRelease(original):original.amount;
+  if(purchase){const remaining=Math.max(0,Math.round((Number(purchase.total_amount)-refunded(purchase.id))*100)/100);$('card-adjustment-amount').max=remaining;setMoney('card-adjustment-amount',remaining);}
+  if(original)setMoney('card-adjustment-amount',mode==='limit_release'?remainingRelease(original):original.amount);
   if(mode==='limit_release'){$('card-adjustment-month').value=cardToday().slice(0,7);$('card-adjustment-destination').value='invoice';}
 
   updateFields();openDialog('card-adjustment-dialog');
@@ -55,7 +56,7 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
   if(actualCash)$('card-adjustment-month').value=$('card-adjustment-date').value.slice(0,7);
   $('card-adjustment-limit-wrap').classList.toggle('hidden',!credit);
   if(context.purchaseId&&!context.original){const p=state().purchases.find(p=>p.id===context.purchaseId);if(['purchase_refund','credit_adjustment'].includes(kind))$('card-adjustment-amount').max=Math.max(0,Number(p.total_amount)-refunded(p.id));else $('card-adjustment-amount').removeAttribute('max');}
-  $('card-adjustment-limit').disabled=!credit||!!context.original;$('card-adjustment-limit').max=$('card-adjustment-amount').value;
+  $('card-adjustment-limit').disabled=!credit||!!context.original;$('card-adjustment-limit').max=moneyValue('card-adjustment-amount');
   $('card-adjustment-category-wrap').classList.toggle('hidden',!!context.purchaseId||!!context.original);
   for(const id of ['card-adjustment-kind','card-adjustment-destination','card-adjustment-amount'])$(id).disabled=!!context.original&&!(context.mode==='limit_release'&&id==='card-adjustment-amount');
  }
@@ -63,9 +64,9 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
  async function submitAdjustment(event){
   event.preventDefault();if(busy||!context)return;
   const original=context.original,kind=$('card-adjustment-kind').value;
-  let amount=Number($('card-adjustment-amount').value);
+  let amount=Number(moneyValue('card-adjustment-amount'));
 
-  const input={cardId:context.cardId,month:$('card-adjustment-month').value+'-01',kind,amount,date:$('card-adjustment-date').value,reason:$('card-adjustment-reason').value.trim(),purchaseId:context.purchaseId,destination:$('card-adjustment-destination').value,limitReleased:['purchase_refund','credit_adjustment','reversal'].includes(kind)?Number($('card-adjustment-limit').value):0,category:original?.category||$('card-adjustment-category').value||'Outros',confirmed:$('card-adjustment-confirmed').checked,reversalOf:original?.id||null,allowNegative:negativeApproved};
+  const input={cardId:context.cardId,month:$('card-adjustment-month').value+'-01',kind,amount,date:$('card-adjustment-date').value,reason:$('card-adjustment-reason').value.trim(),purchaseId:context.purchaseId,destination:$('card-adjustment-destination').value,limitReleased:['purchase_refund','credit_adjustment','reversal'].includes(kind)?Number(moneyValue('card-adjustment-limit')):0,category:original?.category||$('card-adjustment-category').value||'Outros',confirmed:$('card-adjustment-confirmed').checked,reversalOf:original?.id||null,allowNegative:negativeApproved};
 
   input.operation=formOperation(event.currentTarget,input);setFormError('card-adjustment-error','');setBusy(true);
   try{await onOperation('Registrando ajuste…','Preservando os vínculos e atualizando os saldos.',async()=>{await recordCardAdjustment(input);await onRefresh();});closeDialog('card-adjustment-dialog');clearFormOperation(event.currentTarget);toast('Registro confirmado.','success');}
@@ -79,14 +80,14 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
   invoiceEditor={invoice:inv,purchaseId:row.purchase_id,date,automaticMonth:true};
   const form=$('invoice-edit-form');form.reset();clearFormOperation(form);setFormError('invoice-edit-error','');
   $('invoice-edit-origin').textContent=`${inv.card.name} · ${monthLabel(cardDate(inv.invoiceMonth))}. Você pode corrigir os dados ou confirmar mantendo o mesmo valor.`;
-  $('invoice-edit-total').value=Number(inv.total).toFixed(2).replace('.',',');
+  setMoney('invoice-edit-total',inv.total);
   $('invoice-edit-date').value=date;$('invoice-edit-date').max=cardToday();
-  $('invoice-edit-month').value=inv.invoiceMonth.slice(0,7);$('invoice-edit-limit').value=0;
+  $('invoice-edit-month').value=inv.invoiceMonth.slice(0,7);setMoney('invoice-edit-limit',0);
   updateInvoiceEditor();openDialog('invoice-edit-dialog');
  }
  function updateInvoiceEditor(){
   if(!invoiceEditor)return;
-  const total=parseCardInvoiceAmount($('invoice-edit-total').value),delta=total===null?null:Math.round((total-invoiceEditor.invoice.total)*100)/100;
+  const total=($('invoice-edit-total').value.trim()?moneyValue('invoice-edit-total'):null),delta=total===null?null:Math.round((total-invoiceEditor.invoice.total)*100)/100;
   const moved=$('invoice-edit-month').value!==invoiceEditor.invoice.invoiceMonth.slice(0,7);
   $('invoice-edit-preview').textContent=total===null?'Informe um valor válido, por exemplo 1216,81.':
    `${delta===0?'O valor será mantido. A confirmação pode ser salva.':`Correção de ${formatBRL(Math.abs(delta))} ${delta<0?'a menos':'a mais'}.`}${moved?' O registro será transferido para a competência escolhida, sem duplicar a fatura.':''}`;
@@ -96,14 +97,14 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
  }
  async function submitInvoiceEditor(event){
   event.preventDefault();if(busy||!invoiceEditor)return;
-  const editor=invoiceEditor,inv=editor.invoice,total=parseCardInvoiceAmount($('invoice-edit-total').value);
+  const editor=invoiceEditor,inv=editor.invoice,total=($('invoice-edit-total').value.trim()?moneyValue('invoice-edit-total'):null);
   const date=$('invoice-edit-date').value,month=$('invoice-edit-month').value+'-01',reason=$('invoice-edit-reason').value.trim(),confirmed=$('invoice-edit-confirmed').checked;
   setFormError('invoice-edit-error','');
   if(total===null)return setFormError('invoice-edit-error','Informe um valor válido, com até duas casas decimais. O valor atual também pode ser confirmado.');
   if(!date||date>cardToday())return setFormError('invoice-edit-error','Informe uma data válida até hoje.');
   if(!/^\d{4}-\d{2}-01$/.test(month))return setFormError('invoice-edit-error','Selecione a competência da fatura.');
   if(reason.length<3||!confirmed)return setFormError('invoice-edit-error','Informe o motivo e confirme os dados da fatura.');
-  const input={invoiceId:inv.id,purchaseId:editor.purchaseId,expectedTotal:inv.total,expectedDate:editor.date,expectedMonth:inv.invoiceMonth,total,date,month,reason,confirmed,limitReleased:total<inv.total?Number($('invoice-edit-limit').value)||0:0};
+  const input={invoiceId:inv.id,purchaseId:editor.purchaseId,expectedTotal:inv.total,expectedDate:editor.date,expectedMonth:inv.invoiceMonth,total,date,month,reason,confirmed,limitReleased:total<inv.total?Number(moneyValue('invoice-edit-limit'))||0:0};
   input.operation=formOperation(event.currentTarget,input);setBusy(true);
   try{await onOperation('Salvando fatura…','Conferindo os dados e preservando o histórico.',async()=>{
    const result=await editCardInvoice(input);onInvoiceEdited?.(result);await onRefresh();
@@ -128,10 +129,10 @@ export function initCardAdjustments({getState,onRefresh,onOperation,onInvoiceEdi
  function selectReconciliation(){
   const row=reconciliationInvoice?.rows.find(r=>r.id===$('card-conciliation-installment').value);if(!row)return;
   $('card-conciliation-amount').max=Math.min(Number(row.amount),reconciliationInvoice.reconciledAmount+covered(row.id));
-  $('card-conciliation-amount').value=covered(row.id)||Math.min(Number(row.amount),reconciliationInvoice.reconciledAmount);
+  setMoney('card-conciliation-amount',covered(row.id)||Math.min(Number(row.amount),reconciliationInvoice.reconciledAmount));
  }
  async function submitReconciliation(event){
-  event.preventDefault();if(busy)return;const input={invoiceId:reconciliationInvoice.id,installmentId:$('card-conciliation-installment').value,amount:Number($('card-conciliation-amount').value),reason:$('card-conciliation-reason').value.trim(),confirmed:$('card-conciliation-confirmed').checked};input.operation=formOperation(event.currentTarget,input);setBusy(true);setFormError('card-conciliation-error','');
+  event.preventDefault();if(busy)return;const input={invoiceId:reconciliationInvoice.id,installmentId:$('card-conciliation-installment').value,amount:Number(moneyValue('card-conciliation-amount')),reason:$('card-conciliation-reason').value.trim(),confirmed:$('card-conciliation-confirmed').checked};input.operation=formOperation(event.currentTarget,input);setBusy(true);setFormError('card-conciliation-error','');
   try{await onOperation('Conciliando saldo…','Compensando apenas os valores confirmados.',async()=>{await reconcileCardLegacy(input);await onRefresh();});closeDialog('card-conciliation-dialog');clearFormOperation(event.currentTarget);toast('Conciliação registrada.','success');}catch(error){setFormError('card-conciliation-error',message(error));}finally{setBusy(false);}
  }
  function openLinkedTransaction(id){

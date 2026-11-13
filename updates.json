@@ -1,23 +1,18 @@
 {
-  "version": "2.9.35",
-  "publishedAt": "05/11/2026",
-  "improvementCount": 2,
-  "title": "Faturas pendentes em primeiro lugar",
-  "summary": "O Início acompanha o que falta pagar e calcula a previsão pelos vencimentos.",
+  "version": "2.9.42",
+  "publishedAt": "12/11/2026",
+  "improvementCount": 1,
+  "title": "Instalação do teste separada do oficial",
+  "summary": "O app de teste ganha uma identidade de instalação própria, mantendo o nome, o ícone e a paleta.",
   "highlights": [
     {
-      "title": "Faturas a pagar",
-      "text": "Mantém a fatura pendente mais antiga de cada cartão até sua quitação. Pagamento parcial mostra apenas o restante; depois passa à próxima fatura cadastrada com saldo."
-    },
-    {
-      "title": "Previsão pelo vencimento",
-      "text": "O saldo previsto considera todas as faturas pendentes vencidas ou com vencimento até o fim do mês selecionado. Faturas de meses seguintes ficam para a previsão correspondente."
+      "title": "Cada link com seu aplicativo",
+      "text": "A identidade do teste e seu endereço de abertura ficam separados do oficial."
     }
   ],
   "details": [
-    "A consulta mostra competência, vencimento e situação da fatura, com quatro registros por página.",
-    "Histórico e faturas futuras continuam acessíveis no módulo Cartões.",
-    "Preserva pagamentos, dados e cálculos de consumo.",
-    "Separa o cache offline do teste e do oficial pelo endereço do app."
+    "Se instalou o teste antes desta correção, desinstale somente esse app e instale novamente pelo link de teste, no navegador. A instalação antiga conserva a identidade compartilhada.",
+    "O link oficial deve abrir no navegador enquanto apenas o teste estiver instalado.",
+    "Essa correção não altera seus lançamentos."
   ]
 }

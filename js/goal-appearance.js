@@ -1,4 +1,4 @@
-import { ADDITIONAL_CATEGORY_ICONS } from './category-extra-icons.js?v=2.9.35';
+import { ADDITIONAL_CATEGORY_ICONS } from './category-extra-icons.js?v=2.9.42';
 
 export const GOAL_COLORS=['blue','purple','cyan','amber','teal','pink','orange','indigo'];
 export const GOAL_DEFAULT_ICON='goal-target';

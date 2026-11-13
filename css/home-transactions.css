@@ -1,0 +1,41 @@
+/* Últimos lançamentos: a mesma apresentação do histórico, em cinco linhas no Início. */
+#module-home .home-transactions-summary{padding:0;overflow:hidden;background:var(--surface);box-shadow:none}
+#module-home .home-transactions-summary>.section-title{padding:16px;margin:0;align-items:center}
+#module-home #home-transactions{display:block;margin:0}
+#module-home #home-transactions>.empty-state{margin:0;padding:16px}
+#module-home #home-transactions .home-tx-entry{display:grid;grid-template-columns:36px minmax(0,1fr) 120px;gap:12px;align-items:center;min-width:0;width:100%;padding:13px 16px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}
+#module-home #home-transactions .home-tx-entry:first-child{border-top:1px solid var(--line)}
+#module-home #home-transactions .home-tx-entry:last-child{border-bottom:0}
+#module-home #home-transactions .home-tx-entry:hover{background:color-mix(in srgb,var(--surface2) 55%,transparent)}
+#module-home #home-transactions .category-icon-tile,#module-home #home-transactions .home-transaction-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px}
+#module-home #home-transactions .category-icon-tile svg,#module-home #home-transactions .home-transaction-icon svg{width:21px;height:21px}
+#module-home #home-transactions .tx-copy{display:grid;gap:4px;min-width:0;justify-items:start;align-content:center}
+#module-home #home-transactions .tx-title{font-size:.83rem;font-weight:600;line-height:1.4;max-width:100%;overflow-wrap:anywhere}
+#module-home #home-transactions .tx-meta{display:flex;flex-wrap:wrap;gap:2px 6px;font-size:.66rem;line-height:1.45;max-width:100%;overflow-wrap:anywhere}
+#module-home #home-transactions .tx-meta>span+span:before{content:'·';margin-right:6px}
+#module-home #home-transactions .tx-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-width:0;max-width:100%}
+#module-home #home-transactions .tx-value{font-size:.84rem;line-height:1.4;white-space:normal;overflow-wrap:anywhere;max-width:100%;font-variant-numeric:tabular-nums}
+#module-home #home-transactions .row-actions{display:flex;justify-content:flex-end;flex-wrap:nowrap;gap:6px;margin:0;grid-column:auto}
+#module-home #home-transactions .row-actions .mini-btn{display:grid;place-items:center;flex:none;width:33px;min-width:33px;height:33px;min-height:33px;padding:7px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted)}
+#module-home #home-transactions .row-actions .mini-btn.danger{color:var(--red)}
+#module-home #home-transactions .row-actions .mini-btn:hover{background:var(--surface2)}
+#module-home #home-transactions .row-actions .ui-icon{width:15px;height:15px}
+#module-home #home-transactions .home-payment-note{font-size:.65rem;max-width:100%;text-align:right}
+@media(max-width:760px){
+ #module-home .home-transactions-summary>.section-title{padding:14px}
+ #module-home #home-transactions .home-tx-entry{grid-template-columns:30px minmax(0,1fr) 108px;gap:10px;padding:12px}
+ #module-home #home-transactions .category-icon-tile,#module-home #home-transactions .home-transaction-icon{width:30px;height:32px;border-radius:9px}
+ #module-home #home-transactions .category-icon-tile svg,#module-home #home-transactions .home-transaction-icon svg{width:18px;height:18px}
+ #module-home #home-transactions .tx-title{font-size:.82rem}
+ #module-home #home-transactions .tx-meta{font-size:.62rem}
+ #module-home #home-transactions .tx-value{font-size:.8rem}
+ #module-home #home-transactions .row-actions .mini-btn{width:35px;min-width:35px;height:35px;min-height:35px;padding:8px;border-radius:9px}
+}
+@media(max-width:360px){
+ #module-home #home-transactions .home-tx-entry{grid-template-columns:30px minmax(0,1fr);gap:8px 10px}
+ #module-home #home-transactions .category-icon-tile,#module-home #home-transactions .home-transaction-icon{grid-column:1;grid-row:1;align-self:start;margin-top:18px}
+ #module-home #home-transactions .tx-copy{grid-column:2;grid-row:1}
+ #module-home #home-transactions .tx-side{grid-column:2;grid-row:2;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;width:100%}
+ #module-home #home-transactions .tx-value{min-width:0;text-align:left}
+ #module-home #home-transactions .row-actions{flex:none}
+}

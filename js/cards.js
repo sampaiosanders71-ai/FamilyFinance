@@ -1,9 +1,9 @@
-import { buildCardInvoices, cardMonth,cardCalendarDates,cardDate } from './card-domain.js?v=2.9.35';
-import { operationIds, insertOnce } from './request-operation.js?v=2.9.35';
-import { listAllRows } from './pagination.js?v=2.9.35';
-import { supabase } from './supabase.js?v=2.9.35';
-import { getCurrentUser } from './database.js?v=2.9.35';
-import { monthISO } from './finance.js?v=2.9.35';
+import { buildCardInvoices, cardMonth,cardCalendarDates,cardDate } from './card-domain.js?v=2.9.42';
+import { operationIds, insertOnce } from './request-operation.js?v=2.9.42';
+import { listAllRows } from './pagination.js?v=2.9.42';
+import { supabase } from './supabase.js?v=2.9.42';
+import { getCurrentUser } from './database.js?v=2.9.42';
+import { monthISO } from './finance.js?v=2.9.42';
 
 export async function listCards() {
   const user = await getCurrentUser();
@@ -126,6 +126,8 @@ export async function listCardPayments(){
   return listAllRows(options=>supabase.from('ff2_card_payments').select('*',options).eq('user_id',user.id).order('paid_on',{ascending:false}).order('id'),'Pagamentos de cartão');
 }
 export async function payCardInvoice(input){
+ if(input.differenceKind!==undefined){const {data,error}=await supabase.rpc('ff2_pay_card_invoice_2941',{p_card_id:input.cardId,p_invoice_month:input.month,p_paid_on:input.date,p_amount:input.amount,p_client_request_id:operationIds(input)[0],p_allow_negative:!!input.allowNegative,p_mode:input.mode,p_expected_due:input.expectedDue,p_difference_kind:input.differenceKind});if(error)throw error;return data;}
+
  const {data,error}=await supabase.rpc('ff2_pay_card_invoice_2914',{
   p_card_id:input.cardId,p_invoice_month:input.month,p_paid_on:input.date,
   p_amount:input.amount,p_client_request_id:operationIds(input)[0],p_allow_negative:!!input.allowNegative

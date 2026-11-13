@@ -1,14 +1,15 @@
-import {invoiceWorkspaceModel,invoiceWorkspacePage} from './invoice-workspace-model.js?v=2.9.35';
-import { limitComposition } from './total-composition.js?v=2.9.35';
-import {pagedList,recentRecords} from './list-pagination.js?v=2.9.35';
-import {initCardAdjustments} from './card-adjustments-workspace.js?v=2.9.35';
-import { buildCardInvoices,cardLimitSummary,cardToday,cardMonth,cardDate,invoiceStatusLabel,cardAdjustmentLabel } from './card-domain.js?v=2.9.35';
-import { payCardInvoice,reverseCardPayment,deleteCard } from './cards.js?v=2.9.35';
-import { formOperation,clearFormOperation } from './request-operation.js?v=2.9.35';
-import { calculateCashStats } from './finance.js?v=2.9.35';
-import { formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,toast } from './ui.js?v=2.9.35';
-import { categoryIconSVG } from './categories.js?v=2.9.35';
-import { canonicalCategoryName } from './category-alias.js?v=2.9.35';
+import {moneyValue,setMoney} from './money-input.js?v=2.9.42';
+import {invoiceWorkspaceModel,invoiceWorkspacePage} from './invoice-workspace-model.js?v=2.9.42';
+import { limitComposition } from './total-composition.js?v=2.9.42';
+import {pagedList,recentRecords} from './list-pagination.js?v=2.9.42';
+import {initCardAdjustments} from './card-adjustments-workspace.js?v=2.9.42';
+import { buildCardInvoices,cardLimitSummary,cardToday,cardMonth,cardDate,invoiceStatusLabel,cardAdjustmentLabel } from './card-domain.js?v=2.9.42';
+import { payCardInvoice,reverseCardPayment,deleteCard } from './cards.js?v=2.9.42';
+import { formOperation,clearFormOperation } from './request-operation.js?v=2.9.42';
+import { calculateCashStats } from './finance.js?v=2.9.42';
+import { formatBRL,formatDate,monthLabel,escapeHTML,openDialog,closeDialog,setFormError,toast } from './ui.js?v=2.9.42';
+import { categoryIconSVG } from './categories.js?v=2.9.42';
+import { canonicalCategoryName } from './category-alias.js?v=2.9.42';
 const e=escapeHTML;
 const icon=(name)=>`<svg class="ui-icon" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
 const shortMonth=key=>new Intl.DateTimeFormat('pt-BR',{month:'short',year:'numeric'}).format(cardDate(key)).replace('.','').replace(' de ','/');
@@ -120,7 +121,7 @@ export function initCardsWorkspace({totalDetails,getState,onRefresh,onOperation,
   if(row.kind==='payment'){
    const reversed=!!source?.reversed_at;
    const options=source?`${source.transaction_id?`<button type="button" class="card-history-link" data-card-linked-transaction="${e(source.transaction_id)}">Ver lançamento</button>`:''}${source.reversal_transaction_id?`<button type="button" class="card-history-link" data-card-linked-transaction="${e(source.reversal_transaction_id)}">Ver devolução</button>`:''}${!reversed?`<button type="button" class="card-history-link" data-card-reverse="${e(source.id)}">Corrigir pagamento</button>`:''}`:'';
-   return `<div class="invoice-entry" data-invoice-row="${e(row.id)}">${icon('card')}<span><strong>${e(row.label)}</strong><small>${source?formatDate(source.paid_on):e(row.meta)}${reversed?' · Revertido':''}</small></span><b class="${reversed?'muted':'positive'}">${e(formatBRL(source?.amount??row.amount))}</b>${options?`<details class="invoice-row-options"><summary aria-label="Ações do pagamento">•••</summary><div>${reversed&&source.reversal_reason?`<p>${e(source.reversal_reason)}</p>`:''}${options}</div></details>`:''}</div>`;
+   return `<div class="invoice-entry" data-invoice-row="${e(row.id)}">${icon('card')}<span><strong>${e(row.label)}</strong><small>${source?formatDate(source.paid_on):e(row.meta)}${reversed?' · Revertido':''}${source?.difference_kind==='charges'?' · Inclui '+e(formatBRL(source.difference_amount))+' em encargos':source?.difference_kind==='credit'?' · Crédito: '+e(formatBRL(source.difference_amount)):''}</small></span><b class="${reversed?'muted':'positive'}">${e(formatBRL(source?.amount??row.amount))}</b>${options?`<details class="invoice-row-options"><summary aria-label="Ações do pagamento">•••</summary><div>${reversed&&source.reversal_reason?`<p>${e(source.reversal_reason)}</p>`:''}${options}</div></details>`:''}</div>`;
   }
   if(row.kind==='adjustment'&&source){
    return `<div class="invoice-entry" data-invoice-row="${e(row.id)}">${icon('receipt')}<span><strong>${e(cardAdjustmentLabel(source.kind))}</strong><small title="${e(source.reason||'')}">${!row.amount?'Sem efeito na fatura · ':''}${formatDate(source.occurred_on)} · ${e(source.reason||row.meta)}</small></span><b class="${row.amount<0?'negative':''}">${e(formatBRL(row.amount||source.amount))}</b>${adjustmentsUI.adjustmentActions(source,inv)}</div>`;
@@ -173,40 +174,52 @@ export function initCardsWorkspace({totalDetails,getState,onRefresh,onOperation,
   document.getElementById('card-purchase-refund').disabled=purchase.record_kind==='invoice_opening';
   openDialog('card-purchase-dialog');
  }
- function paymentFieldsChanged(){negativeApproved=false;document.getElementById('card-payment-warning').classList.add('hidden');document.getElementById('card-payment-save').textContent='Confirmar pagamento';setFormError('card-payment-error','');const partial=document.getElementById('card-payment-mode').value==='partial';document.getElementById('card-payment-amount-wrap').classList.toggle('hidden',!partial);document.getElementById('card-payment-amount').required=partial;document.getElementById('card-payment-amount').disabled=!partial;}
+ function paymentFieldsChanged({keepNegative=false}={}){
+  if(!keepNegative){negativeApproved=false;document.getElementById('card-payment-warning').classList.add('hidden');setFormError('card-payment-error','');}
+  const inv=activeInvoice&&selectedInvoice(activeInvoice.cardId,activeInvoice.key);if(!inv)return;
+  const amount=moneyValue('card-payment-amount'),paidCents=Math.round(amount*100),dueCents=Math.round(inv.balanceDue*100),partial=document.getElementById('card-payment-mode').value==='partial';
+  const mismatch=amount>0&&(partial?paidCents>=dueCents:paidCents<dueCents);
+  const notice=document.getElementById('card-payment-type-notice'),fix=document.getElementById('card-payment-type-fix');notice.classList.toggle('hidden',!mismatch);
+  if(mismatch){document.getElementById('card-payment-type-message').textContent=partial?'Este valor quita o saldo pendente.':'O valor informado é menor que o saldo pendente.';fix.dataset.mode=partial?'full':'partial';fix.textContent=partial?'Registrar como integral':'Registrar como parcial';}
+  const difference=(paidCents-dueCents)/100,kind=document.getElementById('card-payment-difference-kind');
+  document.getElementById('card-payment-difference').classList.toggle('hidden',difference<=0);kind.required=difference>0;kind.disabled=difference<=0||paying;
+  if(difference>0)document.getElementById('card-payment-difference-value').textContent='Diferença: +'+formatBRL(difference);
+  document.getElementById('card-payment-difference-help').textContent=kind.value==='charges'?'Registre somente encargos já cobrados pelo emissor nesta quitação. Encargos cobrados em outra fatura ficam naquela competência.':kind.value==='credit'?'O valor excedente fica identificado como crédito no cartão. A aplicação em outra fatura depende da confirmação do emissor.':'';
+  const date=document.getElementById('card-payment-date').value||cardToday();document.getElementById('card-payment-date-hint').textContent=(date===cardToday()?'Hoje — ':'')+formatDate(date);document.getElementById('card-payment-date-display').textContent=document.getElementById('card-payment-date-hint').textContent;
+  const button=document.getElementById('card-payment-save');button.disabled=paying||!Number.isFinite(amount)||amount<=0||mismatch||difference>0&&!['charges','credit'].includes(kind.value);button.textContent=paying?'Registrando…':negativeApproved?'Confirmar mesmo assim':'Confirmar pagamento';
+ }
  function openPayment(){
   const inv=activeInvoice&&selectedInvoice(activeInvoice.cardId,activeInvoice.key);if(!inv||inv.balanceDue<=0)return;
   const form=document.getElementById('card-payment-form');form.reset();clearFormOperation(form);
-  document.getElementById('card-payment-title').textContent=`Pagar fatura · ${inv.card.name}`;
-  document.getElementById('card-payment-due').textContent=formatBRL(inv.balanceDue);
+  document.getElementById('card-payment-title').textContent='Registrar pagamento';document.getElementById('card-payment-origin').textContent=inv.card.name+' · '+monthLabel(cardDate(inv.invoiceMonth));
+  document.getElementById('card-payment-due').value=formatBRL(inv.balanceDue);
   const date=document.getElementById('card-payment-date');date.max=cardToday();date.value=cardToday();
-  document.getElementById('card-payment-amount').max=inv.balanceDue.toFixed(2);paymentFieldsChanged();openDialog('card-payment-dialog');
+  document.getElementById('card-payment-amount').removeAttribute('max');setMoney('card-payment-amount','');paymentFieldsChanged();openDialog('card-payment-dialog');
  }
+
  function showNegative(before,amount,after){
   document.getElementById('card-payment-warning').innerHTML=`<strong>O pagamento ultrapassa seu saldo disponível.</strong><dl><div><dt>Saldo disponível</dt><dd>${e(formatBRL(before))}</dd></div><div><dt>Pagamento</dt><dd>${e(formatBRL(amount))}</dd></div><div><dt>Saldo após pagamento</dt><dd>${e(formatBRL(after))}</dd></div></dl><p>Você pode confirmar para continuar com saldo negativo.</p>`;
   document.getElementById('card-payment-warning').classList.remove('hidden');document.getElementById('card-payment-save').textContent='Confirmar mesmo assim';negativeApproved=true;
  }
- function setPaymentBusy(busy){paying=busy;document.querySelectorAll('#card-payment-dialog button,#card-payment-dialog input,#card-payment-dialog select').forEach(el=>{el.disabled=busy});document.getElementById('card-payment-save').textContent=busy?'Registrando…':'Confirmar pagamento';if(!busy)document.getElementById('card-payment-amount').disabled=document.getElementById('card-payment-mode').value!=='partial'}
+ function setPaymentBusy(busy){paying=busy;document.querySelectorAll('#card-payment-dialog button,#card-payment-dialog input,#card-payment-dialog select').forEach(el=>{el.disabled=busy});paymentFieldsChanged({keepNegative:true});}
  async function submitPayment(event){
   event.preventDefault();if(paying)return;
   const inv=activeInvoice&&selectedInvoice(activeInvoice.cardId,activeInvoice.key);if(!inv)return;
-  const form=event.currentTarget,partial=document.getElementById('card-payment-mode').value==='partial',date=document.getElementById('card-payment-date').value;
-  const amount=partial?Number(document.getElementById('card-payment-amount').value):inv.balanceDue;
+  const form=event.currentTarget,mode=document.getElementById('card-payment-mode').value,date=document.getElementById('card-payment-date').value||cardToday(),amount=moneyValue('card-payment-amount'),delta=Math.round((amount-inv.balanceDue)*100)/100;
   if(!date||date>cardToday()){setFormError('card-payment-error','Informe uma data de pagamento até hoje.');return;}
-  if(!Number.isFinite(amount)||amount<=0||amount>inv.balanceDue||Math.abs(amount*100-Math.round(amount*100))>1e-6){setFormError('card-payment-error','Informe um valor válido até o saldo devido.');return;}
+  if(!Number.isFinite(amount)||amount<=0){setFormError('card-payment-error','Informe quanto foi pago.');return;}
+  if(mode==='partial'&&delta>=0||mode==='full'&&delta<0){paymentFieldsChanged();return;}
+  const differenceKind=delta>0?document.getElementById('card-payment-difference-kind').value:'none';
+  if(delta>0&&!['charges','credit'].includes(differenceKind)){setFormError('card-payment-error','Identifique o motivo da diferença.');return;}
   const balance=calculateCashStats(state().transactions).balance;
   if(balance-amount<0&&!negativeApproved){showNegative(balance,amount,balance-amount);return;}
-  const input={cardId:inv.card.id,month:inv.invoiceMonth,date,amount:partial?amount:null,allowNegative:negativeApproved};input.operation=formOperation(form,input);
+  const input={cardId:inv.card.id,month:inv.invoiceMonth,date,amount,mode,expectedDue:inv.balanceDue,differenceKind,allowNegative:negativeApproved};input.operation=formOperation(form,input);
   setPaymentBusy(true);setFormError('card-payment-error','');
-  try{
-   await onOperation('Registrando pagamento…','Atualizando fatura, lançamento e limite juntos.',async()=>{await payCardInvoice(input);await onRefresh();},{animateDashboard:true});
-   closeDialog('card-payment-dialog');clearFormOperation(form);render();renderInvoice();toast('Pagamento registrado.','success');
-  }catch(error){
-   if(error.message==='NEGATIVE_BALANCE_CONFIRMATION'){
-    try{const detail=JSON.parse(error.details||error.detail);showNegative(detail.before,detail.payment,detail.after)}catch{showNegative(balance,amount,balance-amount)}
-   }else setFormError('card-payment-error',cardErrorMessage(error));
-  }finally{setPaymentBusy(false);if(negativeApproved&&document.getElementById('card-payment-dialog').open)document.getElementById('card-payment-save').textContent='Confirmar mesmo assim';}
+  try{await onOperation('Registrando pagamento…','Atualizando fatura, valor pago e diferença juntos.',async()=>{await payCardInvoice(input);await onRefresh();},{animateDashboard:true});closeDialog('card-payment-dialog');clearFormOperation(form);render();renderInvoice();toast('Pagamento registrado.','success');}
+  catch(error){if(error.message==='NEGATIVE_BALANCE_CONFIRMATION'){try{const detail=JSON.parse(error.details||error.detail);showNegative(detail.before,detail.payment,detail.after)}catch{showNegative(balance,amount,balance-amount)}}else setFormError('card-payment-error',cardErrorMessage(error));}
+  finally{setPaymentBusy(false);}
  }
+
  async function submitReversal(event){
   event.preventDefault();if(paying)return;
   const id=document.getElementById('card-reversal-id').value,reason=document.getElementById('card-reversal-reason').value.trim();if(reason.length<3){setFormError('card-reversal-error','Informe o motivo da correção.');return;}
@@ -281,13 +294,16 @@ export function initCardsWorkspace({totalDetails,getState,onRefresh,onOperation,
   historyCardId=null;if(!resetting)document.querySelector('#card-detail [data-card-invoice-history]')?.focus({preventScroll:true});
  });
  document.getElementById('card-payment-form').addEventListener('submit',submitPayment);
- for(const id of ['card-payment-mode','card-payment-date','card-payment-amount'])document.getElementById(id).addEventListener('input',paymentFieldsChanged);
+ document.getElementById('card-payment-date-open').addEventListener('click',()=>{const field=document.getElementById('card-payment-date');try{if(field.showPicker)field.showPicker();else{field.focus();field.click();}}catch{field.focus();field.click();}});
+ for(const id of ['card-payment-date','card-payment-amount','card-payment-difference-kind'])document.getElementById(id).addEventListener('input',()=>paymentFieldsChanged());
+ document.querySelectorAll('[name="card-payment-type"]').forEach(radio=>radio.addEventListener('change',()=>{document.getElementById('card-payment-mode').value=radio.value;paymentFieldsChanged();}));
+ document.getElementById('card-payment-type-fix').addEventListener('click',event=>{const mode=event.currentTarget.dataset.mode;document.querySelector(`[name="card-payment-type"][value="${mode}"]`).checked=true;document.getElementById('card-payment-mode').value=mode;paymentFieldsChanged();});
  document.getElementById('card-reversal-form').addEventListener('submit',submitReversal);
  for(const id of ['card-payment-dialog','card-reversal-dialog'])document.getElementById(id).addEventListener('cancel',event=>{if(paying)event.preventDefault()});
  return {render,openInvoice,openInvoiceById,locateInvoiceItem,reset(){resetting=true;returnToHistory=false;invoiceOpener=null;editingPurchases=false;delete document.getElementById('card-invoice-history-dialog').dataset.invoiceSuspended;adjustmentsUI.reset();selectedCardId=null;activeInvoice=null;activePurchase=null;historyCardId=null;for(const id of ['card-invoice-history-dialog','invoice-dialog','card-payment-dialog','card-purchase-dialog','card-reversal-dialog'])closeDialog(id);queueMicrotask(()=>{resetting=false});},isBusy:()=>paying||adjustmentsUI.isBusy()};
 }
 export function cardErrorMessage(error){
- const messages={PURCHASE_NOT_FOUND:'Esta compra não está disponível ou foi excluída. Atualize a fatura.',AUTH_REQUIRED:'Entre novamente para editar a compra.',SESSION_CHANGED:'Sua sessão mudou. Entre novamente para editar a compra.',SETTLED_INVOICE_IMMUTABLE:'Esta fatura possui histórico quitado e não pode ser reescrita. Registre um ajuste em outra competência.',PURCHASE_HAS_ADJUSTMENTS:'Esta compra possui ajustes ou conciliação. Corrija somente descrição e categoria.',INVOICE_ALREADY_PAID:'Esta fatura já está quitada. Atualize os dados.',INVOICE_HAS_PAYMENTS:'Corrija os pagamentos desta fatura antes de alterar a compra.',INVALID_PAYMENT_AMOUNT:'O pagamento deve ser maior que zero e até o saldo devido.',INVALID_PAYMENT_DATE:'Informe uma data de pagamento até hoje.',CARD_HAS_BALANCE:'Quite todas as faturas antes de arquivar o cartão.',CARD_PAYMENT_LINKED:'Corrija este pagamento nos detalhes da fatura.',RECONCILIATION_LOCKED:'Este registro é um saldo de conciliação e mantém o histórico anterior.',REQUEST_CONFLICT:'Esta operação mudou. Feche o formulário e tente novamente.',INVALID_INSTALLMENTS:'Revise a quantidade de parcelas e o valor da compra.'};
+ const messages={PURCHASE_NOT_FOUND:'Esta compra não está disponível ou foi excluída. Atualize a fatura.',AUTH_REQUIRED:'Entre novamente para editar a compra.',SESSION_CHANGED:'Sua sessão mudou. Entre novamente para editar a compra.',SETTLED_INVOICE_IMMUTABLE:'Esta fatura possui histórico quitado e não pode ser reescrita. Registre um ajuste em outra competência.',PURCHASE_HAS_ADJUSTMENTS:'Esta compra possui ajustes ou conciliação. Corrija somente descrição e categoria.',INVOICE_ALREADY_PAID:'Esta fatura já está quitada. Atualize os dados.',INVOICE_HAS_PAYMENTS:'Corrija os pagamentos desta fatura antes de alterar a compra.',PAYMENT_BALANCE_CHANGED:'O saldo da fatura mudou. Feche o pagamento e confira os valores atualizados.',PAYMENT_TYPE_MISMATCH:'Confira se o pagamento é parcial ou integral.',PAYMENT_DIFFERENCE_REQUIRED:'Identifique o motivo da diferença.',INVALID_PAYMENT_AMOUNT:'Informe um valor de pagamento válido.',INVALID_PAYMENT_DATE:'Informe uma data de pagamento até hoje.',CARD_HAS_BALANCE:'Quite todas as faturas antes de arquivar o cartão.',CARD_PAYMENT_LINKED:'Corrija este pagamento nos detalhes da fatura.',RECONCILIATION_LOCKED:'Este registro é um saldo de conciliação e mantém o histórico anterior.',REQUEST_CONFLICT:'Esta operação mudou. Feche o formulário e tente novamente.',INVALID_INSTALLMENTS:'Revise a quantidade de parcelas e o valor da compra.'};
  if(error?.code==='42501')return 'Você não tem acesso para editar esta compra.';
  if(/Failed to fetch|NetworkError|Load failed/i.test(error?.message||''))return 'Não foi possível carregar a compra. Verifique a conexão e tente novamente.';
  return messages[error?.message]||(/^(Revise|Ative|Corrija)/.test(error?.message||'')?error.message:'Não foi possível concluir. Tente novamente.');

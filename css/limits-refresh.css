@@ -1,0 +1,51 @@
+/* Planejamento → Limites: um resumo por categoria, sem métricas duplicadas. */
+#planning-view-limits .budget-category-panel-head h3{flex-wrap:wrap;gap:8px}
+#budget-category-title-count{font-size:.68rem;font-weight:500;color:var(--muted)}
+#planning-view-limits #budget-items{gap:12px}
+#planning-view-limits #budget-items .budget-limit-clean{display:grid;grid-template-columns:minmax(170px,.85fr) minmax(130px,1fr) minmax(270px,1.05fr) 155px;grid-template-areas:'identity bar stats actions';gap:15px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface2);min-width:0;box-shadow:none}
+#planning-view-limits #budget-items .budget-limit-clean.over{border-color:color-mix(in srgb,var(--red) 40%,var(--line))}
+#planning-view-limits .budget-limit-clean>.budget-category-identity{grid-area:identity;display:flex;align-items:center;gap:11px;min-width:0}
+#planning-view-limits .budget-limit-clean .budget-category-identity .category-icon-tile{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;flex:none}
+#planning-view-limits .budget-limit-clean .budget-category-identity .category-icon-tile svg{width:23px;height:23px}
+#planning-view-limits .budget-limit-clean .budget-category-identity>div{display:grid;gap:4px;min-width:0}
+#planning-view-limits .budget-limit-clean .budget-category-identity strong{font-size:.85rem;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+#planning-view-limits .budget-limit-clean .budget-category-identity small{font-size:.65rem;line-height:1.4;color:var(--muted)}
+#planning-view-limits .budget-clean-bar{grid-area:bar;min-width:0}
+#planning-view-limits .budget-clean-bar .layered-limit{height:8px}
+#planning-view-limits .budget-clean-stats{grid-area:stats;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;min-width:0}
+#planning-view-limits .budget-clean-stats>div{display:grid;align-content:center;gap:4px;padding-left:10px;border-left:1px solid var(--line);min-width:0}
+#planning-view-limits .budget-clean-stats span{font-size:.64rem;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
+#planning-view-limits .budget-clean-stats strong{font:650 .82rem/1.4 Inter,system-ui,sans-serif;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#planning-view-limits .budget-clean-stats small{font-size:.59rem;color:var(--muted);line-height:1.4;overflow-wrap:anywhere}
+#planning-view-limits .budget-realized{color:var(--orange)}
+#planning-view-limits .budget-committed{color:var(--orange2)}
+#planning-view-limits .budget-clean-actions{grid-area:actions;justify-self:end;min-width:0}
+#planning-view-limits .budget-clean-desktop-actions{display:flex;gap:6px;justify-content:flex-end}
+#planning-view-limits .budget-clean-desktop-actions .mini-btn{font-size:.7rem;min-height:33px;padding:7px 10px;white-space:nowrap;background:transparent;border:1px solid var(--line);border-radius:9px;color:var(--text)}
+#planning-view-limits .budget-clean-desktop-actions .danger{color:var(--red)}
+#planning-view-limits .budget-clean-menu{display:none}
+#planning-view-limits .budget-limit-clean.no-limit{grid-template-areas:'identity stats stats actions'}
+@media(max-width:1350px){
+ #planning-view-limits #budget-items .budget-limit-clean{grid-template-columns:minmax(170px,1fr) minmax(260px,1.2fr) auto;grid-template-areas:'identity stats actions' 'bar bar bar';gap:14px}
+ #planning-view-limits #budget-items .budget-limit-clean.no-limit{grid-template-areas:'identity stats actions'}
+}
+@media(max-width:1000px){
+ #planning-view-limits #budget-items .budget-limit-clean{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'identity actions' 'bar bar' 'stats stats';gap:14px}
+ #planning-view-limits #budget-items .budget-limit-clean.no-limit{grid-template-areas:'identity actions' 'stats stats'}
+}
+@media(max-width:760px){
+ #planning-view-limits #budget-items .budget-limit-clean{padding:14px;border-radius:15px;gap:15px}
+ #planning-view-limits .budget-limit-clean .budget-category-identity .category-icon-tile{width:34px;height:36px;border-radius:10px}
+ #planning-view-limits .budget-limit-clean .budget-category-identity .category-icon-tile svg{width:21px;height:21px}
+ #planning-view-limits .budget-limit-clean .budget-category-identity strong{font-size:.85rem}
+ #planning-view-limits .budget-limit-clean .budget-category-identity small{font-size:.66rem}
+ #planning-view-limits .budget-clean-desktop-actions{display:none}
+ #planning-view-limits .budget-clean-menu{display:grid;place-items:center;width:36px;height:36px;min-width:36px;padding:0;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--muted);font-size:1rem;letter-spacing:1px;cursor:pointer}
+ #planning-view-limits .budget-clean-stats{gap:7px}
+ #planning-view-limits .budget-clean-stats>div{padding-left:8px;gap:4px}
+ #planning-view-limits .budget-clean-stats>div:first-child{padding-left:0;border-left:0}
+ #planning-view-limits .budget-clean-stats span{font-size:.63rem}
+ #planning-view-limits .budget-clean-stats strong{font-size:.8rem}
+ #planning-view-limits .budget-clean-stats small{font-size:.58rem}
+ #planning-view-limits .budget-clean-bar .layered-limit{height:7px}
+}

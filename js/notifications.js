@@ -1,10 +1,10 @@
-import { listAllRows } from './pagination.js?v=2.9.35';
-import { supabase } from './supabase.js?v=2.9.35';
-import { getCurrentUser } from './database.js?v=2.9.35';
-import { budgetSummary } from './budget.js?v=2.9.35';
-import { buildCardInvoices } from './card-domain.js?v=2.9.35';
-import { goalProgress } from './goal-integration.js?v=2.9.35';
-import { canonicalCategoryName } from './category-alias.js?v=2.9.35';
+import { listAllRows } from './pagination.js?v=2.9.42';
+import { supabase } from './supabase.js?v=2.9.42';
+import { getCurrentUser } from './database.js?v=2.9.42';
+import { budgetSummary } from './budget.js?v=2.9.42';
+import { buildCardInvoices } from './card-domain.js?v=2.9.42';
+import { goalProgress } from './goal-integration.js?v=2.9.42';
+import { canonicalCategoryName } from './category-alias.js?v=2.9.42';
 
 function monthKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`}
 function sameMonth(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()}

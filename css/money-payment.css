@@ -1,0 +1,44 @@
+.money-control{display:flex;align-items:center;min-width:0;width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.money-prefix{flex:none;padding-left:12px;color:var(--muted);font-size:.9rem}
+.money-control input.money-input{border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;border-radius:0;min-width:0;width:100%;font-variant-numeric:tabular-nums;text-align:left;padding-left:8px}
+.money-control:focus-within{outline:2px solid var(--orange);outline-offset:2px}
+.money-control:has(input:disabled){opacity:.65}
+#card-payment-dialog{max-width:min(560px,calc(100vw - 24px));width:560px;padding:0;max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain}
+#card-payment-dialog .modal-card{max-width:none;width:100%;padding:24px;display:grid;gap:17px}
+#card-payment-dialog .modal-head{margin:0;align-items:start}
+#card-payment-dialog .modal-head h3{font-size:1.35rem;line-height:1.3}
+#card-payment-origin{margin:6px 0 0;font-size:.85rem;line-height:1.4}
+#card-payment-dialog .field{margin:0;gap:7px}
+#card-payment-dialog .field>label,.payment-types legend{font-size:.84rem;font-weight:600}
+.payment-types{border:0;padding:0;margin:0;display:flex;gap:22px;flex-wrap:wrap}
+.payment-types legend{margin-bottom:9px}
+.payment-types label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.9rem}
+#card-payment-dialog .payment-types input[type=radio]{width:18px;height:18px;margin:0;accent-color:var(--orange)}
+.payment-reference{display:flex;align-items:center;gap:10px;padding-right:12px;background:var(--surface3);border:1px solid var(--line);border-radius:11px}
+#card-payment-dialog .payment-reference input{border:0;background:transparent;box-shadow:none;outline:none;color:var(--muted);font-weight:600;min-width:0;cursor:default}
+.payment-reference svg{width:18px;height:18px;flex:none;color:var(--muted)}
+.payment-type-notice,.payment-difference{padding:12px;border:1px solid color-mix(in srgb,var(--orange) 30%,var(--line));border-radius:11px;background:color-mix(in srgb,var(--orange) 5%,var(--surface));font-size:.78rem;line-height:1.5}
+.payment-type-notice .link-btn{display:block;margin-top:6px;font-size:.78rem}
+.payment-difference{display:grid;gap:10px}
+.payment-difference p{margin:0;font-size:.72rem}
+#card-payment-date-hint{font-size:.72rem;line-height:1.4}
+#card-payment-dialog .modal-actions{position:sticky;bottom:-24px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;background:var(--surface);padding:12px 0 0;margin:0;z-index:1}
+#card-payment-dialog button:disabled{opacity:.5;cursor:not-allowed}
+#card-payment-dialog .form-error{margin:0}
+@media(max-width:760px){
+ .money-control input.money-input{font-size:16px}
+ #card-payment-dialog .modal-card{padding:18px;gap:16px}
+ #card-payment-dialog .modal-head h3{font-size:1.16rem}
+ #card-payment-origin{font-size:.78rem}
+ #card-payment-dialog .modal-actions{bottom:-18px}
+ #card-payment-dialog .modal-actions>button{flex:1;padding:10px 9px;font-size:.77rem;min-height:40px}
+}
+
+#card-payment-dialog .modal-card{background:var(--surface);border-color:var(--line)}
+#card-payment-dialog .payment-types input[type=radio]{appearance:none;flex:none;border:2px solid var(--muted);border-radius:50%;background:transparent;box-shadow:none;padding:0}
+#card-payment-dialog .payment-types input[type=radio]:checked{background:var(--orange);border-color:var(--orange);box-shadow:inset 0 0 0 3px var(--surface)}
+#card-payment-dialog .payment-types input[type=radio]:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.payment-date-control{position:relative;min-width:0}
+#card-payment-date-open{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;text-align:left;cursor:pointer}
+#card-payment-date-open svg{width:19px;height:19px;flex:none;color:var(--muted)}
+#card-payment-dialog .payment-date-control input{position:absolute;right:0;bottom:0;width:40px;height:40px;opacity:0;pointer-events:none;padding:0}
